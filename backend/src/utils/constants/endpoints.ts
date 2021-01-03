@@ -4,16 +4,25 @@ export default {
         LOG_OUT: 'seccions',
         REFRESH_TOKEN: 'tokens'
     },
-    user: {
+    users: {
         SIGN_UP: '/users',
         UPDATE_PROFILE: (userId) => `/users/${userId}`, 
         DELETE_ACCOUNT: (userId) => `/users/delete/${userId}`,
-        business: {
-            REGISTER: (userId) => `/business/create/${userId}`,
-            UPDATE: (userId,bizId) => `/business/edit/${userId}?bizId=${bizId}`,
-            DELETE: (userId, bizId) => `/business/delete/${userId}?bizId=${bizId}`
+        owner:{
+            BUSINESS_REGISTER: (userId) => `/businesses/create/${userId}`,
+            BUSINESS_UPDATE: (userId,bizId) => `/businesses/update/${userId}?bizId=${bizId}`,
+            BUSINESS_DELETE: (userId, bizId) => `/businesses/delete/${userId}?bizId=${bizId}`,
         },
-        REPORT: (bizId) => `users/report/${bizId}`,
-
-    }
+        moderator:{
+            GET_ALL_REPORTS: '/businesses/getReports',
+        },
+        REPORT: (bizId) => `/users/report/${bizId}`,
+    },
+    review: {
+        REVIEW_ADD: (bizId) => `/reviews/create/${bizId}`,
+        REVIEW_UPDATE: (bizId) => `/reviews/update/${bizId}`,
+        REVIEW_DELETE: (bizId) => `/reviews/delete/${bizId}`,
+    },
+    REVIEW_GET: (bizId)=>`/reviews/get/${bizId}`,
+    NEARBY_BUSINESS_GET: `/businesses/get`,
 }
