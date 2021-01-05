@@ -1,14 +1,13 @@
-import {Dialect} from 'sequelize';
+
+const env = (process.env.NODE_ENV || 'development').trim();
 
 type configType = {
-    server: { port?: string },
-    orm: {
-        dialect?: Dialect
+    mode: string,
+    connection: {
         host?: string,
         user?: string,
         password?: string,
         database?: string,
-        timeZone?: string,
     },
     auth: { accessTokenLifeTime: number },
     headers: {
@@ -20,16 +19,12 @@ type configType = {
 }
 
 const config: configType = {
-    server: {
-        port: process.env.PORT
-    },
-    orm: {
-        dialect: 'mariadb',
+    mode: env,
+    connection: {
         host: process.env.MYSQL_HOST,
         user: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
-        timeZone: process.env.DB_TIMEZONE,
     },
     auth: {
         accessTokenLifeTime: 15 * 60 // 15 minutes(in seconds)
