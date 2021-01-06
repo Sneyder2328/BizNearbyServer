@@ -8,14 +8,25 @@ export const paramUserIdValidationRules = [
 ];
 
 export const signUpValidationRules = [
-    body('id').trim().isString().isLength({min: 5}).withMessage("Invalid Id"),
+    body('id').trim().isString()
+        .isLength({min: 5, max: 36}).withMessage("Invalid Id"),
     body('fullname').customSanitizer(trimInside()).escape().isString()
-        .isLength({min: 5}).withMessage('Full name must be at least 5 characters long'),
-    body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address'),
-    body('phoneNumber').trim().isString().escape().optional({nullable: true}),
-    body('thumbnailUrl').trim().isString().escape().optional({nullable: true}),
-    body('password').trim().isString().isLength({min: 8}).escape().withMessage('Password must be at least 8 characters long').optional({nullable: true}),
-    body('apiKey').trim().isString().escape().optional({nullable: true}),
+        .isLength({min: 5}).withMessage('Full name must be at least 5 characters long')
+        .isLength({max: 250}).withMessage("Full Name too long"),
+    body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address')
+        .isLength({max: 250}).withMessage('email too long'),
+    body('phoneNumber').trim().isString().escape()
+        .optional({nullable: true})
+        .isLength({max: 50}).withMessage('phoneNumber too long'),
+    body('thumbnailUrl').trim().isString().escape()
+        .optional({nullable: true})
+        .isLength({max: 500}).withMessage('thumbnailUrl too long'),
+    body('password').trim().isString().escape()
+        .isLength({min: 8}).withMessage('Password must be at least 8 characters long')
+        .isLength({max: 150}).withMessage('Password too long')
+        .optional({nullable: true}),
+    body('apiKey').trim().isString().escape()
+        .optional({nullable: true}),
     body('typeLogin')
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
     body('typeUser')

@@ -19,7 +19,7 @@ function genBusiness(id = genUUID()) {
 }
 
 export const users = [
-    {
+    {   //GOOD EMAIL USER
         id: genUUID(),
         fullname: 'Franklin Clinton',
         email: 'thebilldot@gmail.com',
@@ -30,16 +30,70 @@ export const users = [
         typeLogin: 'email',
         typeUser: 'normal'
     },
-    {
-        id: genUUID(),
-        email: 'damario@gmail.com',
-        username: 'DMario',
-        password: '4567987891'
+    {   //GOOD GOOGLE USER
+        d: genUUID(),
+        fullname: "James",
+        email: "kevinch2000@gmail.com",
+        phoneNumber: null,
+        thumbnailUrl: null,
+        password: null,
+        apiKey: "123456789",
+        typeLogin: "google",
+        typeUser: "normal"
     },
-    {
+    {   //GOOD FACEBOOK USER
         id: genUUID(),
-        email: 'dquavis12@gmail.com',
-        username: 'Dquavis',
-        password: 'qwertyuioi'
+        fullname: "John Cena",
+        email: "Jake@gmail.com",
+        phoneNumber: null,
+        thumbnailUrl: null,
+        password: null,
+        apiKey: "123456789",
+        typeLogin: "facebook",
+        typeUser: "normal"
+    },
+    {   //BAD USER (PASSWORD WITH EMPTY STRING "")
+        id: genUUID(),
+        fullname: "Kevin Cheng",
+        email: "chengkev2000@gmail.com",
+        phoneNumber: "",
+        thumbnailUrl: "",
+        password: "",
+        apiKey: null,
+        typeLogin: "email",
+        typeUser: "normal"
+    },
+    {//BAD USER NAME TOO LONG
+        id: genUUID(),
+        fullname: "Kevin Cheng fdsajlfdjaljfadslkjkldasjkfldsjlkdfsjaljasdfkljdsaljfdlsjdslfjfasfdsajlfdjaljfadslkjkldasjkfldsjlkdfsjaljasdfkljdsaljfdlsjdslfjfasfdsajlfdjaljfadslkjkldasjkfldsjlkdfsjaljasdfkljdsaljfdlsjdslfjfasfdsajlfdjaljfadslkjkldasjkfldsjlkdfsjaljasdfkljdsaljfdlsjdslfjfas",
+        email: "chengev2000@gmail.com",
+        phoneNumber: "",
+        thumbnailUrl: "",
+        password: "1234567890",
+        apiKey: null,
+        typeLogin: "email",
+        typeUser: "normal"
+    },
+    {//BAD USER PHONE TOO LONG
+        id: genUUID(),
+        fullname: "Kevin Cheng",
+        email: "chingev2000@gmail.com",
+        phoneNumber: "jaldfjlkjsafdljlkdjsfljfdslajfldjaklajfdlajslsajlfdkjfkl",
+        thumbnailUrl: "",
+        password: "1234567890",
+        apiKey: null,
+        typeLogin: "email",
+        typeUser: "normal"
+    },
+    {//BAD USER password TOO LONG
+        id: genUUID(),
+        fullname: "Kevin Cheng",
+        email: "cngev2000@gmail.com",
+        phoneNumber: "",
+        thumbnailUrl: "jaldfjlkjsafdljlkdjsfljfdslajfldjaklajfdlajslsajlfdkjfklFJSADLJFLSADKJFLAJLAJKLSJFSKLAJFLKJLASJLJLSDJLFKDSJLAJFLDS",
+        password: "12345678lsfdjlkfjaljsldkjlkdsfjlfsdajljfasdljfsdlajljdfsklsadfjlfsadjlfksdajlasfdjlfsdjlfsajlsfjslfjkl90",
+        apiKey: null,
+        typeLogin: "email",
+        typeUser: "normal"
     }
 ];

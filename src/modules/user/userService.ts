@@ -12,9 +12,6 @@ export const signUpUser = async (user) => {
     const userWithEmail = await User.query().findOne('email', email);
     if (userWithEmail) throw new AppError(httpCodes.CONFLICT, errors.EMAIL, errors.message.EMAIL_TAKEN);
 
-    const userWithId = await User.query().findOne('id', id);
-    if (userWithId) throw new AppError(httpCodes.BAD_REQUEST);
-
     //INSERT USER TO DATABASE
     await User.query().insert(user);
 
