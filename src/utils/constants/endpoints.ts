@@ -1,4 +1,4 @@
-export default {
+export const endpoints = {
     auth: {
         LOG_IN: 'sessions',
         LOG_OUT: 'seccions',

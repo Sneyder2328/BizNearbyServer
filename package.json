@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js --trace-sync-io",
     "build-tsc": "tsc -p .",
-    "dev": "nodemon --exec ts-node src/index.ts --open",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "test": "export NODE_ENV=test || SET NODE_ENV=test && tsc && jest --testTimeout=10000 --runInBand -c jest.config.js",
     "test-watch": "nodemon --exec \"npm test\""
   },
@@ -20,6 +20,7 @@
     "express-validator": "^6.9.0",
     "knex": "^0.21.15",
     "mariadb": "^2.5.2",
+    "mysql": "^2.18.1",
     "objection": "^2.2.4",
     "uuidv4": "^6.2.6"
   },
@@ -32,7 +33,10 @@
     "@types/supertest": "^2.0.10",
     "@types/uuid": "^8.3.0",
     "@types/validator": "^13.1.2",
+    "dotenv": "^8.2.0",
+    "faker": "^5.1.0",
     "jest": "^26.6.3",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.6",
     "supertest": "^6.0.1",
     "ts-jest": "^26.4.4",
