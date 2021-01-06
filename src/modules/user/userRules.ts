@@ -1,5 +1,5 @@
 import config from "../../config/config";
-import {body, header, param} from "express-validator";
+import {body, param} from "express-validator";
 
 const trimInside = () => str => str.replace(/\s\s/g, ' ');
 
@@ -8,7 +8,7 @@ export const paramUserIdValidationRules = [
 ];
 
 export const signUpValidationRules = [
-    body('id').trim().isString().isLength({min: 5}).withMessage("Invalid Id"),
+    body('id').trim().matches(config.regex.uuidV4).withMessage("Invalid Id"),
     body('fullname').customSanitizer(trimInside()).escape().isString()
         .isLength({min: 5}).withMessage('Full name must be at least 5 characters long'),
     body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address'),

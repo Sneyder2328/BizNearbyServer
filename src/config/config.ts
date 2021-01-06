@@ -23,10 +23,10 @@ type configType = {
 const config: configType = {
     mode: env,
     connection: {
-        host: process.env.MYSQL_HOST || "localhost",
-        user: process.env.MYSQL_USER || "root",
-        password: process.env.MYSQL_PASSWORD || "password",
-        database: process.env.MYSQL_DATABASE || "biznearby",
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
     },
     auth: {
         accessTokenLifeTime: 15 * 60 // 15 minutes(in seconds)
