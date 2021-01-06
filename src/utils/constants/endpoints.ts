@@ -1,8 +1,8 @@
 export const endpoints = {
     auth: {
-        LOG_IN: 'sessions',
-        LOG_OUT: 'seccions',
-        REFRESH_TOKEN: 'tokens'
+        LOG_IN: '/sessions',
+        LOG_OUT: '/seccions',
+        REFRESH_TOKEN: '/tokens'
     },
     users: {
         SIGN_UP: '/users',

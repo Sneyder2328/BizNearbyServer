@@ -4,10 +4,10 @@ import { AppError } from '../../utils/errors/appError';
 import { User } from '../../database/models/User';
 import { Session } from '../../database/models/Session';
 import { genUUID } from '../../utils/utils';
+import { verifyPassword } from '../../utils/utils';
 
 export const signUpUser = async (user) => {
     const { id, fullname, email, thumbnailUrl } = user;
-    console.log(user);
     //VALIDATION IN DATABASE
     const userWithEmail = await User.query().findOne('email', email);
     if (userWithEmail) throw new AppError(httpCodes.CONFLICT, errors.EMAIL, errors.message.EMAIL_TAKEN);
@@ -21,6 +21,17 @@ export const signUpUser = async (user) => {
     return { id, fullname, email, thumbnailUrl, uuid };
 }
 
-export const logInUser = async (email: string, password: string) => {
-    return { email, password };
+export const logInUser = async (_email: string, _password: string) => {
+    //VALIDATION
+    const user = await User.query().findOne('email', _email);
+    if (!user) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+
+    const validPass = await verifyPassword(_password, user.password);
+    if (!validPass) throw new AppError(httpCodes.UNAUTHORIZED, errors.PASSWORD, errors.message.INCORRECT_CREDENTIALS)
+
+    const { id, fullname, email, thumbnailUrl } = user;
+    //GENERATE UUIDV4 
+    const uuid = genUUID();
+    await Session.query().insert({userId: id, token: uuid});
+    return { id, fullname, email, thumbnailUrl, uuid };
 }

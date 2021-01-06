@@ -33,7 +33,7 @@ export const signUpValidationRules = [
 ];
 
 export const logInValidationRules = [
-    body('username').trim().escape(),
+    body('email').trim().escape(),
     body('password').escape()
 ];
 
