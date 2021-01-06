@@ -1,13 +1,9 @@
-import { Router } from 'express';
-import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { signUpUser } from './userService';
+import {Router} from 'express';
 
 const router = Router();
 
-router.post("/users", handleErrorAsync(async (req, res) => {
-    const {id, fullname} = req.body
-    const user = await signUpUser(id, fullname)
-    res.json(user);
-}))
+router.post("/users",(req, resp)=>{
+    resp.send("HEYY!");
+})
 
-export { router as userRouter }
+export {router as userRouter}
