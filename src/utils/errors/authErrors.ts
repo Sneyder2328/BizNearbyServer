@@ -1,5 +1,5 @@
 import {AppError} from './appError';
-import httpCodes from '../constants/httpResponseCodes';
+import {httpCodes} from '../constants/httpResponseCodes';
 
 export class AuthError extends AppError{
     constructor(error, message=""){

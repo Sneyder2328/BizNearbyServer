@@ -1,4 +1,4 @@
-export default {
+export const errors = {
     NOT_FOUND: 'Not found',
     USERNAME: 'username',
     EMAIL: 'email',

@@ -1,5 +1,5 @@
-import errors from '../constants/errors';
-import httpCodes from '../constants/httpResponseCodes';
+import {errors} from '../constants/errors';
+import {httpCodes} from '../constants/httpResponseCodes';
 
 export class AppError extends Error{
     private statusCode: number;

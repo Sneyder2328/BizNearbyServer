@@ -1,4 +1,4 @@
-const responseCodes = {
+export const httpCodes = {
     // Informational
     CONTINUE: 100,
     SWITCHING_PROTOCOLS: 101,
@@ -28,4 +28,3 @@ const responseCodes = {
     SERVICE_UNAVAILABLE: 503,
     GATEWAY_TIMEOUT: 504,
 };
-export default responseCodes;
