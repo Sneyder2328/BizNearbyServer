@@ -4,8 +4,9 @@
   "description": "Node.js server",
   "main": "index.js",
   "scripts": {
-    "start": "tsc -p . && node dist/index.js --trace-sync-io",
+    "start": "node dist/index.js --trace-sync-io",
     "build-tsc": "tsc -p .",
+    "postinstall": "npm run build-tsc",
     "dev": "nodemon --exec ts-node src/index.ts",
     "test": "export NODE_ENV=test || SET NODE_ENV=test && tsc && jest --testTimeout=10000 --runInBand -c jest.config.js",
     "test-watch": "nodemon --exec \"npm test\""
