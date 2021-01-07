@@ -15,7 +15,10 @@ export const newBusiness = async (business) => {
     // PARA VER EL JSON
     console.log(business);
 
+    await Business.query().insert({id: businessId, name, bannerUrl, description});
+    await UserBusiness.query().insert({userId, businessId, role});
     const businessAddress = {id: addressId, businessId, address, cityCode, stateCode, countryCode, latitude, longitude};
+    await BusinessAddress.query().insert(businessAddress);
     const businessCategory = categories.map(async (categoryCode) => {
         BusinessCategory.query().insert({businessId, categoryCode});
     });
@@ -27,13 +30,9 @@ export const newBusiness = async (business) => {
         var closeTime = parseInt(closeTimeString.replace(':',''), 10);
         BusinessHours.query().insert({businessId, day, openTime, closeTime});
     });
-
-    await Business.query().insert({id: businessId, name, bannerUrl, description});
-    await BusinessAddress.query().insert(businessAddress);
     await Promise.all(businessCategory);
     await Promise.all(businessPhoneNumber);
     await Promise.all(businessHours);
-    await UserBusiness.query().insert({userId, businessId, role});
 
     return {userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, role};
 };
