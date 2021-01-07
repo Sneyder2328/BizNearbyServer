@@ -15,25 +15,24 @@ export const newBusiness = async (business) => {
     // PARA VER EL JSON
     console.log(business);
 
+    await Business.query().insert({id: businessId, name, bannerUrl, description});
+    await UserBusiness.query().insert({userId, businessId, role});
     const businessAddress = {id: addressId, businessId, address, cityCode, stateCode, countryCode, latitude, longitude};
+    await BusinessAddress.query().insert(businessAddress);
     const businessCategory = categories.map(async (categoryCode) => {
-        BusinessCategory.query().insert({businessId, categoryCode});
+        await BusinessCategory.query().insert({businessId, categoryCode});
     });
     const businessPhoneNumber = phoneNumbers.map(async (phoneNumber) => {
-        BusinessPhoneNumber.query().insert({businessId, phoneNumber});
+        await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
     });
-    const businessHours = hours.map(async ({day, openTimeString, closeTimeString}) => {
-        var openTime = parseInt(openTimeString.replace(':', ''), 10);
-        var closeTime = parseInt(closeTimeString.replace(':',''), 10);
-        BusinessHours.query().insert({businessId, day, openTime, closeTime});
+    const businessHours = hours.map(async ({day, openTime, closeTime}) => {
+        const openTimeInt = parseInt(openTime.replace(':', ''), 10);
+        const closeTimeInt = parseInt(closeTime.replace(':',''), 10);
+        await BusinessHours.query().insert({businessId, day, openTime: openTimeInt, closeTime: closeTimeInt});
     });
-
-    await Business.query().insert({id: businessId, name, bannerUrl, description});
-    await BusinessAddress.query().insert(businessAddress);
     await Promise.all(businessCategory);
     await Promise.all(businessPhoneNumber);
     await Promise.all(businessHours);
-    await UserBusiness.query().insert({userId, businessId, role});
 
     return {userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, role};
 };
