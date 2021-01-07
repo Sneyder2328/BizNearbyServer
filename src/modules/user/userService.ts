@@ -21,15 +21,19 @@ export const signUpUser = async (user) => {
     return { id, fullname, email, thumbnailUrl, uuid };
 }
 
-export const logInUser = async (_email: string, _password: string) => {
-    //VALIDATION
-    const user = await User.query().findOne('email', _email);
-    if (!user) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
-
-    const validPass = await verifyPassword(_password, user.password);
-    if (!validPass) throw new AppError(httpCodes.UNAUTHORIZED, errors.PASSWORD, errors.message.INCORRECT_CREDENTIALS)
-
-    const { id, fullname, email, thumbnailUrl } = user;
+export const logInUser = async (user) => {
+    const userWithEmail = await User.query().findOne('email', user.email);
+    if(user.typeLogin === "email"){
+        //VALIDATION
+        if (!userWithEmail) throw new AppError(httpCodes.BAD_REQUEST, errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);
+        const validPass = await verifyPassword(user.password, userWithEmail.password);
+        if (!validPass) throw new AppError(httpCodes.BAD_REQUEST, errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);
+    }
+    else{
+        //AUTHENTICATION PROCESS ...
+        if (!userWithEmail) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    }
+    const { id, fullname, email, thumbnailUrl } = userWithEmail;
     //GENERATE UUIDV4 
     const uuid = genUUID();
     await Session.query().insert({userId: id, token: uuid});

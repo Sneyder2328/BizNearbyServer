@@ -6,6 +6,7 @@ export const errors = {
     USER_NOT_FOUND_ERROR: 'User',
     POST_NOT_CREATED: 'Post not created',
     AUTH_ERROR: "Session is invalid",
+    CREDENTIAL: "Credential",
     message: {
         USER_NOT_FOUND: "User not found",
         SESSION_NOT_FOUND: "Session not found",
