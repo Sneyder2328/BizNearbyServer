@@ -13,4 +13,5 @@ router.post('/businesses', newBusinessValidationRules, validate, handleErrorAsyn
     const {userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, role} = await newBusiness(business);
     res.json({userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, role});
 }))
+
 export { router as businessRouter }
