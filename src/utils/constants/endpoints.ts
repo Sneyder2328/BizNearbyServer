@@ -1,4 +1,4 @@
-export default {
+export const endpoints = {
     auth: {
         LOG_IN: 'sessions',
         LOG_OUT: 'seccions',
@@ -9,9 +9,9 @@ export default {
         UPDATE_PROFILE: (userId) => `/users/${userId}`, 
         DELETE_ACCOUNT: (userId) => `/users/delete/${userId}`,
         owner:{
-            BUSINESS_REGISTER: (userId) => `/businesses/create/${userId}`,
-            BUSINESS_UPDATE: (userId,bizId) => `/businesses/update/${userId}?bizId=${bizId}`,
-            BUSINESS_DELETE: (userId, bizId) => `/businesses/delete/${userId}?bizId=${bizId}`,
+            BUSINESS_REGISTER: 'post/businesses',
+            BUSINESS_UPDATE: '/businesses/update/',
+            BUSINESS_DELETE: '/businesses/delete/',
         },
         moderator:{
             GET_ALL_REPORTS: '/businesses/getReports',

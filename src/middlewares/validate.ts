@@ -1,6 +1,6 @@
 import config from "../config/config";
 import {body, header, param, query, validationResult} from "express-validator";
-import httpCodes from "../utils/constants/httpResponseCodes";
+import { httpCodes } from '../utils/constants/httpResponseCodes';
 
 const trimInside = () => str => str.replace(/\s\s/g, ' ');
 
