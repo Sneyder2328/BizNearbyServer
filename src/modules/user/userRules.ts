@@ -34,7 +34,9 @@ export const signUpValidationRules = [
 
 export const logInValidationRules = [
     body('email').trim().escape(),
-    body('password').escape()
+    body('password').escape(),
+    body('typeLogin')
+        .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
 ];
 
 /*
