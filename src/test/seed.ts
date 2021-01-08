@@ -31,7 +31,7 @@ export const users = [
         typeUser: 'normal'
     },
     {   //GOOD GOOGLE USER
-        d: genUUID(),
+        id: genUUID(),
         fullname: "James",
         email: "kevinch2000@gmail.com",
         phoneNumber: null,

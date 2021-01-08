@@ -30,7 +30,6 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
         request(app)
             .post(endpoints.users.SIGN_UP)
             .send({...users[3]})
-            .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body['errors']);
             })
@@ -42,7 +41,6 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             request(app)
                 .post(endpoints.users.SIGN_UP)
                 .send({...users[i]})
-                .expect(httpCodes.OK)
                 .expect(res => {
                     expect(res.body["errors"]);
                 })
