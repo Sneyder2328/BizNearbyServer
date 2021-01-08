@@ -15,9 +15,9 @@ export const newBusinessValidationRules = [
         .custom(val => val === 'admin' || val === 'owner').withMessage('You must provide a valid role of user(admin, owner)').optional({nullable: true}),
     body('latitude').isNumeric(),
     body('longitude').isNumeric(),
-    body('cityCode').isNumeric(),
-    body('stateCode').isNumeric(),
-    body('countryCode').isNumeric(),
+    body('cityCode').isNumeric().optional({nullable: true}),
+    body('stateCode').isNumeric().optional({nullable: true}),
+    body('countryCode').isNumeric().optional({nullable: true}),
     body('hours').custom(obj => {
         for(let i = 0; i < obj.length; i++){
             if(typeof obj[i].day !== 'number' || obj[i].day > 7 || typeof obj[i].openTime !== 'string' || obj[i].openTime.length > 5 || typeof obj[i].closeTime !== 'string' || obj[i].closeTime.length > 5){
