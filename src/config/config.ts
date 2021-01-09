@@ -1,6 +1,14 @@
+const path = require('path');
 const env = (process.env.NODE_ENV || 'development').trim();
-if (env === 'development') {
-    require('dotenv').config()
+
+switch(env){
+    case 'test':
+        require('dotenv').config({path: path.join(__dirname,'..','..','.env.test')});
+        break;
+    case 'development':
+        require('dotenv').config();
+        break;
+    default:
 }
 
 type configType = {

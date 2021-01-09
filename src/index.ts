@@ -3,10 +3,10 @@ import router from './modules/app';
 import compression from 'compression';
 import knex from './database/knex';
 import { Model } from 'objection';
-
-export const app = express();
 //DATABASE SETTINGS
 Model.knex(knex);
+
+export const app = express();
 
 //APP SETTINGS
 app.set("PORT", process.env.PORT || 3000);
@@ -15,7 +15,6 @@ if (process.env.NODE_ENV == 'development') {
     const morgan = require('morgan');
     app.use(morgan('dev')); // enable logging
 }
-
 
 app.use(compression()); // compress responses
 app.use(express.json()); // parse receiving data to json

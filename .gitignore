@@ -3,3 +3,4 @@ requests.http
 BizNearbyDB.txt
 dist/
 .env
+.env.test

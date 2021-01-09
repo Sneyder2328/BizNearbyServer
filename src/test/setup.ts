@@ -5,5 +5,6 @@ export async function wipeOutDatabase(){
 }
 
 export async function CreateUser(user){
+    delete user.apiKey;
     await User.query().insert(user);
 }

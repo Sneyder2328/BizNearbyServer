@@ -1,6 +1,8 @@
 import { errors } from '../../utils/constants/errors';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { AppError } from '../../utils/errors/appError';
+import { AuthError} from '../../utils/errors/authErrors';
+import { UserNotFoundError } from '../../utils/errors/userNotFoundError';
 import { User } from '../../database/models/User';
 import { Session } from '../../database/models/Session';
 import { genUUID } from '../../utils/utils';
@@ -25,13 +27,13 @@ export const logInUser = async (user) => {
     const userWithEmail = await User.query().findOne('email', user.email);
     if(user.typeLogin === "email"){
         //VALIDATION
-        if (!userWithEmail) throw new AppError(httpCodes.BAD_REQUEST, errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);
+        if (!userWithEmail) throw new AuthError();
         const validPass = await verifyPassword(user.password, userWithEmail.password);
-        if (!validPass) throw new AppError(httpCodes.BAD_REQUEST, errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);
+        if (!validPass) throw new AuthError();
     }
     else{
         //AUTHENTICATION PROCESS ...
-        if (!userWithEmail) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+        if (!userWithEmail) throw new UserNotFoundError();
     }
     const { id, fullname, email, thumbnailUrl } = userWithEmail;
     //GENERATE UUIDV4 

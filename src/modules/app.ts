@@ -1,12 +1,13 @@
 import {Router} from 'express';
 import { userRouter } from './user/user';
 import { businessRouter } from './business/business';
-import { errorHandler } from '../middlewares/errorHandler';
+import { ErrorHandler } from '../middlewares/errorHandler';
 
 const router = Router();
 
 router.use('/', userRouter);
 router.use('/', businessRouter);
-router.use(errorHandler)
+router.use(ErrorHandler)
 
+router.use('/', ErrorHandler);
 export default router;
