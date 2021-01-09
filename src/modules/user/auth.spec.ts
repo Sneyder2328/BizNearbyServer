@@ -81,13 +81,28 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
         });
     }
 
+    for(let i =0;i<=7;i+=7){
+        it('should not login due to wrong credentials', done=>{
+            request(app)
+                .post(endpoints.auth.LOG_IN)
+                .send({email: users[0], password: '123', typeLogin: 'email'})
+                .expect(httpCodes.UNAUTHORIZED)
+                .expect(res=>{
+                    expect(res.body?.error).toBe(errors.CREDENTIAL);
+                    expect(res.body?.message).toBe(errors.message.INCORRECT_CREDENTIALS);
+                })
+                .end(done);
+        });
+    }
+
     it('should not login due to wrong credentials', done=>{
         request(app)
             .post(endpoints.auth.LOG_IN)
-            .send({email: users[0], password: '123', typeLogin: 'email'})
-            .expect(httpCodes.UNAUTHORIZED)
+            .send({email: "1212121212dfssdfsdf", password: '123', typeLogin: 'google'})
+            .expect(httpCodes.NOT_FOUND)
             .expect(res=>{
-                console.log('holaaaaaaaaaaaaaa', res.body.error);
+                expect(res.body?.error).toBe(errors.USER_NOT_FOUND_ERROR);
+                expect(res.body?.message).toBe(errors.message.USER_NOT_FOUND);
             })
             .end(done);
     });
