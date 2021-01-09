@@ -16,6 +16,7 @@ export async function wipeOutDatabase(){
     await BusinessHours.query().delete();
     await BusinessImage.query().delete();
     await BusinessPhoneNumber.query().delete();
+    await User.query().insert({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
 }
 
 export async function CreateUser(user){
