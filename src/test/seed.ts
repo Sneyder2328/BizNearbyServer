@@ -10,6 +10,12 @@ function genUser(id = genUUID()) {
     };
 }
 
+function genText(length: number){
+    let text = "";
+    for(let i=0;i<length;i++) text += "a";
+    return text;
+}
+
 function genBusiness(id = genUUID()) {
     return {
         id,
@@ -65,7 +71,7 @@ export const users = [
     },
     {//BAD USER NAME TOO LONG
         id: genUUID(),
-        fullname: "Kevin Cheng fdsajlfdjaljfadslkjkldasjkfldsjlkdfsjaljasdfkljdsaljfdlsjdslfjfasfdsajlfdjaljfadslkjkldasjkfldsjlkdfsjaljasdfkljdsaljfdlsjdslfjfasfdsajlfdjaljfadslkjkldasjkfldsjlkdfsjaljasdfkljdsaljfdlsjdslfjfasfdsajlfdjaljfadslkjkldasjkfldsjlkdfsjaljasdfkljdsaljfdlsjdslfjfas",
+        fullname: genText(251),
         email: "chengev2000@gmail.com",
         phoneNumber: "",
         thumbnailUrl: "",
@@ -78,7 +84,7 @@ export const users = [
         id: genUUID(),
         fullname: "Kevin Cheng",
         email: "chingev2000@gmail.com",
-        phoneNumber: "jaldfjlkjsafdljlkdjsfljfdslajfldjaklajfdlajslsajlfdkjfkl",
+        phoneNumber: genText(51),
         thumbnailUrl: "",
         password: "1234567890",
         apiKey: null,
@@ -90,8 +96,19 @@ export const users = [
         fullname: "Kevin Cheng",
         email: "cngev2000@gmail.com",
         phoneNumber: "",
-        thumbnailUrl: "jaldfjlkjsafdljlkdjsfljfdslajfldjaklajfdlajslsajlfdkjfklFJSADLJFLSADKJFLAJLAJKLSJFSKLAJFLKJLASJLJLSDJLFKDSJLAJFLDS",
-        password: "12345678lsfdjlkfjaljsldkjlkdsfjlfsdajljfasdljfsdlajljdfsklsadfjlfsadjlfksdajlasfdjlfsdjlfsajlsfjslfjkl90",
+        thumbnailUrl: genText(501),
+        password: genText(151),
+        apiKey: null,
+        typeLogin: "email",
+        typeUser: "normal"
+    },
+    {//Extreme User, maximum entry lenght capacity
+        id: genUUID(),
+        fullname: genText(250),
+        email: "cngev2000@gmail.com",
+        phoneNumber: "",
+        thumbnailUrl: genText(500),
+        password: genText(150),
         apiKey: null,
         typeLogin: "email",
         typeUser: "normal"

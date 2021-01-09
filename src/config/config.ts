@@ -5,8 +5,10 @@ switch(env){
     case 'test':
         require('dotenv').config({path: path.join(__dirname,'..','..','.env.test')});
         break;
-    default:
+    case 'development':
         require('dotenv').config();
+        break;
+    default:
 }
 
 type configType = {
