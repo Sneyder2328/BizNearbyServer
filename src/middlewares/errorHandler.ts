@@ -1,6 +1,6 @@
-import {httpCodes} from "../utils/constants/httpResponseCodes";
+import { httpCodes } from "../utils/constants/httpResponseCodes";
 
-export const ErrorHandler = (err, req, res, _) => {
+export const errorHandler = (err, req, res, _) => {
     err.statusCode = err.statusCode || httpCodes.INTERNAL_SERVER_ERROR;
     res.status(err.statusCode).json({
         error: err.name,

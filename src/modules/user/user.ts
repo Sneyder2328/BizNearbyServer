@@ -5,9 +5,9 @@ import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { signUpUser, logInUser } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
 import config from '../../config/config';
-import { verifyFBToken, verifyGoogleToken } from '../../middlewares/verifyAuthToken';
-import { AppError } from '../../utils/errors/appError';
+import { verifyFBToken, verifyGoogleToken } from './authService';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
+import { AppError } from '../../utils/errors/appError';
 const router = Router();
 
 router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
@@ -21,13 +21,13 @@ router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErro
     delete user?.facebookAuth;
     
     const { id, fullname, email, thumbnailUrl, uuid } = await signUpUser(user);
-    res.header(config.headers.token, uuid)
+    res.header(config.headers.accessToken, uuid)
         .json({ profile: { id, fullname, email, thumbnailUrl } });
 }));
 
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
     const loginRes = await logInUser(req.body);
-    res.header(config.headers.token, loginRes.uuid)
+    res.header(config.headers.accessToken, loginRes.uuid)
         .json({ profile: {...loginRes}});
 }));
 

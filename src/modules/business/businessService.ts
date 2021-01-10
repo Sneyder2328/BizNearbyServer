@@ -5,13 +5,12 @@ import { Business } from '../../database/models/Business';
 import { BusinessAddress } from '../../database/models/BusinessAddress';
 import { BusinessCategory } from '../../database/models/BusinessCategory';
 import { BusinessHours } from '../../database/models/BusinessHours';
-import { BusinessImage } from '../../database/models/BusinessImage';
 import { BusinessPhoneNumber } from '../../database/models/BusinessPhoneNumber';
 import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
 
 
-export const newBusiness = async (business) => {
+export const addNewBusiness = async (business) => {
     const {userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, role} = business;
 
     const user = await User.query().findOne('id', userId);

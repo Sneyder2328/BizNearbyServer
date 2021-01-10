@@ -21,7 +21,7 @@ type configType = {
     },
     auth: { accessTokenLifeTime: number },
     headers: {
-        token: string
+        accessToken: string
     },
     regex: { uuidV4: any },
 }
@@ -38,7 +38,7 @@ const config: configType = {
         accessTokenLifeTime: 15 * 60 // 15 minutes(in seconds)
     },
     headers: {
-        token: 'accessToken',
+        accessToken: 'authorization',
     },
     regex: {
         uuidV4: /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i

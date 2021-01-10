@@ -1,6 +1,5 @@
-import {Model} from 'objection';
-import {hashPassword} from '../../utils/utils';
-
+import { Model, ModelObject } from 'objection';
+import { hashPassword } from '../../utils/utils';
 export class User extends Model {
     id!: string;
     fullname!: string;
@@ -11,12 +10,13 @@ export class User extends Model {
     typeUser!: "moderator" | "normal";
     typeLogin!: "email" | "facebook" | "google";
 
-    async $beforeInsert(context){
-        console.log(this.password);
-        if(this.password){
+    async $beforeInsert(context) {
+        if (this.password) {
             this.password = await hashPassword(10, this.password);
         }
     }
 
     static tableName = "User";
 }
+
+export type UserObject = ModelObject<User>
