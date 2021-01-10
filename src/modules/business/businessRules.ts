@@ -22,7 +22,6 @@ export const newBusinessValidationRules = [
     body('countryCode').isNumeric().optional({ nullable: true }),
     body('hours').custom(arr => {
         for (let i = 0; i < arr.length; i++) {
-            // RegExp("^[0|1|2]\d:\d{2}$").test(arr[i].openTime)
             console.log(timeRegex.test(arr[i].openTime), arr[i].openTime);
             if (typeof arr[i].day !== 'number' || arr[i].day > 7 || !timeRegex.test(arr[i].openTime) || !timeRegex.test(arr[i].closeTime))
                 return false;
