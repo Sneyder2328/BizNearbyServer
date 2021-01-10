@@ -1,6 +1,5 @@
-
 import config from '../config/config';
-import { findSession, isSessionExpired } from '../modules/user/userService';
+import { findSession, isSessionExpired } from '../modules/user/authService';
 import { errors } from '../utils/constants/errors';
 import { AuthError } from '../utils/errors/authErrors';
 
