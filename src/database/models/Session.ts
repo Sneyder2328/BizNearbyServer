@@ -6,6 +6,7 @@ export class Session extends Model {
     createdAt!:Date;
 
     static tableName= "Session";
+    static idColumn="token";
 }
 
 export type SessionObject = ModelObject<Session>

@@ -46,7 +46,10 @@ export const findSession = async (accessToken: string): Promise<SessionObject> =
     return await Session.query().findById(accessToken)
 }
 
+const ONE_MONTH_IN_MINUTES = 30 * 24 * 60
 export const isSessionExpired = (session: SessionObject): boolean => {
-    console.log('Session', session.createdAt, new Date());
-    return false
+    console.log('Session', session.createdAt, new Date()); // TODO verify that createdAt dates to less than one month ago
+    const differenceInMins = new Date().getMinutes() - session.createdAt.getMinutes()
+    console.log('differenceInMins', differenceInMins);
+    return differenceInMins >= ONE_MONTH_IN_MINUTES
 }
