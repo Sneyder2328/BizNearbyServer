@@ -11,13 +11,13 @@ router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErro
     const user = req.body;
     delete user?.apiKey;
     const { id, fullname, email, thumbnailUrl, uuid } = await signUpUser(user);
-    res.header(config.headers.token, uuid)
+    res.header(config.headers.accessToken, uuid)
         .json({ profile: { id, fullname, email, thumbnailUrl } });
 }));
 
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
     const loginRes = await logInUser(req.body);
-    res.header(config.headers.token, loginRes.uuid)
+    res.header(config.headers.accessToken, loginRes.uuid)
         .json({ profile: {...loginRes}});
 }));
 

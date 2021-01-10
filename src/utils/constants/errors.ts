@@ -11,6 +11,7 @@ export const errors = {
         USER_NOT_FOUND: "User not found",
         SESSION_NOT_FOUND: "Session not found",
         ACCESS_TOKEN_EXPIRED: "Access token expired",
+        ACCESS_TOKEN_INVALID: "Access token not valid",
         DEFAULT_ERROR: "Something went wrong. Please try again.",
         UNDEFINED_ROUTE: "Route not found on the server",
         INCORRECT_CREDENTIALS: "Incorrect credentials",
