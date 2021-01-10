@@ -7,7 +7,10 @@ export const errors = {
     POST_NOT_CREATED: 'Post not created',
     AUTH_ERROR: "Session is invalid",
     CREDENTIAL: "Credential",
+    FORBIDDEN: "Forbidden",
+
     message: {
+        PERMISSION_NOT_GRANTED: "You do not have permissions to access this route",
         USER_NOT_FOUND: "User not found",
         SESSION_NOT_FOUND: "Session not found",
         ACCESS_TOKEN_EXPIRED: "Access token expired",

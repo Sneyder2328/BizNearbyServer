@@ -4,7 +4,7 @@ import { AppError } from '../../utils/errors/appError';
 import { AuthError } from '../../utils/errors/authErrors';
 import { UserNotFoundError } from '../../utils/errors/userNotFoundError';
 import { User } from '../../database/models/User';
-import { Session, SessionObject } from '../../database/models/Session';
+import { Session } from '../../database/models/Session';
 import { genUUID } from '../../utils/utils';
 import { verifyPassword } from '../../utils/utils';
 
@@ -40,16 +40,4 @@ export const logInUser = async (user) => {
     const uuid = genUUID();
     await Session.query().insert({ userId: id, token: uuid });
     return { id, fullname, email, thumbnailUrl, uuid };
-}
-
-export const findSession = async (accessToken: string): Promise<SessionObject> => {
-    return await Session.query().findById(accessToken)
-}
-
-const ONE_MONTH_IN_MINUTES = 30 * 24 * 60
-export const isSessionExpired = (session: SessionObject): boolean => {
-    console.log('Session', session.createdAt, new Date()); // TODO verify that createdAt dates to less than one month ago
-    const differenceInMins = new Date().getMinutes() - session.createdAt.getMinutes()
-    console.log('differenceInMins', differenceInMins);
-    return differenceInMins >= ONE_MONTH_IN_MINUTES
 }
