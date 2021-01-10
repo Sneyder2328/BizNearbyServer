@@ -1,8 +1,9 @@
 
 import { OAuth2Client } from 'google-auth-library';
 
-export const verifyGoogleToken =async (userId: string, accessToken: string) => {
-    const CLIENT_ID = "434477538698-8ulu0utc36ugu3ob252o5bptt1s52clk.apps.googleusercontent.com";
+export const verifyGoogleToken = async (accessToken: string ,userId: string) => {
+    const CLIENT_ID = "448494042748-vm28epp6eol7hcv0so4bn4i83q83keu9.apps.googleusercontent.com";
+    const CLIENT_SECRET = "DUGN8s0UMBlYfLpW5zvoPIoY"
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
         idToken: accessToken,
@@ -16,7 +17,7 @@ export const verifyGoogleToken =async (userId: string, accessToken: string) => {
         return false;
 }
 
-export const verifyFBToken = async (userId: string, accessToken: string) => {
+export const verifyFBToken = async (accessToken: string, userId: string) => {
     const appAccessToken = "158152681487301|xQmAWuwi1ZGF_QBB4egZZCGh1YQ";
     const appId = "158152681487301";
     const application = "SDMessages";

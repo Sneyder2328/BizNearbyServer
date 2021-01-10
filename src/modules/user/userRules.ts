@@ -26,12 +26,6 @@ export const signUpValidationRules = [
         .optional({nullable: true}),
     body('googleAuth.token').trim().isString().escape()
         .optional({nullable: true}),
-    body('googleAuth').isJSON()
-        .optional({nullable: true})
-        .custom(({token, userId}) => /^[_A-z0-9-]+$/.test(token) && /^[_A-z0-9-]+$/.test(userId)),
-    body('facebookAuth').isJSON()
-        .optional({nullable: true})
-        .custom(({token, userId}) => /^[_A-z0-9-]+$/.test(token) && /^[_A-z0-9-]+$/.test(userId)),
     body('typeLogin')
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
     body('typeUser')

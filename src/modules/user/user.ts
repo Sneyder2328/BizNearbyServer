@@ -1,20 +1,22 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { verifyFBToken, verifyGoogleToken } from '../../middlewares/verifyAuthToken';
 import { signUpValidationRules, logInValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { signUpUser, logInUser } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
-import { AuthError } from '../../utils/errors/authErrors';
 import config from '../../config/config';
+import { verifyFBToken, verifyGoogleToken } from '../../middlewares/verifyAuthToken';
+import { AppError } from '../../utils/errors/appError';
+import { httpCodes } from '../../utils/constants/httpResponseCodes';
 const router = Router();
 
 router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
-    const isAuthenticated = (user.facebookAuth && verifyFBToken(user.facebookAuth.idToken, user.facebookAuth.userId)) ||
-                            (user.googleAuth && verifyGoogleToken(user.googleAuth.idToken, user.googleAuth.userId));
-    if (!isAuthenticated) throw new AuthError();
-    //REMOVE AUTH TOKENS
+    console.log(user.facebookAuth);
+    const isAuthenticated = (user.facebookAuth && await verifyFBToken(user.facebookAuth.token, user.facebookAuth.userId)) ||
+                            (user.googleAuth && await verifyGoogleToken(user.googleAuth.token, user.googleAuth.userId));
+    if (!isAuthenticated) throw new AppError(httpCodes.UNAUTHORIZED, "Authorization", "Authorization failed");
+    console.log(isAuthenticated);
     delete user?.googleAuth;
     delete user?.facebookAuth;
     
