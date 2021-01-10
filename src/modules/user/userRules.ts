@@ -24,8 +24,14 @@ export const signUpValidationRules = [
         .isLength({min: 8}).withMessage('Password must be at least 8 characters long')
         .isLength({max: 150}).withMessage('Password too long')
         .optional({nullable: true}),
-    body('apiKey').trim().isString().escape()
+    body('googleAuth.token').trim().isString().escape()
         .optional({nullable: true}),
+    body('googleAuth').isJSON()
+        .optional({nullable: true})
+        .custom(({token, userId}) => /^[_A-z0-9-]+$/.test(token) && /^[_A-z0-9-]+$/.test(userId)),
+    body('facebookAuth').isJSON()
+        .optional({nullable: true})
+        .custom(({token, userId}) => /^[_A-z0-9-]+$/.test(token) && /^[_A-z0-9-]+$/.test(userId)),
     body('typeLogin')
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
     body('typeUser')
