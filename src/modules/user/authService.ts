@@ -1,6 +1,7 @@
 import { OAuth2Client } from 'google-auth-library';
 import { Session, SessionObject } from '../../database/models/Session';
 import { User, UserObject } from '../../database/models/User';
+import axios from 'axios';
 
 export const findSession = async (accessToken: string): Promise<SessionObject> => {
     return await Session.query().findById(accessToken)
@@ -29,22 +30,21 @@ export const verifyGoogleToken = async (userId: string, token: string, email: st
     return payload?.sub === userId && payload?.email === email
 }
 
-export const verifyFBToken = async (accessToken: string, userId: string) => {
+export const verifyFBToken = async (userId: string, accessToken: string ) => {
     const appAccessToken = "202486168272592|f596f78dd89bf75b14142e9c88ef7b3b";
-    const appId = "158152681487301";
-    const application = "SDMessages";
+    const appId = "202486168272592";
+    const application = "BizNearby";
     const url = "https://graph.facebook.com/debug_token";
 
-    let response = await fetch(url + `?input_token=${accessToken}&access_token=${appAccessToken}`, {
-        method: 'GET',
+    let response = await axios.get(url + `?input_token=${accessToken}&access_token=${appAccessToken}`, {
         headers: { 'Content-Type': 'application/json' }
     });
-    response = await response.json();
     const data = {
-        appId: response['data']['app_id'],
-        isValid: response['data']['is_valid'],
-        application: response['data']['application'],
-        userId: response['data']['user_id']
+        appId: response['data']['data']['app_id'],
+        isValid: response['data']['data']['is_valid'],
+        application: response['data']['data']['application'],
+        userId: response['data']['data']['user_id']
     };
+
     return data.isValid && data.appId == appId && data.application == application && data.userId == userId
 }

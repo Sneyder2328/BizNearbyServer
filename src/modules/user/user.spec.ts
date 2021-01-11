@@ -87,10 +87,10 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             request(app)
                 .post(endpoints.auth.LOG_IN)
                 .send({email: users[0], password: '123', typeLogin: 'email'})
-                .expect(httpCodes.UNAUTHORIZED)
+                .expect(httpCodes.NOT_FOUND)
                 .expect(res=>{
-                    expect(res.body?.error).toBe(errors.CREDENTIAL);
-                    expect(res.body?.message).toBe(errors.message.INCORRECT_CREDENTIALS);
+                    expect(res.body?.error).toBe(errors.USER_NOT_FOUND_ERROR);
+                    expect(res.body?.message).toBe(errors.message.USER_NOT_FOUND);
                 })
                 .end(done);
         });

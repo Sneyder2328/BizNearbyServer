@@ -27,9 +27,9 @@ export const signUpValidationRules = [
     body('googleAuth.token').trim().isString()
         .optional({ nullable: true }),
     body('googleAuth.userId').trim().matches(/^\d*$/).optional({ nullable: true }).withMessage("Invalid Id"),
-    body('facebookAuth').isJSON()
-        .optional({ nullable: true })
-        .custom(({ token, userId }) => /^[_A-z0-9-]+$/.test(token) && /^[_A-z0-9-]+$/.test(userId)),
+    body('facebookAuth.token').trim().isString()
+        .optional({nullable: true}),
+    body('facebookAuth.userId').trim().matches(/^\d*$/).optional({nullable: true}).withMessage("Invalid Id"),
     body('typeLogin')
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
     body('typeUser')

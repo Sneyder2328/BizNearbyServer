@@ -23,8 +23,7 @@ router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErro
 
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
     const loginRes = await logInUser(req.body);
-    // @ts-ignore
-    res.header(config.headers.accessToken, loginRes.uuid)
+    res.header(config.headers.accessToken, loginRes.accessToken)
         .json({ profile: {...loginRes}});
 }));
 
