@@ -13,8 +13,6 @@ export const newBusinessValidationRules = [
     body('description').customSanitizer(trimInside()).escape().isString().optional({ nullable: true }).isLength({ min: 1, max: 500 }).withMessage('Description must be at least 1 character long'),
     body('address').customSanitizer(trimInside()).escape().isString().optional({ nullable: true }).isLength({ min: 1, max: 250 }).withMessage('Addres mus be at least 1 character long'),
     body('bannerUrl').trim().isString().escape().optional({ nullable: true }),
-    body('role')
-        .custom(val => val === 'admin' || val === 'owner').withMessage('You must provide a valid role of user(admin, owner)').optional({ nullable: true }),
     body('latitude').isNumeric(),
     body('longitude').isNumeric(),
     body('cityCode').isNumeric().optional({ nullable: true }),
