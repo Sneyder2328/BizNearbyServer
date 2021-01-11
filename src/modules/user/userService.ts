@@ -25,23 +25,21 @@ export const signUpUser = async (user) => {
         accessToken,
         profile: _.pick(insertResult, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser'])
     }
-    //return { id, fullname, email, thumbnailUrl, typeUser, accessToken };
 }
 
 export const logInUser = async (user) => {
     const userWithEmail = await User.query().findOne('email', user.email);
-    if (user.typeLogin === "email") {
-        //VALIDATION
+    if (!userWithEmail) throw new UserNotFoundError();
+
+    if (user.typeLogin === "email") { // Verify password
         if (!userWithEmail) throw new AuthError();
         const validPass = await verifyPassword(user.password, userWithEmail.password);
         if (!validPass) throw new AuthError();
     }
-    else {
-        //AUTHENTICATION PROCESS ...
-        if (!userWithEmail) throw new UserNotFoundError();
+    else { // Verify third party token
+        
     }
     const { id, fullname, email, thumbnailUrl } = userWithEmail;
-    //GENERATE UUIDV4 
     const uuid = genUUID();
     await Session.query().insert({ userId: id, token: uuid });
     return { id, fullname, email, thumbnailUrl, uuid };
