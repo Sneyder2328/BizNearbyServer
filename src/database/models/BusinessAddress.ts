@@ -3,7 +3,7 @@ import { Model, ModelObject } from 'objection';
 export class BusinessAddress extends Model {
     id!: string;
     businessId!: string;
-    addresss!: string;
+    address!: string;
     cityCode!: number;
     stateCode!: number;
     countryCode!: number;
