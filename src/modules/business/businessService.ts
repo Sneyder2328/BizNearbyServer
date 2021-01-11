@@ -85,8 +85,8 @@ export const updateBusiness = async (business, userId, businessId) => {
     });
 
     let businessCategoriesAdded
+    await BusinessCategory.query().delete().whereColumn('businessId', businessId);◘
     if (categories) {
-        await BusinessCategory.query().delete().whereColumn('businessId', businessId);
         const businessCategories = categories.map(async (categoryCode) => {
             await BusinessCategory.query().insert({ businessId, categoryCode });
         });
@@ -94,8 +94,8 @@ export const updateBusiness = async (business, userId, businessId) => {
     }
 
     let businessHoursAdded;
+    await BusinessHours.query().delete().whereColumn('businessId', businessId);
     if (hours) {
-        await BusinessHours.query().delete().whereColumn('businessId', businessId);
         const businessHours = hours.map(async ({ day, openTime, closeTime }) => {
             const openTimeInt = parseInt(openTime.replace(':', ''), 10);
             const closeTimeInt = parseInt(closeTime.replace(':', ''), 10);
@@ -105,8 +105,8 @@ export const updateBusiness = async (business, userId, businessId) => {
     }
 
     let businessPhoneNumbersAdded;
+    await BusinessPhoneNumber.query().delete().whereColumn('businessId', businessId);
     if (phoneNumbers) {
-        await BusinessPhoneNumber.query().delete().whereColumn('businessId', businessId);
         const businessPhoneNumbers = phoneNumbers.map(async (phoneNumber) => {
             await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
         });
