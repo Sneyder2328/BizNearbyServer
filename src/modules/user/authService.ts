@@ -30,7 +30,7 @@ export const verifyGoogleToken = async (userId: string, token: string, email: st
 }
 
 export const verifyFBToken = async (accessToken: string, userId: string) => {
-    const appAccessToken = "158152681487301|xQmAWuwi1ZGF_QBB4egZZCGh1YQ";
+    const appAccessToken = "202486168272592|f596f78dd89bf75b14142e9c88ef7b3b";
     const appId = "158152681487301";
     const application = "SDMessages";
     const url = "https://graph.facebook.com/debug_token";
