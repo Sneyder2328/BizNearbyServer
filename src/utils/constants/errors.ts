@@ -2,6 +2,7 @@ export const errors = {
     NOT_FOUND: 'Not found',
     EMAIL: 'email',
     DEFAULT_ERROR: 'Error',
+    RECORD_DUPLICATED_ERROR: 'Record duplicated error',
     PASSWORD: 'password',
     USER_NOT_FOUND_ERROR: 'User',
     POST_NOT_CREATED: 'Post not created',
@@ -10,8 +11,10 @@ export const errors = {
     FORBIDDEN: "Forbidden",
 
     message: {
+        RECORD_DUPLICATED: 'The record you are trying to create already exists in the database',
         PERMISSION_NOT_GRANTED: "You do not have permissions to access this route",
         USER_NOT_FOUND: "User not found",
+        BUSINESS_NOT_FOUND: "Business not found",
         SESSION_NOT_FOUND: "Session not found",
         ACCESS_TOKEN_EXPIRED: "Access token expired",
         ACCESS_TOKEN_INVALID: "Access token not valid",

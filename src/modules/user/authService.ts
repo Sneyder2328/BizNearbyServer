@@ -18,6 +18,8 @@ export const findUserById = async (userId: string): Promise<UserObject> => {
 }
 
 export const verifyGoogleToken = async (userId: string, token: string, email: string) => {
+    console.log('verifyGoogleToken', userId, token, email);
+    
     const CLIENT_ID = "434477538698-qn16b816e3i4d7gmeqchc0ofh0unee3n.apps.googleusercontent.com";
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({

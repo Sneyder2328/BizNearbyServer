@@ -5,16 +5,12 @@ const trimInside = () => str => str.replace(/\s\s/g, ' ');
 
 const timeRegex = /^[0|1|2]\d:\d{2}$/;
 
-export const newBusinessValidationRules = [
-    body('userId').trim().matches(config.regex.uuidV4).withMessage('Invalid userId'),
-    body('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId'),
+const businessValidationRules = [
     body('addressId').trim().matches(config.regex.uuidV4).withMessage('Invalid addressId'),
     body('name').customSanitizer(trimInside()).escape().isString().isLength({ min: 1, max: 250 }).withMessage('Name must be at least 1 character long'),
     body('description').customSanitizer(trimInside()).escape().isString().optional({ nullable: true }).isLength({ min: 1, max: 500 }).withMessage('Description must be at least 1 character long'),
     body('address').customSanitizer(trimInside()).escape().isString().optional({ nullable: true }).isLength({ min: 1, max: 250 }).withMessage('Addres mus be at least 1 character long'),
     body('bannerUrl').trim().isString().escape().optional({ nullable: true }),
-    body('role')
-        .custom(val => val === 'admin' || val === 'owner').withMessage('You must provide a valid role of user(admin, owner)').optional({ nullable: true }),
     body('latitude').isNumeric(),
     body('longitude').isNumeric(),
     body('cityCode').isNumeric().optional({ nullable: true }),
@@ -42,5 +38,19 @@ export const newBusinessValidationRules = [
             }
         }
         return true;
-    }),
+    })
+]
+
+export const newBusinessValidationRules = [
+    body('userId').trim().matches(config.regex.uuidV4).withMessage('Invalid userId'),
+    body('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId'),
+    ...businessValidationRules
+];
+
+
+export const updateBusinessValidationRules = [
+    body('sessionToken').trim().matches(config.regex.uuidV4).withMessage('Invalid token'),
+    body('emailNewUser').isEmail().normalizeEmail().withMessage('You must enter a valid email address')
+        .isLength({ max: 250 }).withMessage('email too long'),
+    ...businessValidationRules
 ];

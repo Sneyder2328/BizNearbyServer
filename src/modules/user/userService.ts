@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import { errors } from '../../utils/constants/errors';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
-import { AppError } from '../../utils/errors/appError';
-import { AuthError } from '../../utils/errors/authErrors';
-import { UserNotFoundError } from '../../utils/errors/userNotFoundError';
+import { AppError } from '../../utils/errors/AppError';
+import { AuthError } from '../../utils/errors/AuthError';
+import { UserNotFoundError } from '../../utils/errors/UserNotFoundError';
 import { User } from '../../database/models/User';
 import { Session } from '../../database/models/Session';
 import { genUUID } from '../../utils/utils';
@@ -28,7 +28,7 @@ export const logInUser = async ({ email, password, typeLogin }) => {
     if (!user) throw new UserNotFoundError();
 
     // User is using a different typeLogin than expected
-    if (user.typeLogin != typeLogin) { 
+    if (user.typeLogin != typeLogin) {
         throw new AuthError()
     }
 

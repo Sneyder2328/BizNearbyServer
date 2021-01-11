@@ -13,20 +13,40 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
         await wipeOutDatabase();
     });
 
-    for(let i=0;i<=2;i++){
-        it('should sign up a new user', (done) => {
-            request(app)
-                .post(endpoints.users.SIGN_UP)
-                .send({...users[i]})
-                .expect(httpCodes.OK)
-                .expect(res => {
-                    expect(res.body["profile"]);
-                })
-                .end(done);
-        });
-    }
+    it('should sign up a new user with email', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[0]})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body["profile"]);
+            })
+            .end(done);
+    });
 
-    it('should sign up a new user', done => {
+    // it('should sign up a new user with google', (done) => {
+    //     request(app)
+    //         .post(endpoints.users.SIGN_UP)
+    //         .send({...users[1]})
+    //         .expect(httpCodes.OK)
+    //         .expect(res => {
+    //             expect(res.body["profile"]);
+    //         })
+    //         .end(done);
+    // });
+
+    it('should sign up a new user with facebook', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[2]})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body["profile"]);
+            })
+            .end(done);
+    });
+
+    it('should sign up a new user with max input capacity', done => {
         request(app)
         .post(endpoints.users.SIGN_UP)
         .send({...users[7]})
@@ -48,19 +68,38 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .end(done)
     })
 
-    for(let i=4;i<=6;i++){
-        it('should not sign up due to some input being too long', (done) => {
-            request(app)
-                .post(endpoints.users.SIGN_UP)
-                .send({...users[i]})
-                .expect(httpCodes.UNPROCESSABLE_ENTITY)
-                .expect(res => {
-                    expect(res.body["errors"]);
-                })
-                .end(done);
-        });
-    }
+    it('should not sign up due to name being too long', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[4]})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body["errors"]);
+            })
+            .end(done);
+    });
 
+    it('should not sign up due to phone being too long', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[5]})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body["errors"]);
+            })
+            .end(done);
+    });
+
+    it('should not sign up due to password and thumbnailURL being too long', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[6]})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body["errors"]);
+            })
+            .end(done);
+    });
 });
 
 describe('POST ' + endpoints.auth.LOG_IN, () => {
@@ -69,32 +108,51 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
         await Promise.all(users.slice(0,3).map(async user => await CreateUser(user)));
     });
 
-    for(let i=0;i<3;i++){
-        it("should Log in", done=>{
-            request(app)
-                .post(endpoints.auth.LOG_IN)
-                .send({email: users[i].email, password: users[i].password, typeLogin: users[i].typeLogin})
-                .expect(httpCodes.OK)
-                .expect(res=>{
-                    expect(res.body['profile']);
-                })
-                .end(done);
-        });
-    }
+    it("should Log in with email", done=>{
+        request(app)
+            .post(endpoints.auth.LOG_IN)
+            .send({email: users[0].email, password: users[0].password, typeLogin: users[0].typeLogin})
+            .expect(httpCodes.OK)
+            .expect(res=>{
+                expect(res.body['profile']);
+            })
+            .end(done);
+    });
 
-    for(let i =0;i<=7;i+=7){
-        it('should not login due to wrong credentials', done=>{
-            request(app)
-                .post(endpoints.auth.LOG_IN)
-                .send({email: users[0], password: '123', typeLogin: 'email'})
-                .expect(httpCodes.NOT_FOUND)
-                .expect(res=>{
-                    expect(res.body?.error).toBe(errors.USER_NOT_FOUND_ERROR);
-                    expect(res.body?.message).toBe(errors.message.USER_NOT_FOUND);
-                })
-                .end(done);
-        });
-    }
+    //it("should Log in with google", done=>{
+    //    request(app)
+    //        .post(endpoints.auth.LOG_IN)
+    //        .send({email: users[1].email, password: users[1].password, typeLogin: users[1].typeLogin})
+    //        .expect(httpCodes.OK)
+    //        .expect(res=>{
+    //            expect(res.body['profile']);
+    //        })
+    //        .end(done);
+    //});
+
+    it("should Log in with facebook", done=>{
+        request(app)
+            .post(endpoints.auth.LOG_IN)
+            .send({email: users[2].email, password: users[2].password, typeLogin: users[2].typeLogin})
+            .expect(httpCodes.OK)
+            .expect(res=>{
+                expect(res.body['profile']);
+            })
+            .end(done);
+    });
+
+    it('should not login due to wrong password', done=>{
+        request(app)
+            .post(endpoints.auth.LOG_IN)
+            .send({email: users[0], password: '123', typeLogin: 'email'})
+            .expect(httpCodes.NOT_FOUND)
+            .expect(res=>{
+                expect(res.body?.error).toBe(errors.USER_NOT_FOUND_ERROR);
+                expect(res.body?.message).toBe(errors.message.USER_NOT_FOUND);
+            })
+            .end(done);
+    });
+    
 
     it('should not login due to wrong credentials', done=>{
         request(app)

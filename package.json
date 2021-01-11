@@ -7,7 +7,7 @@
     "start": "node dist/index.js --trace-sync-io",
     "build-tsc": "tsc -p .",
     "postinstall": "npm run build-tsc",
-    "dev": "nodemon --exec ts-node src/index.ts",
+    "dev": "rimraf dist/ && nodemon --exec ts-node src/index.ts",
     "test": " rimraf dist/ && export NODE_ENV=test || SET NODE_ENV=test && tsc && jest --testTimeout=10000 --runInBand -c jest.config.js",
     "test-watch": "nodemon --exec \"npm test\""
   },
