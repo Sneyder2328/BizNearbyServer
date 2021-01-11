@@ -58,8 +58,8 @@ const verifyUserHasAccessToBusiness = async (userId: string, businessId: string)
     }
 };
 
-export const updateBusiness = async (business) => {
-    const {userId, businessId, addressId, emailNewUser, sessionToken, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = business;
+export const updateBusiness = async (business, userId, businessId) => {
+    const {addressId, emailNewUser, sessionToken, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = business;
 
     if(!await Business.query().findOne('id', businessId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
 
@@ -73,24 +73,27 @@ export const updateBusiness = async (business) => {
         name, bannerUrl, description
     });
 
+    let userAdded;
     const userByEmail = await User.query().findOne('email', emailNewUser);
     if(!userByEmail) throw new AppError(httpCodes.NOT_FOUND, errors.USER_NOT_FOUND_ERROR, errors.message.USER_NOT_FOUND);
     else{
-        const userAdded = await UserBusiness.query().insert({userId: userByEmail.id, businessId});
+        userAdded = await UserBusiness.query().insert({userId: userByEmail.id, businessId});
     }
     
     const businessAddressUpdated = await BusinessAddress.query().patchAndFetchById(addressId, {
         address, cityCode, stateCode, countryCode, latitude, longitude 
     });
 
+    let businessCategoriesAdded
     if(categories){
         await BusinessCategory.query().delete().whereColumn('businessId', businessId);
         const businessCategories = categories.map(async (categoryCode) => {
             await BusinessCategory.query().insert({businessId, categoryCode});
         });
-        const businessCategoriesAdded = await Promise.all(businessCategories);
+        businessCategoriesAdded = await Promise.all(businessCategories);
     }
 
+    let businessHoursAdded;
     if(hours){
         await BusinessHours.query().delete().whereColumn('businessId', businessId);
         const businessHours = hours.map(async ({day, openTime, closeTime}) => {
@@ -98,14 +101,20 @@ export const updateBusiness = async (business) => {
             const closeTimeInt = parseInt(closeTime.replace(':',''), 10);
             await BusinessHours.query().insert({businessId, day, openTime: openTimeInt, closeTime: closeTimeInt});
         });
-        const businessHoursAdded = await Promise.all(businessHours);
+        businessHoursAdded = await Promise.all(businessHours);
     }
 
+    let businessPhoneNumbersAdded;
     if(phoneNumbers){
         await BusinessPhoneNumber.query().delete().whereColumn('businessId', businessId);
         const businessPhoneNumbers = phoneNumbers.map(async (phoneNumber) => {
             await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
         });
-        const businessPhoneNumbersAdded = await Promise.all(businessPhoneNumbers);
+        businessPhoneNumbersAdded = await Promise.all(businessPhoneNumbers);
     }
+
+    const {name: nameUpdated, bannerUrl: bannerUrlUpdated, description: descriptionUpdated} = businessUpdated;
+    const newUserId = userAdded?.userId;
+    const {address: addressUpdated, cityCode: cityCodeUpdated, stateCode: stateCodeUpdated, countryCode: countryCodeUpdated, latitude: latitudeUpdated, longitude: longitudeUpdated} = businessAddressUpdated;
+    return {businessId, userId, addressId, newUserId, nameUpdated, bannerUrlUpdated, descriptionUpdated, addressUpdated, cityCodeUpdated, stateCodeUpdated, countryCodeUpdated, latitudeUpdated, longitudeUpdated, categories, hours, phoneNumbers};
 };

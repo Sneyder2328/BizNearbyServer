@@ -44,7 +44,7 @@ export const newBusinessValidationRules = [
 ];
 
 
-export const updatedBusinessValidationRules = [
+export const updateBusinessValidationRules = [
     body('sessionToken').trim().matches(config.regex.uuidV4).withMessage('Invalid token'),
     body('emailNewUser').isEmail().normalizeEmail().withMessage('You must enter a valid email address')
     .isLength({ max: 250 }).withMessage('email too long')
