@@ -12,12 +12,10 @@ const router = Router();
 router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
     const isAuthenticated = (user.facebookAuth && await verifyFBToken(user.facebookAuth.userId, user.facebookAuth.token)) ||
-                            (user.googleAuth && await verifyGoogleToken(user.googleAuth.userId, user.googleAuth.token, user.email));
+                            (user.googleAuth && await verifyGoogleToken(user.googleAuth.userId, user.googleAuth.token, user.email) ||
+                            user.typeLogin == "email");
     if (!isAuthenticated) throw new AuthError();
-    
-    delete user?.googleAuth;
-    delete user?.facebookAuth;
-    
+        
     const { profile, accessToken } = await signUpUser(user);
     res.header(config.headers.accessToken, accessToken)
         .json({ profile });
