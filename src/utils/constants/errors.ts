@@ -12,6 +12,7 @@ export const errors = {
     message: {
         PERMISSION_NOT_GRANTED: "You do not have permissions to access this route",
         USER_NOT_FOUND: "User not found",
+        BUSINESS_NOT_FOUND: "Business not found",
         SESSION_NOT_FOUND: "Session not found",
         ACCESS_TOKEN_EXPIRED: "Access token expired",
         ACCESS_TOKEN_INVALID: "Access token not valid",
