@@ -20,7 +20,9 @@ export async function wipeOutDatabase(){
 }
 
 export async function CreateUser(user){
-    delete user.apiKey;
+    delete user?.googleAuth;
+    delete user?.facebookAuth;
+    
     await User.query().insert(user);
 }
 

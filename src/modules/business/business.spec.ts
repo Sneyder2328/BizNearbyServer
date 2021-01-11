@@ -6,6 +6,7 @@ import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { business } from '../../test/seed';
 import { errors } from '../../utils/constants/errors';
 import supertest = require('supertest');
+import knex from "../../database/knex";
 
 describe('POST' + '/businesses', () => {
     beforeEach(async () => {
@@ -57,6 +58,7 @@ describe('POST' + '/businesses', () => {
     
 });
 
-afterAll((done) => {
-    server.close(done);
-});
+afterAll(()=>{
+    knex.destroy();
+    server.close();
+})

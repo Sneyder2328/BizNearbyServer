@@ -32,29 +32,35 @@ export const users = [
         phoneNumber: '123456',
         thumbnailUrl: 'myPic',
         password: '123456789',
-        apiKey: '12345',
+        googleAuth: null,
+        facebookAuth: null,
         typeLogin: 'email',
         typeUser: 'normal'
     },
     {   //GOOD GOOGLE USER
         id: genUUID(),
-        fullname: "James",
-        email: "kevinch2000@gmail.com",
+        fullname: "John Google User",
+        email: "John@tfbnw.net",
         phoneNumber: null,
         thumbnailUrl: null,
         password: null,
-        apiKey: "123456789",
+        googleAuth: null,
+        facebookAuth: null,
         typeLogin: "google",
         typeUser: "normal"
     },
     {   //GOOD FACEBOOK USER
         id: genUUID(),
-        fullname: "John Cena",
-        email: "Jake@gmail.com",
+        fullname: "Timmy FB User",
+        email: "timmy_pbcbfpc_user@tfbnw.net",
         phoneNumber: null,
         thumbnailUrl: null,
         password: null,
-        apiKey: "123456789",
+        googleAuth: null,
+        facebookAuth: {
+            token: "EAAC4KPwhvtABACkKZC2u1JuyAIcqZCVEOmntes6NmAnS9RliiZAh9YkPYD9P8dmjARzjk6gXiqFHGzgxhZAJZCLpgaZCwCvQtd078ZBmaZAtiY5CiT56UQZBxOsfQCSiwDIsGnDXeofNTIPSaJax0RjZCHEs1Uxqdn4Oc5yVkX37CQjZBVeQw4IrKZBq8FSeYZBMijsIF9sSbvuuXZAoa8CCBaC8OD",
+            userId: "116167220374115"
+        },
         typeLogin: "facebook",
         typeUser: "normal"
     },

@@ -6,6 +6,7 @@ import {endpoints} from "../../utils/constants/endpoints";
 import {httpCodes} from "../../utils/constants/httpResponseCodes";
 import {users} from "../../test/seed";
 import {errors} from "../../utils/constants/errors";
+import knex from "../../database/knex";
 
 describe('POST ' + endpoints.users.SIGN_UP, () => {
     beforeEach(async () => {
@@ -65,7 +66,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
 describe('POST ' + endpoints.auth.LOG_IN, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
-        await Promise.all(users.slice(0,3).map(user => CreateUser(user)));
+        await Promise.all(users.slice(0,3).map(async user => await CreateUser(user)));
     });
 
     for(let i=0;i<3;i++){
@@ -108,6 +109,7 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     });
 })
 
-afterAll((done) => {
-    server.close(done);
-});
+afterAll(()=>{
+    knex.destroy();
+    server.close();
+})

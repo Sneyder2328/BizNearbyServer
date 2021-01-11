@@ -24,3 +24,4 @@ app.use('/', router); // add all routes
 export const server = app.listen(app.get('PORT'), () => {
     console.log(`app running on port ${app.get("PORT")}`);
 })
+
