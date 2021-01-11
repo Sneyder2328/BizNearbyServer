@@ -86,18 +86,18 @@ export const updateBusiness = async (business, userId, businessId) => {
         address, cityCode, stateCode, countryCode, latitude, longitude 
     });
 
+    await BusinessCategory.query().delete().where('businessId', '=', businessId);
     let businessCategoriesAdded
     if(categories){
-        await BusinessCategory.query().delete().where('businessId', '=', businessId);
         const businessCategories = categories.map(async (categoryCode) => {
             await BusinessCategory.query().insert({businessId, categoryCode});
         });
         businessCategoriesAdded = await Promise.all(businessCategories);
     }
 
+    await BusinessHours.query().delete().where('businessId', '=', businessId);
     let businessHoursAdded;
     if(hours){
-        await BusinessHours.query().delete().where('businessId', '=', businessId);
         const businessHours = hours.map(async ({day, openTime, closeTime}) => {
             const openTimeInt = parseInt(openTime.replace(':', ''), 10);
             const closeTimeInt = parseInt(closeTime.replace(':',''), 10);
@@ -106,9 +106,9 @@ export const updateBusiness = async (business, userId, businessId) => {
         businessHoursAdded = await Promise.all(businessHours);
     }
 
+    await BusinessPhoneNumber.query().delete().where('businessId', '=', businessId);
     let businessPhoneNumbersAdded;
     if(phoneNumbers){
-        await BusinessPhoneNumber.query().delete().where('businessId', '=', businessId);
         const businessPhoneNumbers = phoneNumbers.map(async (phoneNumber) => {
             await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
         });
