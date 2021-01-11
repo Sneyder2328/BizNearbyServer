@@ -7,6 +7,6 @@ const router = Router();
 
 router.use('/', userRouter);
 router.use('/', businessRouter);
-router.use(errorHandler)
+router.use(errorHandler);
 
 export default router;

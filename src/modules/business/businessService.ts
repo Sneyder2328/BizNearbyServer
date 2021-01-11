@@ -52,20 +52,20 @@ export const addNewBusiness = async (business) => {
  * @param businessId
  */
 const verifyUserHasAccessToBusiness = async (userId: string, businessId: string) => {
-    const userBusiness = await UserBusiness.query().findOne({ where: {userId, businessId}});
+    const userBusiness = (await UserBusiness.query().where('userId', userId).andWhere('businessId', businessId))[0];
     if (!userBusiness) {
         throw new AppError(httpCodes.FORBIDDEN, 'No permission error', 'You do not have admin permission for the given business');
     }
 };
 
 export const updateBusiness = async (business, userId, businessId) => {
-    const {addressId, emailNewUser, sessionToken, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = business;
+    const {addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = business;
 
     if(!await Business.query().findOne('id', businessId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
 
     if(!await User.query().findOne('id', userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
 
-    if(!await Session.query().findOne({where: {token: sessionToken, userId}})) throw new AppError(httpCodes.UNAUTHORIZED, errors.CREDENTIAL, errors.message.SESSION_NOT_FOUND);
+    // if(!await Session.query().findOne({where: {token: sessionToken, userId}})) throw new AppError(httpCodes.UNAUTHORIZED, errors.CREDENTIAL, errors.message.SESSION_NOT_FOUND);
 
     verifyUserHasAccessToBusiness(userId, businessId);
 
@@ -74,10 +74,12 @@ export const updateBusiness = async (business, userId, businessId) => {
     });
 
     let userAdded;
-    const userByEmail = await User.query().findOne('email', emailNewUser);
-    if(!userByEmail) throw new AppError(httpCodes.NOT_FOUND, errors.USER_NOT_FOUND_ERROR, errors.message.USER_NOT_FOUND);
-    else{
-        userAdded = await UserBusiness.query().insert({userId: userByEmail.id, businessId});
+    if(emailNewUser){
+        const userByEmail = await User.query().findOne('email', emailNewUser);
+        if(!userByEmail) throw new AppError(httpCodes.NOT_FOUND, errors.USER_NOT_FOUND_ERROR, errors.message.USER_NOT_FOUND);
+        else{
+            userAdded = await UserBusiness.query().insert({userId: userByEmail.id, businessId});
+        }
     }
     
     const businessAddressUpdated = await BusinessAddress.query().patchAndFetchById(addressId, {
@@ -86,7 +88,7 @@ export const updateBusiness = async (business, userId, businessId) => {
 
     let businessCategoriesAdded
     if(categories){
-        await BusinessCategory.query().delete().whereColumn('businessId', businessId);
+        await BusinessCategory.query().delete().where('businessId', '=', businessId);
         const businessCategories = categories.map(async (categoryCode) => {
             await BusinessCategory.query().insert({businessId, categoryCode});
         });
@@ -95,7 +97,7 @@ export const updateBusiness = async (business, userId, businessId) => {
 
     let businessHoursAdded;
     if(hours){
-        await BusinessHours.query().delete().whereColumn('businessId', businessId);
+        await BusinessHours.query().delete().where('businessId', '=', businessId);
         const businessHours = hours.map(async ({day, openTime, closeTime}) => {
             const openTimeInt = parseInt(openTime.replace(':', ''), 10);
             const closeTimeInt = parseInt(closeTime.replace(':',''), 10);
@@ -106,7 +108,7 @@ export const updateBusiness = async (business, userId, businessId) => {
 
     let businessPhoneNumbersAdded;
     if(phoneNumbers){
-        await BusinessPhoneNumber.query().delete().whereColumn('businessId', businessId);
+        await BusinessPhoneNumber.query().delete().where('businessId', '=', businessId);
         const businessPhoneNumbers = phoneNumbers.map(async (phoneNumber) => {
             await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
         });

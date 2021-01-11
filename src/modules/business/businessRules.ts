@@ -1,5 +1,5 @@
 import config from '../../config/config';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 
 const trimInside = () => str => str.replace(/\s\s/g, ' ');
 
@@ -49,8 +49,7 @@ export const newBusinessValidationRules = [
 
 
 export const updateBusinessValidationRules = [
-    body('sessionToken').trim().matches(config.regex.uuidV4).withMessage('Invalid token'),
-    body('emailNewUser').isEmail().normalizeEmail().withMessage('You must enter a valid email address')
-        .isLength({ max: 250 }).withMessage('email too long'),
+    param('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId'),
+    body('emailNewUser').isEmail().normalizeEmail().withMessage('You must enter a valid email address').isLength({ max: 250 }).withMessage('email too long').optional({ nullable: true }),
     ...businessValidationRules
 ];
