@@ -118,11 +118,18 @@ export const updateBusiness = async (business, userId, businessId) => {
     const { name: nameUpdated, bannerUrl: bannerUrlUpdated, description: descriptionUpdated } = businessUpdated;
     const newUserId = userAdded?.userId;
 
+    console.log({
+        businessId, userId, newUserId, nameUpdated, bannerUrlUpdated, descriptionUpdated,
+        businessAddress: {businessAddressUpdated},
+        categories: {businessCategoriesAdded},
+        hours: {businessHoursAdded},
+        phoneNumbers: {businessPhoneNumbersAdded}
+    });
     return {
         businessId, userId, newUserId, nameUpdated, bannerUrlUpdated, descriptionUpdated,
-        address: businessAddressUpdated.address,
-        categories: businessCategoriesAdded,
-        hours: businessHoursAdded,
-        phoneNumbers: businessPhoneNumbersAdded
+        businessAddress: {businessAddressUpdated},
+        categories: {businessCategoriesAdded},
+        hours: {businessHoursAdded},
+        phoneNumbers: {businessPhoneNumbersAdded}
     };
 };
