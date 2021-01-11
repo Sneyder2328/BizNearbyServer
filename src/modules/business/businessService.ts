@@ -115,8 +115,14 @@ export const updateBusiness = async (business, userId, businessId) => {
         businessPhoneNumbersAdded = await Promise.all(businessPhoneNumbers);
     }
 
-    const {name: nameUpdated, bannerUrl: bannerUrlUpdated, description: descriptionUpdated} = businessUpdated;
+    const { name: nameUpdated, bannerUrl: bannerUrlUpdated, description: descriptionUpdated } = businessUpdated;
     const newUserId = userAdded?.userId;
-    const {address: addressUpdated, cityCode: cityCodeUpdated, stateCode: stateCodeUpdated, countryCode: countryCodeUpdated, latitude: latitudeUpdated, longitude: longitudeUpdated} = businessAddressUpdated;
-    return {businessId, userId, addressId, newUserId, nameUpdated, bannerUrlUpdated, descriptionUpdated, addressUpdated, cityCodeUpdated, stateCodeUpdated, countryCodeUpdated, latitudeUpdated, longitudeUpdated, categories, hours, phoneNumbers};
+
+    return {
+        businessId, userId, newUserId, nameUpdated, bannerUrlUpdated, descriptionUpdated,
+        address: businessAddressUpdated.address,
+        categories: businessCategoriesAdded,
+        hours: businessHoursAdded,
+        phoneNumbers: businessPhoneNumbersAdded
+    };
 };
