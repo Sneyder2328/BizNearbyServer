@@ -59,13 +59,11 @@ const verifyUserHasAccessToBusiness = async (userId: string, businessId: string)
 };
 
 export const updateBusiness = async (business, userId, businessId) => {
-    const { addressId, emailNewUser, sessionToken, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories } = business;
+    const { addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories } = business;
 
     if (!await Business.query().findOne('id', businessId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
 
     if (!await User.query().findOne('id', userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
-
-    if (!await Session.query().findOne({ where: { token: sessionToken, userId } })) throw new AppError(httpCodes.UNAUTHORIZED, errors.CREDENTIAL, errors.message.SESSION_NOT_FOUND);
 
     verifyUserHasAccessToBusiness(userId, businessId);
 

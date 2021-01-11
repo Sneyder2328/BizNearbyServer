@@ -3,7 +3,7 @@ import { errors } from '../../utils/constants/errors';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { AppError } from '../../utils/errors/AppError';
 import { AuthError } from '../../utils/errors/AuthError';
-import { UserNotFoundError } from '../../utils/errors/UserNotFoundError';
+import { UserNotFoundError } from '../../utils/errors/userNotFoundError';
 import { User } from '../../database/models/User';
 import { Session } from '../../database/models/Session';
 import { genUUID } from '../../utils/utils';
