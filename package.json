@@ -21,6 +21,7 @@
     "express-validator": "^6.9.0",
     "google-auth-library": "^6.1.4",
     "knex": "^0.21.15",
+    "lodash": "^4.17.20",
     "mariadb": "^2.5.2",
     "mysql": "^2.18.1",
     "objection": "^2.2.4",

@@ -1,5 +1,5 @@
 import config from "../../config/config";
-import {body, param} from "express-validator";
+import { body, param } from "express-validator";
 
 const trimInside = () => str => str.replace(/\s\s/g, ' ');
 
@@ -10,32 +10,30 @@ export const paramUserIdValidationRules = [
 export const signUpValidationRules = [
     body('id').trim().matches(config.regex.uuidV4).withMessage("Invalid Id"),
     body('fullname').customSanitizer(trimInside()).escape().isString()
-        .isLength({min: 5}).withMessage('Full name must be at least 5 characters long')
-        .isLength({max: 250}).withMessage("Full Name too long"),
+        .isLength({ min: 5 }).withMessage('Full name must be at least 5 characters long')
+        .isLength({ max: 250 }).withMessage("Full Name too long"),
     body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address')
-        .isLength({max: 250}).withMessage('email too long'),
+        .isLength({ max: 250 }).withMessage('email too long'),
     body('phoneNumber').trim().isString().escape()
-        .optional({nullable: true})
-        .isLength({max: 50}).withMessage('phoneNumber too long'),
+        .optional({ nullable: true })
+        .isLength({ max: 50 }).withMessage('phoneNumber too long'),
     body('thumbnailUrl').trim().isString().escape()
-        .optional({nullable: true})
-        .isLength({max: 500}).withMessage('thumbnailUrl too long'),
+        .optional({ nullable: true })
+        .isLength({ max: 500 }).withMessage('thumbnailUrl too long'),
     body('password').trim().isString().escape()
-        .isLength({min: 8}).withMessage('Password must be at least 8 characters long')
-        .isLength({max: 150}).withMessage('Password too long')
-        .optional({nullable: true}),
-    body('googleAuth.token').trim().isString().escape()
-        .optional({nullable: true}),
-    body('googleAuth').isJSON()
-        .optional({nullable: true})
-        .custom(({token, userId}) => /^[_A-z0-9-]+$/.test(token) && /^[_A-z0-9-]+$/.test(userId)),
+        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+        .isLength({ max: 150 }).withMessage('Password too long')
+        .optional({ nullable: true }),
+    body('googleAuth.token').trim().isString()
+        .optional({ nullable: true }),
+    body('googleAuth.userId').trim().matches(/^\d*$/).optional({ nullable: true }).withMessage("Invalid Id"),
     body('facebookAuth').isJSON()
-        .optional({nullable: true})
-        .custom(({token, userId}) => /^[_A-z0-9-]+$/.test(token) && /^[_A-z0-9-]+$/.test(userId)),
+        .optional({ nullable: true })
+        .custom(({ token, userId }) => /^[_A-z0-9-]+$/.test(token) && /^[_A-z0-9-]+$/.test(userId)),
     body('typeLogin')
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
     body('typeUser')
-        .custom(val=> val === 'moderator' || val === 'normal').withMessage("You must provide a valid type of user (moderator, normal)"),
+        .custom(val => val === 'moderator' || val === 'normal').withMessage("You must provide a valid type of user (moderator, normal)"),
 ];
 
 export const logInValidationRules = [

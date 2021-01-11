@@ -16,16 +16,17 @@ export const findUserById = async (userId: string): Promise<UserObject> => {
     return await User.query().findById(userId)
 }
 
-export const verifyGoogleToken = async (userId: string, accessToken: string) => {
-    const CLIENT_ID = "434477538698-8ulu0utc36ugu3ob252o5bptt1s52clk.apps.googleusercontent.com";
+export const verifyGoogleToken = async (userId: string, token: string, email: string) => {
+    const CLIENT_ID = "434477538698-qn16b816e3i4d7gmeqchc0ofh0unee3n.apps.googleusercontent.com";
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
-        idToken: accessToken,
+        idToken: token,
         audience: CLIENT_ID
     });
     const payload = ticket.getPayload();
-    const responseUserId = payload?.sub;
-    return responseUserId == userId
+    console.log('payload=', payload);
+
+    return payload?.sub === userId && payload?.email === email
 }
 
 export const verifyFBToken = async (userId: string, accessToken: string) => {
