@@ -4,9 +4,9 @@ import { signUpValidationRules, logInValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { signUpUser, logInUser } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
-import { AuthError } from '../../utils/errors/authErrors';
 import config from '../../config/config';
 import { verifyFBToken, verifyGoogleToken } from './authService';
+import { AuthError } from '../../utils/errors/authErrors';
 const router = Router();
 
 router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {

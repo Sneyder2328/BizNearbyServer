@@ -29,7 +29,7 @@ export const verifyGoogleToken = async (userId: string, token: string, email: st
     return payload?.sub === userId && payload?.email === email
 }
 
-export const verifyFBToken = async (userId: string, accessToken: string) => {
+export const verifyFBToken = async (accessToken: string, userId: string) => {
     const appAccessToken = "158152681487301|xQmAWuwi1ZGF_QBB4egZZCGh1YQ";
     const appId = "158152681487301";
     const application = "SDMessages";
