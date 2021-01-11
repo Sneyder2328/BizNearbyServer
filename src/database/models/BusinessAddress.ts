@@ -1,4 +1,4 @@
-import { Model } from 'objection';
+import { Model, ModelObject } from 'objection';
 
 export class BusinessAddress extends Model {
     id!: string;
@@ -11,4 +11,7 @@ export class BusinessAddress extends Model {
     longitude!: number;
 
     static tableName = 'BusinessAddress';
+    static idColumn = 'id';
 }
+
+export type BusinessAddressObject = ModelObject<BusinessAddress> 

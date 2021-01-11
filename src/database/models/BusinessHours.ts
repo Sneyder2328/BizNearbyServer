@@ -1,4 +1,4 @@
-import { Model } from 'objection'
+import { Model, ModelObject } from 'objection'
 
 export class BusinessHours extends Model {
     businessId!: string;
@@ -8,3 +8,5 @@ export class BusinessHours extends Model {
 
     static tableName = 'BusinessHours';
 }
+
+export type BusinessHoursModel = ModelObject<BusinessHours>

@@ -1,4 +1,4 @@
-import { Model } from 'objection';
+import { Model, ModelObject } from 'objection';
 
 export class UserBusiness extends Model {
     userId!: string;
@@ -7,3 +7,5 @@ export class UserBusiness extends Model {
 
     static tableName = 'UserBusiness';
 }
+
+export type UserBusinessModel = ModelObject<UserBusiness>
