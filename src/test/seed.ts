@@ -32,20 +32,18 @@ export const users = [
         phoneNumber: '123456',
         thumbnailUrl: 'myPic',
         password: '123456789',
-        googleAuth: null,
-        facebookAuth: null,
         typeLogin: 'email',
         typeUser: 'normal'
     },
     {   //GOOD GOOGLE USER
         id: genUUID(),
-        fullname: "John Google User",
-        email: "John@tfbnw.net",
-        phoneNumber: null,
-        thumbnailUrl: null,
-        password: null,
-        googleAuth: null,
-        facebookAuth: null,
+        fullname: "Sneyder Angulo",
+        email: "sneyder2328@gmail.com",
+        phoneNumber: "45646",
+        googleAuth: {
+            userId: "107318059015310771201",
+            token: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjI1MmZjYjk3ZGY1YjZiNGY2ZDFhODg1ZjFlNjNkYzRhOWNkMjMwYzUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MzQ0Nzc1Mzg2OTgtZHI2YTl0aDM4b2ppY2lqcmYxdDhkMDU1bnZzdjkwZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MzQ0Nzc1Mzg2OTgtcW4xNmI4MTZlM2k0ZDdnbWVxY2hjMG9maDB1bmVlM24uYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDczMTgwNTkwMTUzMTA3NzEyMDEiLCJlbWFpbCI6InNuZXlkZXIyMzI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiU25leWRlciBBbmd1bG8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EtL0FPaDE0R2d0UXA0aDFCOFhFOXpkbWgta2ltWVA0ckl2RFJLQU00TVhsVzB1MkE9czk2LWMiLCJnaXZlbl9uYW1lIjoiU25leWRlciIsImZhbWlseV9uYW1lIjoiQW5ndWxvIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE2MTAzMjI2NzksImV4cCI6MTYxMDMyNjI3OX0.ZmylaXFHCpWGg1S2rWSUisRuInE-s0gaGKSt371S3zndAXaUnD0m1blXO3gsYVq1bgS0l89wnxSVo09sJni2_ITUW9hyW-CbR3--u3_c7-S-9ESnuSOPnnVQuiK1pwLIm01s1DYOYg_u7VY5pzF-S0H2Td-vUsO83oTS0Dw4sjFQRRzOtvu53IQ-zVTkfUCpo8OLcCusruU1yKhxMWlPhrnGHgvYX5tXWEvGUeNUl1Bl2572djvKLBaCyhZGYnEagUsxTLxm542yR5emvJQjImgA_lP-CD0y2E9ecsSMX_FHtHtjlmSJKGm3CXRx9Yf5Rssg86Bj_z1e7GSvvj57zA"
+        },
         typeLogin: "google",
         typeUser: "normal"
     },

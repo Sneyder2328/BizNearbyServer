@@ -1,6 +1,6 @@
 import { errors } from '../../utils/constants/errors';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
-import { AppError } from '../../utils/errors/appError';
+import { AppError } from '../../utils/errors/AppError';
 import { Business } from '../../database/models/Business';
 import { BusinessAddress } from '../../database/models/BusinessAddress';
 import { BusinessCategory } from '../../database/models/BusinessCategory';

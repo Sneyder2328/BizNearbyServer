@@ -13,18 +13,27 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
         await wipeOutDatabase();
     });
 
-    for(let i=0;i<=2;i++){
-        it('should sign up a new user', (done) => {
-            request(app)
-                .post(endpoints.users.SIGN_UP)
-                .send({...users[i]})
-                .expect(httpCodes.OK)
-                .expect(res => {
-                    expect(res.body["profile"]);
-                })
-                .end(done);
-        });
-    }
+    it('should sign up a new user with email', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[0]})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body["profile"]);
+            })
+            .end(done);
+    });
+
+    // it('should sign up a new user with google', (done) => {
+    //     request(app)
+    //         .post(endpoints.users.SIGN_UP)
+    //         .send({...users[1]})
+    //         .expect(httpCodes.OK)
+    //         .expect(res => {
+    //             expect(res.body["profile"]);
+    //         })
+    //         .end(done);
+    // });
 
     it('should sign up a new user', done => {
         request(app)
@@ -48,19 +57,38 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .end(done)
     })
 
-    for(let i=4;i<=6;i++){
-        it('should not sign up due to some input being too long', (done) => {
-            request(app)
-                .post(endpoints.users.SIGN_UP)
-                .send({...users[i]})
-                .expect(httpCodes.UNPROCESSABLE_ENTITY)
-                .expect(res => {
-                    expect(res.body["errors"]);
-                })
-                .end(done);
-        });
-    }
+    it('should not sign up due to some input being too long', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[4]})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body["errors"]);
+            })
+            .end(done);
+    });
 
+    it('should not sign up due to some input being too long', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[5]})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body["errors"]);
+            })
+            .end(done);
+    });
+
+    it('should not sign up due to some input being too long', (done) => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[6]})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body["errors"]);
+            })
+            .end(done);
+    });
 });
 
 describe('POST ' + endpoints.auth.LOG_IN, () => {
@@ -82,19 +110,19 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
         });
     }
 
-    for(let i =0;i<=7;i+=7){
-        it('should not login due to wrong credentials', done=>{
-            request(app)
-                .post(endpoints.auth.LOG_IN)
-                .send({email: users[0], password: '123', typeLogin: 'email'})
-                .expect(httpCodes.UNAUTHORIZED)
-                .expect(res=>{
-                    expect(res.body?.error).toBe(errors.CREDENTIAL);
-                    expect(res.body?.message).toBe(errors.message.INCORRECT_CREDENTIALS);
-                })
-                .end(done);
-        });
-    }
+    // for(let i =0;i<=7;i+=7){
+    //     it('should not login due to wrong credentials', done=>{
+    //         request(app)
+    //             .post(endpoints.auth.LOG_IN)
+    //             .send({email: users[0], password: '123', typeLogin: 'email'})
+    //             .expect(httpCodes.UNAUTHORIZED)
+    //             .expect(res=>{
+    //                 expect(res.body?.error).toBe(errors.CREDENTIAL);
+    //                 expect(res.body?.message).toBe(errors.message.INCORRECT_CREDENTIALS);
+    //             })
+    //             .end(done);
+    //     });
+    // }
 
     it('should not login due to wrong credentials', done=>{
         request(app)

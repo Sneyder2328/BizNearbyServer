@@ -1,7 +1,7 @@
 import config from '../config/config';
 import { findSession, isSessionExpired } from '../modules/user/authService';
 import { errors } from '../utils/constants/errors';
-import { AuthError } from '../utils/errors/authErrors';
+import { AuthError } from '../utils/errors/AuthError';
 
 export const authenticate = async (req, res, next) => {
     const accessToken = req.header(config.headers.accessToken);
