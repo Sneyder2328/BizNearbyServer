@@ -61,9 +61,13 @@ const verifyUserHasAccessToBusiness = async (userId: string, businessId: string)
 export const updateBusiness = async (business, userId, businessId) => {
     const { addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories } = business;
 
-    if (!await Business.query().findOne('id', businessId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+    if (!await Business.query().findById(businessId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
 
+<<<<<<< HEAD
     if (!await User.query().findOne('id', userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+=======
+    if (!await User.query().findById(userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+>>>>>>> 6179d0de84c686e5e26489e52e80200b4935299e
 
     verifyUserHasAccessToBusiness(userId, businessId);
 
@@ -83,8 +87,8 @@ export const updateBusiness = async (business, userId, businessId) => {
     });
 
     let businessCategoriesAdded
+    await BusinessCategory.query().delete().whereColumn('businessId', businessId);◘
     if (categories) {
-        await BusinessCategory.query().delete().whereColumn('businessId', businessId);
         const businessCategories = categories.map(async (categoryCode) => {
             await BusinessCategory.query().insert({ businessId, categoryCode });
         });
@@ -92,8 +96,8 @@ export const updateBusiness = async (business, userId, businessId) => {
     }
 
     let businessHoursAdded;
+    await BusinessHours.query().delete().whereColumn('businessId', businessId);
     if (hours) {
-        await BusinessHours.query().delete().whereColumn('businessId', businessId);
         const businessHours = hours.map(async ({ day, openTime, closeTime }) => {
             const openTimeInt = parseInt(openTime.replace(':', ''), 10);
             const closeTimeInt = parseInt(closeTime.replace(':', ''), 10);
@@ -103,8 +107,8 @@ export const updateBusiness = async (business, userId, businessId) => {
     }
 
     let businessPhoneNumbersAdded;
+    await BusinessPhoneNumber.query().delete().whereColumn('businessId', businessId);
     if (phoneNumbers) {
-        await BusinessPhoneNumber.query().delete().whereColumn('businessId', businessId);
         const businessPhoneNumbers = phoneNumbers.map(async (phoneNumber) => {
             await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
         });

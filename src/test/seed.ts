@@ -56,7 +56,7 @@ export const users = [
         password: null,
         googleAuth: null,
         facebookAuth: {
-            token: "EAAC4KPwhvtABACkKZC2u1JuyAIcqZCVEOmntes6NmAnS9RliiZAh9YkPYD9P8dmjARzjk6gXiqFHGzgxhZAJZCLpgaZCwCvQtd078ZBmaZAtiY5CiT56UQZBxOsfQCSiwDIsGnDXeofNTIPSaJax0RjZCHEs1Uxqdn4Oc5yVkX37CQjZBVeQw4IrKZBq8FSeYZBMijsIF9sSbvuuXZAoa8CCBaC8OD",
+            token: "EAAC4KPwhvtABAHtmxIjjdeJXt42wZBJesWKswzywQ8M4qusGbSJFSYSYyEgYlZCTBcYyI8Kaw5aBL6CnRSP60veh0uiKdXljMv69ymTNm2TtTJPwYEIKvX6k9q8EFbB5PdQ7KyqnIcM9sp71pvEHG6yjtSwSWDif3OuZCoUyJxgJa9mVSSzZBblDoXN2fGwHNZBLpgV37DM2mrnKnGP6d",
             userId: "116167220374115"
         },
         typeLogin: "facebook",
