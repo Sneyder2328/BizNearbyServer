@@ -87,7 +87,11 @@ export const updateBusiness = async ({userId, businessId, addressId, emailNewUse
 
     verifyUser(userId);
 
+<<<<<<< HEAD
     verifyBusiness(businessId);
+=======
+    if (!await User.query().findById(userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);     
+>>>>>>> features/test/edit-business
 
     verifyUserHasAccessToBusiness(userId, businessId);
 

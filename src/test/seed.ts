@@ -122,7 +122,6 @@ export const users = [
 export const business = [
     {
         // GOOD BUSINESS
-        userId: "ebf9b67a-50a4-439b-9af6-25dd7ff4810f",
         businessId: genUUID(),
         addressId: genUUID(),
         name: "Bodega La Trinidad",
@@ -148,11 +147,9 @@ export const business = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
-        role: "owner"
     },
     {
         // BUSINESS WITHOUT CITYCODE, STATECODE, AND COUNTRYCODE
-        userId: "ebf9b67a-50a4-439b-9af6-25dd7ff4810f",
         businessId: genUUID(),
         addressId: genUUID(),
         name: "Bodega La Trinidad",
@@ -178,11 +175,9 @@ export const business = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
-        role: "owner"
     },
     {
         // BUSINESS WITHOUT PHONE NUMBERS
-        userId: "ebf9b67a-50a4-439b-9af6-25dd7ff4810f",
         businessId: genUUID(),
         addressId: genUUID(),
         name: "Bodega La Trinidad",
@@ -208,11 +203,9 @@ export const business = [
         ],
         phoneNumbers: [],
         categories: [1],
-        role: "owner"
     },
     {
         // BUSINESS WITHOUT LATITUTE AND LONGITUDE
-        userId: "ebf9b67a-50a4-439b-9af6-25dd7ff4810f",
         businessId: genUUID(),
         addressId: genUUID(),
         name: "Bodega La Trinidad",
@@ -238,7 +231,6 @@ export const business = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
-        role: "owner"
     },
     {
         // USER NOT FOUND IN DATABASE
@@ -268,11 +260,9 @@ export const business = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
-        role: "owner"
     },
     {
         // BUSINESS NAME TOO LONG
-        userId: "ebf9b67a-50a4-439b-9af6-25dd7ff4810f",
         businessId: genUUID(),
         addressId: genUUID(),
         name: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -298,6 +288,326 @@ export const business = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
-        role: "owner"
+    }
+];
+
+export const updateBusiness = [
+    {
+        // UPDATE NAME
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+    },
+    {
+        // UPDATE DESCRIPTION
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "New description",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+    },
+    {
+        // UPDATE ADDRESS
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 48 entre carreras 13c y 14",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+    },
+    {
+        // UPDATE LATITUTE AND LONGITUDE
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059984,
+        longitude: -69.340595,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+    },
+    {
+        // UPDATE CITYCODE, STATECODE AND COUNTRYCODE
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: null,
+        stateCode: null,
+        countryCode: null,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+    },
+    {
+        // UPDATE BANNERURL
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "NewBanner",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+    },
+    {
+        // UPDATE HOURS
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            },
+            {
+                day: 2,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 2,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+    },
+    {
+        // UPDATE PHONE NUMBER
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04122697450"],
+        categories: [1],
+    },
+    {
+        // UPDATE CATEGORIES
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1,2],
+    },
+    {
+        // ADD NEW USER TO USERBUSINESS
+        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        emailNewUser: "andres@gmail.com",
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+    },
+    {
+        // WRONG ADRESSID 
+        addressId: "f137edc7-043f-4d89-ac60-e225318688fb",
+        emailNewUser: null,
+        name: "Bodega La Comadre",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: "Calle 50 entre carreras 14 y 15",
+        latitude: 10.059972,
+        longitude: -69.340570,
+        cityCode: 212,
+        stateCode: 12,
+        countryCode: 862,
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
     }
 ];
