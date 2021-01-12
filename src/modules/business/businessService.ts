@@ -63,7 +63,7 @@ export const updateBusiness = async (business, userId, businessId) => {
 
     if (!await Business.query().findById(businessId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
 
-    if (!await User.query().findById(userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    if (!await User.query().findById(userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);     
 
     verifyUserHasAccessToBusiness(userId, businessId);
 
