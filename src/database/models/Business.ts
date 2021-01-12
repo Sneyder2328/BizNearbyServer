@@ -5,6 +5,7 @@ export class Business extends Model {
     name!: string;
     bannerUrl!: string;
     description!: string;
+    deletedAt!: Date;
 
     static tableName = 'Business';
     static idColumn = "id";

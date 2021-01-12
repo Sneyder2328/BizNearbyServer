@@ -155,3 +155,17 @@ export const updateBusiness = async ({userId, businessId, addressId, emailNewUse
         phoneNumbers: businessPhoneNumbersAdded
     };
 };
+
+export const deleteBusiness = async (userId, businessId) => {
+    verifyUser(userId);
+
+    verifyBusiness(businessId);
+
+    verifyUserHasAccessToBusiness(userId, businessId);
+
+    const businessDeleted = await Business.query().patch({deletedAt: new Date()}).where('businessId', businessId);
+
+    const isBusinessDeleted = businessDeleted > 0;
+
+    return isBusinessDeleted;
+};
