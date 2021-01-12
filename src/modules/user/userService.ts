@@ -50,3 +50,8 @@ export const logInUser = async ({ email, password, typeLogin, facebookAuth, goog
         profile: _.pick(user, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser'])
     };
 }
+
+export const logoutUser = async (accessToken) => {
+    const token = await Session.query().delete().where('token',accessToken);
+    return {logout: token?true:false};
+}

@@ -1,7 +1,7 @@
 export const endpoints = {
     auth: {
         LOG_IN: '/sessions',
-        LOG_OUT: '/seccions',
+        LOG_OUT: '/sessions',
         REFRESH_TOKEN: '/tokens'
     },
     users: {
