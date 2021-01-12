@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { signUpValidationRules, logInValidationRules, logOutValidationRules } from './userRules';
+import { signUpValidationRules, logInValidationRules, logOutValidationRules, editValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { signUpUser, logInUser, logoutUser } from './userService';
+import { signUpUser, logInUser, logoutUser, editUser } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
 import config from '../../config/config';
 import { verifyFBToken, verifyGoogleToken } from './authService';
 import { AuthError } from '../../utils/errors/AuthError';
 import { AppError } from '../../utils/errors/AppError';
+import { authenticate } from '../../middlewares/authenticate';
 const router = Router();
 
 router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
@@ -28,6 +29,13 @@ router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAs
     res.header(config.headers.accessToken, accessToken)
         .json({ profile });
 }));
+
+router.put(endpoints.users.UPDATE_PROFILE, authenticate, editValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const user = req.body;
+    user.id = req.params?.userId;
+    const { profile } = await editUser(user);
+    res.json({ profile })
+}))
 
 router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErrorAsync(async (req, res) => {
     const accessToken = req.headers[config.headers.accessToken].split(' ')[1];

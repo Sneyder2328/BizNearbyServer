@@ -55,6 +55,21 @@ export const logInValidationRules = [
 
 ];
 
+export const editValidationRules = [
+    body('email').trim().escape(),
+    body('password').escape()
+        .optional({ nullable: true }),
+    body('fullname').customSanitizer(trimInside()).escape().isString()
+        .isLength({ min: 5 }).withMessage('Full name must be at least 5 characters long')
+        .isLength({ max: 250 }).withMessage("Full Name too long"),
+    body('phoneNumber').trim().isString().escape()
+        .optional({ nullable: true })
+        .isLength({ max: 50 }).withMessage('phoneNumber too long'),
+    body('thumbnailUrl').trim().isString().escape()
+        .optional({ nullable: true })
+        .isLength({ max: 500 }).withMessage('thumbnailUrl too long'),
+];
+
 export const logOutValidationRules = [
     header(config.headers.accessToken).matches(config.regex.authorization)
 ]

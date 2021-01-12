@@ -6,8 +6,8 @@ export const endpoints = {
     },
     users: {
         SIGN_UP: '/users',
-        UPDATE_PROFILE: (userId) => `/users/${userId}`, 
-        DELETE_ACCOUNT: (userId) => `/users/delete/${userId}`,
+        UPDATE_PROFILE: `/users/:userId`, 
+        DELETE_ACCOUNT: `/users/:userId`,
         owner:{
             BUSINESS_REGISTER: 'post/businesses',
             BUSINESS_UPDATE: '/businesses/update/',
