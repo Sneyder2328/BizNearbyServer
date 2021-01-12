@@ -163,7 +163,7 @@ export const deleteBusiness = async (userId, businessId) => {
 
     verifyUserHasAccessToBusiness(userId, businessId);
 
-    const businessDeleted = await Business.query().patch({deletedAt: new Date()}).where('businessId', businessId);
+    const businessDeleted = await Business.query().patch({deletedAt: new Date()}).where('id', businessId);
 
     const isBusinessDeleted = businessDeleted > 0;
 
