@@ -7,7 +7,7 @@ export class User extends Model {
     phoneNumber!: string;
     thumbnailUrl!: string;
     password!: string | null;
-    typeUser!: "moderator" | "normal";
+    typeUser!: "moderator" | "normal" | "admin";
     typeLogin!: "email" | "facebook" | "google";
 
     async $beforeInsert(context) {

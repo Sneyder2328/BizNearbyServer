@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS User
     thumbnailUrl VARCHAR(500),
     password     VARCHAR(256),
     typeLogin    ENUM ('email', 'facebook', 'google') NOT NULL,
-    typeUser     ENUM ('moderator', 'normal')         NOT NULL,
+    typeUser     ENUM ('admin', 'moderator', 'normal')         NOT NULL,
     createdAt    DATETIME                             NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt    DATETIME                             NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deletedAt    DATETIME                                      DEFAULT NULL,

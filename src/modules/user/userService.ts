@@ -10,11 +10,11 @@ import { genUUID } from '../../utils/utils';
 import { verifyPassword } from '../../utils/utils';
 import { verifyFBToken, verifyGoogleToken } from './authService';
 
-export const signUpUser = async ({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin, typeUser }) => {
+export const signUpUser = async ({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin }) => {
     const user = await User.query().findOne('email', email);
     if (user) throw new AppError(httpCodes.CONFLICT, errors.EMAIL, errors.message.EMAIL_TAKEN);
 
-    const insertResult = await User.query().insert({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin, typeUser });
+    const insertResult = await User.query().insert({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin, typeUser: 'normal' });
 
     const accessToken = genUUID();
     await Session.query().insert({ userId: id, token: accessToken });
