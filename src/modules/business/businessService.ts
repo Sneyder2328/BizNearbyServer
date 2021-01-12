@@ -10,29 +10,29 @@ import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
 
 
-export const addNewBusiness = async (business, userId) => {
-    const {businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = business;
+export const addNewBusiness = async (business) => {
+    const { userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories } = business;
 
     const user = await User.query().findOne('id', userId);
     if (!user) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
 
-    await Business.query().insert({id: businessId, name, bannerUrl, description});
+    await Business.query().insert({ id: businessId, name, bannerUrl, description });
 
-    await UserBusiness.query().insert({userId, businessId});
+    await UserBusiness.query().insert({ userId, businessId });
 
-    await BusinessAddress.query().insert({id: addressId, businessId, address, cityCode, stateCode, countryCode, latitude, longitude});
-    
+    await BusinessAddress.query().insert({ id: addressId, businessId, address, cityCode, stateCode, countryCode, latitude, longitude });
+
     const businessCategory = categories.map(async (categoryCode) => {
         await BusinessCategory.query().insert({ businessId, categoryCode });
     });
 
-    const businessHours = hours.map(async ({day, openTime, closeTime}) => {
+    const businessHours = hours.map(async ({ day, openTime, closeTime }) => {
         const openTimeInt = parseInt(openTime.replace(':', ''), 10);
         const closeTimeInt = parseInt(closeTime.replace(':', ''), 10);
         await BusinessHours.query().insert({ businessId, day, openTime: openTimeInt, closeTime: closeTimeInt });
     });
 
-    if(phoneNumbers){
+    if (phoneNumbers) {
         const businessPhoneNumber = phoneNumbers.map(async (phoneNumber) => {
             await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
         });
@@ -42,7 +42,7 @@ export const addNewBusiness = async (business, userId) => {
     await Promise.all(businessCategory);
     await Promise.all(businessHours);
 
-    return {userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories};
+    return { userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories };
 };
 
 /**
@@ -71,54 +71,64 @@ export const updateBusiness = async (business, userId, businessId) => {
     });
 
     let userAdded;
-    if(emailNewUser){
+    if (emailNewUser) {
         const userByEmail = await User.query().findOne('email', emailNewUser);
-        if(!userByEmail) throw new AppError(httpCodes.NOT_FOUND, errors.USER_NOT_FOUND_ERROR, errors.message.USER_NOT_FOUND);
-        else{
-            userAdded = await UserBusiness.query().insert({userId: userByEmail.id, businessId});
+        if (!userByEmail) throw new AppError(httpCodes.NOT_FOUND, errors.USER_NOT_FOUND_ERROR, errors.message.USER_NOT_FOUND);
+        else {
+            userAdded = await UserBusiness.query().insert({ userId: userByEmail.id, businessId });
         }
     }
-    
+
+    console.log('addressId=', addressId);
+
     const businessAddressUpdated = await BusinessAddress.query().patchAndFetchById(addressId, {
-        address, cityCode, stateCode, countryCode, latitude, longitude 
+        address, cityCode, stateCode, countryCode, latitude, longitude
     });
 
     await BusinessCategory.query().delete().where('businessId', '=', businessId);
     let businessCategoriesAdded
-    if(categories){
+    if (categories) {
         const businessCategories = categories.map(async (categoryCode) => {
-            await BusinessCategory.query().insert({businessId, categoryCode});
+            return await BusinessCategory.query().insert({ businessId, categoryCode });
         });
         businessCategoriesAdded = await Promise.all(businessCategories);
     }
 
     await BusinessHours.query().delete().where('businessId', '=', businessId);
     let businessHoursAdded;
-    if(hours){
-        const businessHours = hours.map(async ({day, openTime, closeTime}) => {
+    if (hours) {
+        const businessHours = hours.map(async ({ day, openTime, closeTime }) => {
             const openTimeInt = parseInt(openTime.replace(':', ''), 10);
-            const closeTimeInt = parseInt(closeTime.replace(':',''), 10);
-            await BusinessHours.query().insert({businessId, day, openTime: openTimeInt, closeTime: closeTimeInt});
+            const closeTimeInt = parseInt(closeTime.replace(':', ''), 10);
+            return await BusinessHours.query().insert({ businessId, day, openTime: openTimeInt, closeTime: closeTimeInt });
         });
         businessHoursAdded = await Promise.all(businessHours);
     }
 
     await BusinessPhoneNumber.query().delete().where('businessId', '=', businessId);
     let businessPhoneNumbersAdded;
-    if(phoneNumbers){
+    if (phoneNumbers) {
         const businessPhoneNumbers = phoneNumbers.map(async (phoneNumber) => {
-            await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
+            return await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
         });
         businessPhoneNumbersAdded = await Promise.all(businessPhoneNumbers);
     }
 
     const { name: nameUpdated, bannerUrl: bannerUrlUpdated, description: descriptionUpdated } = businessUpdated;
     const newUserId = userAdded?.userId;
+
+    console.log({
+        businessId, userId, newUserId, nameUpdated, bannerUrlUpdated, descriptionUpdated,
+        businessAddress: { businessAddressUpdated },
+        categories: { businessCategoriesAdded },
+        hours: { businessHoursAdded },
+        phoneNumbers: { businessPhoneNumbersAdded }
+    });
     return {
         businessId, userId, newUserId, nameUpdated, bannerUrlUpdated, descriptionUpdated,
-        businessAddress: {businessAddressUpdated},
-        categories: {businessCategoriesAdded},
-        hours: {businessHoursAdded},
-        phoneNumbers: {businessPhoneNumbersAdded}
+        businessAddress: businessAddressUpdated,
+        categories: businessCategoriesAdded,
+        hours: businessHoursAdded,
+        phoneNumbers: businessPhoneNumbersAdded
     };
 };
