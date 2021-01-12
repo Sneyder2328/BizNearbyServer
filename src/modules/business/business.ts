@@ -9,8 +9,8 @@ const router = Router();
 
 router.post('/businesses', authenticate, newBusinessValidationRules, validate, handleErrorAsync(async (req, res) => {
     const business = req.body;
-    const { userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = await addNewBusiness(business);
-    res.json({ userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories});
+    const newBusiness = await addNewBusiness(business, req.userId);
+    res.json(newBusiness);
 }));
 
 router.put('/businesses/:businessId', authenticate, updateBusinessValidationRules, validate, handleErrorAsync(async (req,res) => {
