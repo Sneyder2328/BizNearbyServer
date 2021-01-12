@@ -9,7 +9,7 @@ const router = Router();
 
 router.post('/businesses', authenticate, newBusinessValidationRules, validate, handleErrorAsync(async (req, res) => {
     const business = req.body;
-    const newBusiness = await addNewBusiness(business, req.userId);
+    const newBusiness = await addNewBusiness({...business, userId: req.userId});
     res.json(newBusiness);
 }));
 

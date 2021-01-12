@@ -1,5 +1,6 @@
 import { DuplicatedError } from "../utils/errors/DuplicatedError";
 
+
 export const handleErrorAsync = func => async (req,res,next)=>{
     try{
         await func(req,res,next);

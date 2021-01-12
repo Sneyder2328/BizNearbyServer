@@ -7,6 +7,7 @@ export class BusinessHours extends Model {
     closeTime!: number;
 
     static tableName = 'BusinessHours';
+    static idColumn = ['businessId', 'day', 'openTime', 'closeTime']
 }
 
 export type BusinessHoursModel = ModelObject<BusinessHours>

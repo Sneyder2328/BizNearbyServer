@@ -2,7 +2,7 @@
 import { findUserById } from '../modules/user/authService';
 import { errors } from '../utils/constants/errors';
 import { httpCodes } from '../utils/constants/httpResponseCodes';
-import { AppError } from '../utils/errors/appError';
+import { AppError } from '../utils/errors/AppError';
 
 export const ADMIN = 'admin'
 export const MODERATOR = 'moderator'
