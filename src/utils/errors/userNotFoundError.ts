@@ -1,4 +1,4 @@
-import { AppError } from './AppError';
+import { AppError } from './appError';
 import { httpCodes } from '../constants/httpResponseCodes';
 import { errors } from '../constants/errors';
 
