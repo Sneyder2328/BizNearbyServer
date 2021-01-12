@@ -4,17 +4,7 @@ export default {
     development: {
         client: 'mysql',
         connection: config.connection,
-        debug: true,
-        log: {
-            warn(message) {
-            },
-            error(message) {
-            },
-            deprecate(message) {
-            },
-            debug(message) {
-            },
-        }
+        debug: true
     },
     test: {
         client: 'mysql',

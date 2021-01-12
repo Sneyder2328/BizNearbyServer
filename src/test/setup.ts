@@ -6,6 +6,8 @@ import { BusinessHours } from '../database/models/BusinessHours';
 import { BusinessImage } from '../database/models/BusinessImage';
 import { BusinessPhoneNumber } from '../database/models/BusinessPhoneNumber';
 import { UserBusiness } from '../database/models/UserBusiness';
+import { Session } from '../database/models/Session';
+
 
 export async function wipeOutDatabase(){
     await User.query().delete();
@@ -28,6 +30,10 @@ export async function CreateUser(user){
 
 export async function CreateBusiness(business){
     await Business.query().insert(business);
+}
+
+export async function createSession(uuid){
+    await Session.query().insert(uuid);
 }
 
 export async function CreateUserBusiness(userBusiness){
