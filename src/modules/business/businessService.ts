@@ -83,8 +83,7 @@ const verifyBusiness = async (businessId: string) => {
     } 
 };
 
-export const updateBusiness = async (business, userId, businessId) => {
-    const { addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories } = business;
+export const updateBusiness = async ({userId, businessId, addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
 
     verifyUser(userId);
 
@@ -104,8 +103,6 @@ export const updateBusiness = async (business, userId, businessId) => {
             userAdded = await UserBusiness.query().insert({ userId: userByEmail.id, businessId });
         }
     }
-
-    console.log('addressId=', addressId);
 
     const businessAddress = await BusinessAddress.query().findById(addressId);
     let businessAddressUpdated;
@@ -157,8 +154,4 @@ export const updateBusiness = async (business, userId, businessId) => {
         hours: businessHoursAdded,
         phoneNumbers: businessPhoneNumbersAdded
     };
-};
-
-export const deleteBusiness = async (userId, businessId) => {
-
 };
