@@ -42,7 +42,6 @@ const businessValidationRules = [
 ]
 
 export const newBusinessValidationRules = [
-    body('userId').trim().matches(config.regex.uuidV4).withMessage('Invalid userId'),
     body('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId'),
     ...businessValidationRules
 ];
