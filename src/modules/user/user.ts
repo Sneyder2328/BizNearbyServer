@@ -16,7 +16,6 @@ router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErro
     const isAuthenticated = user.typeLogin == "email" ||
         (user?.facebookAuth && await verifyFBToken(user.facebookAuth?.userId, user.facebookAuth?.token)) ||
         (user?.googleAuth && await verifyGoogleToken(user.googleAuth?.userId, user.googleAuth?.token, user?.email));
-    console.log('isAuthenticated=', isAuthenticated, user?.email);
 
     if (!isAuthenticated) throw new AuthError();
 
