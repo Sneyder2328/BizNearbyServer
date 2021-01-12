@@ -24,9 +24,9 @@ router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErro
 }));
 
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const loginRes = await logInUser(req.body);
-    res.header(config.headers.accessToken, loginRes.accessToken)
-        .json({ profile: { ...loginRes } });
+    const {accessToken, profile} = await logInUser(req.body);
+    res.header(config.headers.accessToken, accessToken)
+        .json({ profile });
 }));
 
 router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErrorAsync(async (req, res) => {
