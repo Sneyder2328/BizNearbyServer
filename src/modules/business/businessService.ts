@@ -21,10 +21,10 @@ export const addNewBusiness = async ({ userId, businessId, addressId, name, desc
 
     const businessAddress = await BusinessAddress.query().insert({ id: addressId, businessId, address, cityCode, stateCode, countryCode, latitude, longitude });
 
-    const bizCategories = categories.map(async (categoryCode) => {
+    const businessCategories = categories.map(async (categoryCode) => {
         return await BusinessCategory.query().insert({ businessId, categoryCode });
     });
-    const categoriesAdded = await Promise.all(bizCategories);
+    const categoriesAdded = await Promise.all(businessCategories);
 
     const businessHours = hours.map(async ({ day, openTime, closeTime }) => {
         const openTimeInt = parseInt(openTime.replace(':', ''), 10);
