@@ -15,7 +15,7 @@ router.post('/businesses', authenticate, newBusinessValidationRules, validate, h
 
 router.put('/businesses/:businessId', authenticate, updateBusinessValidationRules, validate, handleErrorAsync(async (req,res) => {
     const business = req.body;
-    const businessUpdated = await updateBusiness(business, req.userId, req.params.businessId);
+    const businessUpdated = await updateBusiness({...business, userId: req.userId, businessId: req.params.businessId});
     res.json(businessUpdated);
 }));
 

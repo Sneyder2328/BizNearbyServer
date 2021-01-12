@@ -9,11 +9,20 @@ import { BusinessPhoneNumber } from '../../database/models/BusinessPhoneNumber';
 import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
 
+/**
+ * Verify if the user exist in the database
+ * @param userId
+ */
+const verifyUser = async (userId: string) => {
+    if (!await User.query().findById(userId)){
+        throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    } 
+};
+
 
 export const addNewBusiness = async ({ userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
 
-    const user = await User.query().findOne('id', userId);
-    if (!user) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    verifyUser(userId);
 
     const business = await Business.query().insert({ id: businessId, name, bannerUrl, description });
 
@@ -21,10 +30,10 @@ export const addNewBusiness = async ({ userId, businessId, addressId, name, desc
 
     const businessAddress = await BusinessAddress.query().insert({ id: addressId, businessId, address, cityCode, stateCode, countryCode, latitude, longitude });
 
-    const bizCategories = categories.map(async (categoryCode) => {
+    const businessCategories = categories.map(async (categoryCode) => {
         return await BusinessCategory.query().insert({ businessId, categoryCode });
     });
-    const categoriesAdded = await Promise.all(bizCategories);
+    const categoriesAdded = await Promise.all(businessCategories);
 
     const businessHours = hours.map(async ({ day, openTime, closeTime }) => {
         const openTimeInt = parseInt(openTime.replace(':', ''), 10);
@@ -64,12 +73,21 @@ const verifyUserHasAccessToBusiness = async (userId: string, businessId: string)
     }
 };
 
-export const updateBusiness = async (business, userId, businessId) => {
-    const { addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories } = business;
+/**
+ * Verify if the business exist in the database
+ * @param businessIdId
+ */
+const verifyBusiness = async (businessId: string) => {
+    if (!await Business.query().findById(businessId)){
+        throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+    } 
+};
 
-    if (!await Business.query().findById(businessId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+export const updateBusiness = async ({userId, businessId, addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
 
-    if (!await User.query().findById(userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    verifyUser(userId);
+
+    verifyBusiness(businessId);
 
     verifyUserHasAccessToBusiness(userId, businessId);
 
@@ -85,8 +103,6 @@ export const updateBusiness = async (business, userId, businessId) => {
             userAdded = await UserBusiness.query().insert({ userId: userByEmail.id, businessId });
         }
     }
-
-    console.log('addressId=', addressId);
 
     const businessAddress = await BusinessAddress.query().findById(addressId);
     let businessAddressUpdated;
