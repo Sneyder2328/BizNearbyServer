@@ -81,9 +81,13 @@ export const updateBusiness = async (business, userId, businessId) => {
 
     console.log('addressId=', addressId);
 
-    const businessAddressUpdated = await BusinessAddress.query().patchAndFetchById(addressId, {
-        address, cityCode, stateCode, countryCode, latitude, longitude
-    });
+    const businessAddress = await BusinessAddress.query().findById(addressId);
+    let businessAddressUpdated;
+    if(businessAddress.id === addressId){
+        businessAddressUpdated = await BusinessAddress.query().patchAndFetchById(addressId, {
+            address, cityCode, stateCode, countryCode, latitude, longitude
+        });
+    }
 
     await BusinessCategory.query().delete().where('businessId', '=', businessId);
     let businessCategoriesAdded
