@@ -5,6 +5,7 @@ export class BusinessPhoneNumber extends Model {
     phoneNumber!: string;
 
     static tableName = 'BusinessPhoneNumber';
+    static idColumn = ['businessId', 'phoneNumber']
 }
 
 export type BusinessPhoneNumberModel = ModelObject<BusinessPhoneNumber>

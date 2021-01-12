@@ -5,6 +5,7 @@ export class BusinessCategory extends Model {
     categoryCode!: number;
 
     static tableName = 'BusinessCategory';
+    static idColumn = ['businessId', 'categoryCode']
 }
 
 export type BusinessCategoryModel = ModelObject<BusinessCategory>
