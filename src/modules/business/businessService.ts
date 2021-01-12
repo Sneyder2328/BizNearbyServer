@@ -9,12 +9,21 @@ import { BusinessPhoneNumber } from '../../database/models/BusinessPhoneNumber';
 import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
 
+/**
+ * Verify if the user exist in the database
+ * @param userId
+ */
+const verifyUser = async (userId: string) => {
+    if (!await User.query().findById(userId)){
+        throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    } 
+};
+
 
 export const addNewBusiness = async (business, userId) => {
     const {businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = business;
 
-    const user = await User.query().findOne('id', userId);
-    if (!user) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    verifyUser(userId);
 
     await Business.query().insert({id: businessId, name, bannerUrl, description});
 
@@ -57,12 +66,22 @@ const verifyUserHasAccessToBusiness = async (userId: string, businessId: string)
     }
 };
 
+/**
+ * Verify if the business exist in the database
+ * @param businessIdId
+ */
+const verifyBusiness = async (businessId: string) => {
+    if (!await Business.query().findById(businessId)){
+        throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+    } 
+};
+
 export const updateBusiness = async (business, userId, businessId) => {
     const { addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories } = business;
 
-    if (!await Business.query().findById(businessId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+    verifyUser(userId);
 
-    if (!await User.query().findById(userId)) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    verifyBusiness(businessId);
 
     verifyUserHasAccessToBusiness(userId, businessId);
 
@@ -121,4 +140,8 @@ export const updateBusiness = async (business, userId, businessId) => {
         hours: {businessHoursAdded},
         phoneNumbers: {businessPhoneNumbersAdded}
     };
+};
+
+export const deleteBusiness = async (userId, businessId) => {
+
 };
