@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { newBusinessValidationRules, updateBusinessValidationRules } from './businessRules';
+import { newBusinessValidationRules, updateBusinessValidationRules, deleteBusinessValidationRules } from './businessRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { addNewBusiness, updateBusiness, deleteBusiness } from './businessService';
 import { authenticate } from '../../middlewares/authenticate';
@@ -19,7 +19,7 @@ router.put('/businesses/:businessId', authenticate, updateBusinessValidationRule
     res.json(businessUpdated);
 }));
 
-router.delete('/businesses/:businessId', authenticate, validate, handleErrorAsync(async (req, res) => {
+router.delete('/businesses/:businessId', authenticate, deleteBusinessValidationRules, validate, handleErrorAsync(async (req, res) => {
     const isBusinessDeleted = await deleteBusiness(req.userId, req.params.businessId);
     res.json({businessDeleted: isBusinessDeleted});
 }));

@@ -53,3 +53,7 @@ export const updateBusinessValidationRules = [
         .isLength({ max: 250 }).withMessage('email too long').optional({nullable: true}),
     ...businessValidationRules
 ];
+
+export const deleteBusinessValidationRules = [
+    param('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId')
+];
