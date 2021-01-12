@@ -39,9 +39,9 @@ export const logInUser = async ({ email, password, typeLogin, facebookAuth, goog
     }
     else { // Verify third party token
         const isAuthenticated = (facebookAuth && await verifyFBToken(facebookAuth?.userId, facebookAuth?.token)) ||
-                                (googleAuth && await verifyGoogleToken(googleAuth?.userId, googleAuth?.token, email));
+            (googleAuth && await verifyGoogleToken(googleAuth?.userId, googleAuth?.token, email));
 
-        if (!isAuthenticated) throw new AuthError();  
+        if (!isAuthenticated) throw new AuthError();
     }
     const accessToken = genUUID();
     await Session.query().insert({ userId: user.id, token: accessToken });
@@ -51,7 +51,7 @@ export const logInUser = async ({ email, password, typeLogin, facebookAuth, goog
     };
 }
 
-export const logoutUser = async (accessToken) => {
-    const token = await Session.query().delete().where('token',accessToken);
-    return {logout: token?true:false};
+export const logoutUser = async (accessToken: string): Promise<boolean> => {
+    const deletedRows = await Session.query().delete().where('token', accessToken);
+    return deletedRows != 0
 }

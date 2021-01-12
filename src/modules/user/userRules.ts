@@ -1,5 +1,5 @@
 import config from "../../config/config";
-import { body, param } from "express-validator";
+import { body, header, param } from "express-validator";
 
 const trimInside = () => str => str.replace(/\s\s/g, ' ');
 
@@ -29,9 +29,9 @@ export const signUpValidationRules = [
     body('googleAuth.userId').trim().matches(/^\d*$/)
         .optional({ nullable: true }).withMessage("Invalid Id"),
     body('facebookAuth.token').trim().isString()
-        .optional({nullable: true}),
+        .optional({ nullable: true }),
     body('facebookAuth.userId').trim().matches(/^\d*$/)
-        .optional({nullable: true}).withMessage("Invalid Id"),
+        .optional({ nullable: true }).withMessage("Invalid Id"),
     body('typeLogin')
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
     body('typeUser')
@@ -41,19 +41,23 @@ export const signUpValidationRules = [
 export const logInValidationRules = [
     body('email').trim().escape(),
     body('password').escape()
-        .optional({nullable: true}),
+        .optional({ nullable: true }),
     body('typeLogin')
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
-        body('googleAuth.token').trim().isString()
+    body('googleAuth.token').trim().isString()
         .optional({ nullable: true }),
     body('googleAuth.userId').trim().matches(/^\d*$/)
         .optional({ nullable: true }).withMessage("Invalid Id"),
     body('facebookAuth.token').trim().isString()
-        .optional({nullable: true}),
+        .optional({ nullable: true }),
     body('facebookAuth.userId').trim().matches(/^\d*$/)
-        .optional({nullable: true}).withMessage("Invalid Id"),
+        .optional({ nullable: true }).withMessage("Invalid Id"),
 
 ];
+
+export const logOutValidationRules = [
+    header(config.headers.accessToken).matches(config.regex.authorization)
+]
 
 /*
 export const refreshTokenValidationRules = [
