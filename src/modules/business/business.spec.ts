@@ -17,6 +17,7 @@ describe('POST' + '/businesses', () => {
         request(app)
             .post('/businesses')
             .send(business[0])
+            .setHeader('authorization', 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5')
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body);
