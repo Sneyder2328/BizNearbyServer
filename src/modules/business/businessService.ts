@@ -11,8 +11,8 @@ import { User } from '../../database/models/User';
 import { Session } from '../../database/models/Session';
 
 
-export const addNewBusiness = async (business) => {
-    const {userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = business;
+export const addNewBusiness = async (business, userId) => {
+    const {businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories} = business;
 
     const user = await User.query().findOne('id', userId);
     if (!user) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
