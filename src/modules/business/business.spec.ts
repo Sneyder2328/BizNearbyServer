@@ -13,18 +13,38 @@ describe('POST' + '/businesses', () => {
         await wipeOutDatabase();
     });
 
-    for(let i = 0; i <= 2; i++){
-        it('should create new business', (done) => {
-            request(app)
-                .post('/businesses')
-                .send(business[i])
-                .expect(httpCodes.OK)
-                .expect(res => {
-                    expect(res.body);
-                })
-                .end(done);
-        });
-    }
+    it('should create new business', (done) => {
+        request(app)
+            .post('/businesses')
+            .send(business[0])
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body);
+            })
+            .end(done);
+    });
+
+    it('should create a new business without cityCode, stateCode and countryCode', (done) => {
+        request(app)
+            .post('/businesses')
+            .send(business[1])
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done);
+    });
+
+    it('should create a new business without phone numbers', (done) => {
+        request(app)
+            .post('/businesses')
+            .send(business[2])
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done);
+    });
 
     it('should not create a new business without latitude and longitude', (done) => {
         request(app)
