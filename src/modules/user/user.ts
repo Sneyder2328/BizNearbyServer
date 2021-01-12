@@ -7,7 +7,6 @@ import { endpoints } from '../../utils/constants/endpoints';
 import config from '../../config/config';
 import { verifyFBToken, verifyGoogleToken } from './authService';
 import { AuthError } from '../../utils/errors/AuthError';
-import { AppError } from '../../utils/errors/AppError';
 import { authenticate } from '../../middlewares/authenticate';
 const router = Router();
 
