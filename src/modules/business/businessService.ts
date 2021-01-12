@@ -1,6 +1,6 @@
 import { errors } from '../../utils/constants/errors';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
-import { AppError } from '../../utils/errors/appError';
+import { AppError } from '../../utils/errors/AppError';
 import { Business } from '../../database/models/Business';
 import { BusinessAddress } from '../../database/models/BusinessAddress';
 import { BusinessCategory } from '../../database/models/BusinessCategory';
@@ -8,7 +8,6 @@ import { BusinessHours } from '../../database/models/BusinessHours';
 import { BusinessPhoneNumber } from '../../database/models/BusinessPhoneNumber';
 import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
-import { Session } from '../../database/models/Session';
 
 
 export const addNewBusiness = async (business, userId) => {
