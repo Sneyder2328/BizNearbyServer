@@ -17,6 +17,7 @@ export const endpoints = {
     },
     moderator:{
         CREATE_MODERATOR: '/moderators/:moderatorId',
+        REMOVE_MODERATOR: '/moderators/:moderatorId',
         GET_ALL_REPORTS: '/businesses/getReports',
     },
     review: {

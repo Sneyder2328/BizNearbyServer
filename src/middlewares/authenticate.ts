@@ -5,7 +5,7 @@ import { AuthError } from '../utils/errors/AuthError';
 
 export const authenticate = async (req, res, next) => {
     const accessToken = req.header(config.headers.accessToken).split(" ")[1];
-    console.log(accessToken);
+
     if (!config.regex.uuidV4.test(accessToken)) {
         return next(new AuthError('accessToken', errors.message.ACCESS_TOKEN_INVALID), req, res, next);
     }
