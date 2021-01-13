@@ -141,12 +141,6 @@ export const updateBusiness = async ({userId, businessId, addressId, emailNewUse
         businessPhoneNumbersAdded = await Promise.all(businessPhoneNumbers);
     }
 
-    console.log({
-        businessAddress: { businessAddressUpdated },
-        categories: { businessCategoriesAdded },
-        hours: { businessHoursAdded },
-        phoneNumbers: { businessPhoneNumbersAdded }
-    });
     return {
         ...businessUpdated,
         businessAddress: businessAddressUpdated,
@@ -154,4 +148,18 @@ export const updateBusiness = async ({userId, businessId, addressId, emailNewUse
         hours: businessHoursAdded,
         phoneNumbers: businessPhoneNumbersAdded
     };
+};
+
+export const deleteBusiness = async (userId, businessId) => {
+    verifyUser(userId);
+
+    verifyBusiness(businessId);
+
+    verifyUserHasAccessToBusiness(userId, businessId);
+
+    const businessDeleted = await Business.query().patch({deletedAt: new Date()}).where('id', businessId);
+
+    const isBusinessDeleted = businessDeleted > 0;
+
+    return isBusinessDeleted;
 };
