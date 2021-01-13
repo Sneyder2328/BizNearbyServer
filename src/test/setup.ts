@@ -57,7 +57,7 @@ export async function createSession({token, userId}:{token: string; userId: stri
     await Session.query().insert({token, userId});
 }
 
-export async function CreateUserBusiness(userBusiness){
+export async function CreateUserBushayiness(userBusiness){
     await UserBusiness.query().insert(userBusiness);
 }
 
