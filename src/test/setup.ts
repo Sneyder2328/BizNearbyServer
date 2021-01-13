@@ -18,31 +18,31 @@ export async function wipeOutDatabase(){
     await BusinessImage.query().delete();
     await BusinessPhoneNumber.query().delete();
 }    
-export async function createUser(user){
-    delete user?.googleAuth;
-    delete user?.facebookAuth;
+export async function createUser({id, fullname, email, password, typeLogin, typeUser}:{id: string; fullname: string; email: string; password: string; typeLogin: "email" | "facebook" | "google"; typeUser: "moderator" | "normal" | "admin";}){
+    //delete user?.googleAuth;
+    // delete user?.facebookAuth;
     
-    await User.query().insert(user);
+    await User.query().insert({id, fullname, email, password, typeLogin, typeUser});
 }
 
-export async function createBusiness(business){
-    await Business.query().insert(business);
+export async function createBusiness({id, name, description, bannerUrl}:{id: string; name: string; description: string; bannerUrl: string;}){
+    await Business.query().insert({id, name, description, bannerUrl});
 }
 
 export async function createSession({token, userId}:{token: string; userId: string}){
     await Session.query().insert({token, userId});
 }
 
-export async function createUserBusiness(userBusiness){
-    await UserBusiness.query().insert(userBusiness);
+export async function createUserBusiness({userId, businessId}:{userId: string; businessId: string}){
+    await UserBusiness.query().insert({userId, businessId});
 }
 
-export async function createBusinessAddress(businessAddress){
-    await BusinessAddress.query().insert(businessAddress);
+export async function createBusinessAddress({id, businessId, address, cityCode, stateCode, countryCode, latitude, longitude}:{id: string; businessId: string; address: string; cityCode: number; stateCode: number; countryCode: number; latitude: number; longitude: number;}){
+    await BusinessAddress.query().insert({id, businessId, cityCode, stateCode, countryCode, latitude, longitude});
 }
 
-export async function createBusinessCategory(businessCategory){
-    await BusinessCategory.query().insert(businessCategory);
+export async function createBusinessCategory({businessId, categoryCode}:{businessId: string; categoryCode: number}){
+    await BusinessCategory.query().insert({businessId, categoryCode});
 }
 
 export async function createBusinessHours(businessHours){
@@ -55,8 +55,8 @@ export async function createBusinessImage(businessImage){
     await BusinessImage.query().insert(businessImage);
 }
 
-export async function createBusinessPhoneNumber(businessPhoneNumber){
-    await BusinessPhoneNumber.query().insert(businessPhoneNumber);
+export async function createBusinessPhoneNumber({businessId, phoneNumber}:{businessId: string; phoneNumber: string}){
+    await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
 }
 
 export async function insertBusinessData(){
@@ -66,7 +66,7 @@ export async function insertBusinessData(){
     createSession({token: 'b337e27e-bcf0-4154-8a77-96daa873c9e5', userId: 'f94bcebf-f181-447b-b85f-3c5f36c2a269'});
     createBusiness({id: "a8bcd05e-4606-4a55-a5dd-002f8516493e", name: "Bodega Mi encanto", description: "My business it's so nice", bannerUrl: "AnURL"});
     createUserBusiness({userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e"});
-    createBusinessAddress({id: "eee15b20-917f-4d69-a055-e306d938d196", businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e"});
+    createBusinessAddress({id: "eee15b20-917f-4d69-a055-e306d938d196", businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", address: "Calle 50 entre carreras 14 y 15", cityCode: 212, stateCode: 12, countryCode: 862, latitude: 10.059972, longitude: -69.340570});
     createBusinessCategory({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", categoryCode: 1});
     createBusinessHours([{
         day: 1,

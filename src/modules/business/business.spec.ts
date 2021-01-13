@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app, server } from '../../index';
-import { wipeOutDatabase, insertBusinessData } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createUser, createSession } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { business, updateBusiness } from '../../test/seed';
 import knex from "../../database/knex";
@@ -13,7 +13,8 @@ const businessId = "a8bcd05e-4606-4a55-a5dd-002f8516493e"
 describe('POST' + '/businesses', () => {
     beforeEach(async () => {
         await wipeOutDatabase();
-        await insertBusinessData();
+        await createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
+        await createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
     });
 
     it('should create new business', (done) => {
