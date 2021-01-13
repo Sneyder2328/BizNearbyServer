@@ -92,7 +92,9 @@ router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErr
     const logOut = await logoutUser(accessToken);
     res.send({ logOut });
 }));
-
+/**
+ * Delete user
+ */
 router.delete(endpoints.users.DELETE_ACCOUNT, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = {password: req.body?.password, id: req.params.userId};
     await deleteUser(user);

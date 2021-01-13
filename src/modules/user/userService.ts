@@ -27,7 +27,6 @@ export const signUpUser = async ({ id, fullname, email, phoneNumber, thumbnailUr
 export const logInUser = async ({ email, password, typeLogin, facebookAuth, googleAuth }) => {
     const user = await User.query().findOne('email', email);
     if (!user) throw new UserNotFoundError();
-
     // User is using a different typeLogin than expected
     if (user.typeLogin != typeLogin) {
         throw new AuthError()
@@ -43,6 +42,7 @@ export const logInUser = async ({ email, password, typeLogin, facebookAuth, goog
 
         if (!isAuthenticated) throw new AuthError();
     }
+    
     const accessToken = genUUID();
     await Session.query().insert({ userId: user.id, token: accessToken });
     return {
