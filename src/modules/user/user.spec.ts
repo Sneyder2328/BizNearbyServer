@@ -1,10 +1,9 @@
-// @ts-ignore
 import request from "supertest";
 import {app, server} from "../../index";
-import {wipeOutDatabase, CreateUser} from "../../test/setup";
+import {wipeOutDatabase, createUser} from "../../test/setup";
 import {endpoints} from "../../utils/constants/endpoints";
 import {httpCodes} from "../../utils/constants/httpResponseCodes";
-import {users} from "../../test/seed";
+import {admin, users, moderator} from "../../test/seed";
 import {errors} from "../../utils/constants/errors";
 import knex from "../../database/knex";
 
@@ -68,6 +67,17 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .end(done)
     })
 
+    it('should not sign up due to invalid typeUser admin', done => {
+        request(app)
+            .post(endpoints.users.SIGN_UP)
+            .send({...users[0], typeLogin:"admin"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done)
+    });
+
     it('should not sign up due to name being too long', (done) => {
         request(app)
             .post(endpoints.users.SIGN_UP)
@@ -105,7 +115,8 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
 describe('POST ' + endpoints.auth.LOG_IN, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
-        await Promise.all(users.slice(0,3).map(async user => await CreateUser(user)));
+        await Promise.all(users.slice(0,3).map(async user => await createUser(user)));
+        await createUser(admin);
     });
 
     it("should Log in with email", done=>{
@@ -140,6 +151,28 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     //         })
     //         .end(done);
     // });
+
+    it('should login as an admin', done=>{
+        request(app)
+            .post(endpoints.auth.LOG_IN)
+            .send({email: admin.email, password: admin.password, typeLogin: admin.typeLogin})
+            .expect(httpCodes.OK)
+            .expect(res=>{
+                expect(res.body['profile']);
+            })
+            .end(done)
+    });
+
+    it('should login as an moderator', done=>{
+        request(app)
+            .post(endpoints.auth.LOG_IN)
+            .send({email: moderator.email, password: moderator.password, typeLogin: moderator.typeLogin})
+            .expect(httpCodes.OK)
+            .expect(res=>{
+                expect(res.body['profile']);
+            })
+            .end(done)
+    })
 
     it('should not login due to wrong password', done=>{
         request(app)
