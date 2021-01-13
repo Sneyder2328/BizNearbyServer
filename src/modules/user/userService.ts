@@ -63,3 +63,12 @@ export const logoutUser = async (accessToken: string): Promise<boolean> => {
     const deletedRows = await Session.query().delete().where('token', accessToken);
     return deletedRows != 0
 }
+
+export const deleteUser = async ({password, id}) => {
+    const user = await User.query().findOne('id', id);
+    if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    const isPasswordCorrect = await verifyPassword(password, user.password);
+    if(!isPasswordCorrect) throw new AuthError(errors.AUTH_ERROR, errors.message.INCORRECT_CREDENTIALS);
+    
+    await User.query().updateAndFetchById(id, {})
+}

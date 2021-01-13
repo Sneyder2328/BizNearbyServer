@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { signUpValidationRules, logInValidationRules, logOutValidationRules, editValidationRules } from './userRules';
+import { signUpValidationRules, logInValidationRules, logOutValidationRules, editValidationRules, deleteValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { signUpUser, logInUser, logoutUser, editUser } from './userService';
+import { signUpUser, logInUser, logoutUser, editUser, deleteUser } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
 import config from '../../config/config';
 import { verifyFBToken, verifyGoogleToken } from './authService';
@@ -92,5 +92,10 @@ router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErr
     const logOut = await logoutUser(accessToken);
     res.send({ logOut });
 }));
+
+router.delete(endpoints.users.DELETE_ACCOUNT, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const user = {password: req.body?.password, id: req.params.userId};
+    await deleteUser(user);
+}))
 
 export { router as userRouter }
