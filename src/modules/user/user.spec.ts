@@ -1,7 +1,7 @@
 // @ts-ignore
 import request from "supertest";
 import {app, server} from "../../index";
-import {wipeOutDatabase, CreateUser} from "../../test/setup";
+import {wipeOutDatabase, createUser} from "../../test/setup";
 import {endpoints} from "../../utils/constants/endpoints";
 import {httpCodes} from "../../utils/constants/httpResponseCodes";
 import {users} from "../../test/seed";
@@ -105,7 +105,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
 describe('POST ' + endpoints.auth.LOG_IN, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
-        await Promise.all(users.slice(0,3).map(async user => await CreateUser(user)));
+        await Promise.all(users.slice(0,3).map(async user => await createUser(user)));
     });
 
     it("should Log in with email", done=>{
