@@ -51,12 +51,12 @@ export const logInUser = async ({ email, password, typeLogin, facebookAuth, goog
     };
 }
 
-export const editUser = async ({ id, fullname, password, email, phoneNumber, thumbnailUrl}) => {
+export const editUser = async ({ id, fullname, password, email, phoneNumber, thumbnailUrl }) => {
     const userExists = await User.query().findById(id);
-    if(!userExists) throw new AuthError(errors.USER_NOT_FOUND_ERROR, errors.message.USER_NOT_FOUND);
+    if (!userExists) throw new AuthError(errors.USER_NOT_FOUND_ERROR, errors.message.USER_NOT_FOUND);
 
-    const userUpdated = await User.query().patchAndFetchById(id, {fullname, password, email, phoneNumber, thumbnailUrl});
-    return {profile: _.pick(userUpdated, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser'])}
+    const userUpdated = await User.query().patchAndFetchById(id, { fullname, password, email, phoneNumber, thumbnailUrl });
+    return { profile: _.pick(userUpdated, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser']) }
 }
 
 export const logoutUser = async (accessToken: string): Promise<boolean> => {

@@ -8,9 +8,39 @@ import config from '../../config/config';
 import { verifyFBToken, verifyGoogleToken } from './authService';
 import { AuthError } from '../../utils/errors/AuthError';
 import { authenticate } from '../../middlewares/authenticate';
+import { cloudinary } from "../../config/cloudinaryConfig";
+import cloudinaryStorage from "multer-storage-cloudinary";
+import multer from "multer";
+import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
+
+const storage = cloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'usersImages',
+        format: async (req, file) => { 
+            return "jpg,png,jpeg"
+            // return ['jpg', 'png', "jpeg"]
+        },
+        // filename: function (req, file, cb) {
+        //     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        //     cb(null, file.fieldname + '-' + uniqueSuffix)
+        // },
+        public_id: (req, file) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+            return file.fieldname + '-' + uniqueSuffix
+        },
+        transformation: [{ width: 960, height: 960, crop: 'limit' }]
+    }
+});
+const parser = multer({
+    storage,
+    limits: { fileSize: MAX_IMG_FILE_SIZE }
+});
+const imageUpload = parser.single('imageProfile');
+
 const router = Router();
 
-router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
     const isAuthenticated = user.typeLogin == "email" ||
         (user?.facebookAuth && await verifyFBToken(user.facebookAuth?.userId, user.facebookAuth?.token)) ||
@@ -24,7 +54,7 @@ router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErro
 }));
 
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const {accessToken, profile} = await logInUser(req.body);
+    const { accessToken, profile } = await logInUser(req.body);
     res.header(config.headers.accessToken, accessToken)
         .json({ profile });
 }));
@@ -40,7 +70,7 @@ router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErr
     const accessToken = req.headers[config.headers.accessToken].split(' ')[1];
     if (!accessToken) throw new AuthError();
     const logOut = await logoutUser(accessToken);
-    res.send({logOut});
+    res.send({ logOut });
 }));
 
 export { router as userRouter }
