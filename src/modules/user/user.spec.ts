@@ -35,16 +35,16 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
     //         .end(done);
     // });
 
-    it('should sign up a new user with facebook', (done) => {
-        request(app)
-            .post(endpoints.users.SIGN_UP)
-            .send({...users[2]})
-            .expect(httpCodes.OK)
-            .expect(res => {
-                expect(res.body["profile"]);
-            })
-            .end(done);
-    });
+    // it('should sign up a new user with facebook', (done) => {
+    //     request(app)
+    //         .post(endpoints.users.SIGN_UP)
+    //         .send({...users[2]})
+    //         .expect(httpCodes.OK)
+    //         .expect(res => {
+    //             expect(res.body["profile"]);
+    //         })
+    //         .end(done);
+    // });
 
     it('should sign up a new user with max input capacity', done => {
         request(app)
@@ -130,16 +130,16 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     //        .end(done);
     //});
 
-    it("should Log in with facebook", done=>{
-        request(app)
-            .post(endpoints.auth.LOG_IN)
-            .send({email: users[2].email, password: users[2].password, typeLogin: users[2].typeLogin})
-            .expect(httpCodes.OK)
-            .expect(res=>{
-                expect(res.body['profile']);
-            })
-            .end(done);
-    });
+    // it("should Log in with facebook", done=>{
+    //     request(app)
+    //         .post(endpoints.auth.LOG_IN)
+    //         .send({email: users[2].email, password: users[2].password, typeLogin: users[2].typeLogin})
+    //         .expect(httpCodes.OK)
+    //         .expect(res=>{
+    //             expect(res.body['profile']);
+    //         })
+    //         .end(done);
+    // });
 
     it('should not login due to wrong password', done=>{
         request(app)

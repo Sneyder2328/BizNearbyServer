@@ -108,12 +108,11 @@ export const users = [
     },
     {//Extreme User, maximum entry lenght capacity
         id: genUUID(),
-        fullname: genText(250),
+        fullname: genText(69),
         email: "cngev2000@gmail.com",
-        phoneNumber: "",
-        thumbnailUrl: genText(500),
-        password: genText(150),
-        apiKey: null,
+        phoneNumber: genText(14),
+        thumbnailUrl: genText(499),
+        password: genText(254),
         typeLogin: "email",
         typeUser: "normal"
     }

@@ -22,7 +22,7 @@ export const signUpValidationRules = [
         .isLength({ max: 500 }).withMessage('thumbnailUrl too long'),
     body('password').trim().isString().escape()
         .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
-        .isLength({ max: 150 }).withMessage('Password too long')
+        .isLength({ max: 255 }).withMessage('Password too long')
         .optional({ nullable: true }),
     body('googleAuth.token').trim().isString()
         .optional({ nullable: true }),
