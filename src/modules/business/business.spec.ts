@@ -87,7 +87,9 @@ describe('POST' + '/businesses', () => {
             })
             .end(done);
     });
+});
 
+describe('PUT' + `/businesses/${businessId}`, () => {
     // UPDATE BUSINESS TESTS
 
     it('should update business name', (done) => {
@@ -245,7 +247,9 @@ describe('POST' + '/businesses', () => {
             })
             .end(done);
     });
+});
 
+describe('DELETE' + `/businesses/${businessId}`, () => {
     // DELETE TEST
 
     it('should delete a business', (done) => {
