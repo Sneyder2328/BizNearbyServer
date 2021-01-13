@@ -17,17 +17,10 @@ const storage = cloudinaryStorage({
     cloudinary,
     params: {
         folder: 'usersImages',
-        format: async (req, file) => {
-            return "jpg,png,jpeg"
-            // return ['jpg', 'png', "jpeg"]
-        },
-        // filename: function (req, file, cb) {
-        //     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        //     cb(null, file.fieldname + '-' + uniqueSuffix)
-        // },
-        public_id: (req, file) => {
+        format: () => ("jpeg"),
+        public_id: () => {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-            return file.fieldname + '-' + uniqueSuffix
+            return uniqueSuffix
         },
         transformation: [{ width: 960, height: 960, crop: 'limit' }]
     }
@@ -40,9 +33,16 @@ const imageUpload = parser.single('imageProfile');
 
 const router = Router();
 
+/**
+ * Sign up new user
+ */
 router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
-    console.log('user sign up, files=', req.files);
+
+    // if there's an image(file) uploaded, then take url(path)
+    if (req.file?.path) {
+        user.thumbnailUrl = req.file?.path
+    }
 
     const isAuthenticated = user.typeLogin == "email" ||
         (user?.facebookAuth && await verifyFBToken(user.facebookAuth?.userId, user.facebookAuth?.token)) ||
@@ -55,19 +55,37 @@ router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validat
         .json({ profile });
 }));
 
+
+/**
+ * Log in
+ */
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
     const { accessToken, profile } = await logInUser(req.body);
     res.header(config.headers.accessToken, accessToken)
         .json({ profile });
 }));
 
-router.put(endpoints.users.UPDATE_PROFILE, authenticate, editValidationRules, validate, handleErrorAsync(async (req, res) => {
+
+/**
+ * Update user profile
+ */
+router.put(endpoints.users.UPDATE_PROFILE, authenticate, imageUpload, editValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
-    user.id = req.params?.userId;
+
+    // if there's an image(file) uploaded, then take url(path)
+    if (req.file?.path) {
+        user.thumbnailUrl = req.file?.path
+    }
+    user.id = req.params.userId;
+
     const { profile } = await editUser(user);
     res.json({ profile })
 }))
 
+
+/**
+ * Log out
+ */
 router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErrorAsync(async (req, res) => {
     const accessToken = req.headers[config.headers.accessToken].split(' ')[1];
     if (!accessToken) throw new AuthError();

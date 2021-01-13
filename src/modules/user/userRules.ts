@@ -54,6 +54,7 @@ export const logInValidationRules = [
 ];
 
 export const editValidationRules = [
+    param('userId').exists().matches(config.regex.uuidV4),
     body('email').trim().escape(),
     body('password').escape()
         .optional({ nullable: true }),
