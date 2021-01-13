@@ -53,8 +53,8 @@ export async function createBusiness(business){
     await Business.query().insert(business);
 }
 
-export async function createSession(uuid){
-    await Session.query().insert(uuid);
+export async function createSession({token, userId}:{token: string; userId: string}){
+    await Session.query().insert({token, userId});
 }
 
 export async function createUserBusiness(userBusiness){
