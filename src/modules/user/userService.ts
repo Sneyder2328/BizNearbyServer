@@ -74,8 +74,9 @@ export const deleteUser = async ({password, id}) => {
     if(!isPasswordCorrect) throw new AuthError(errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);
 
     const userDeleted = await User.query().updateAndFetchById(id, {'deletedAt': new Date()});
-    const BusinessDeleted = await Business.query().updateAndFetch({'deletedAt': new Date()})
+    await Business.query().patch({'deletedAt': new Date()})
         .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = '+ userDeleted.id +')'))
         .andWhere(raw('deletedAt IS NULL'));
     
+    return userDeleted.deletedAt != null;
 }
