@@ -17,7 +17,7 @@ const storage = cloudinaryStorage({
     cloudinary,
     params: {
         folder: 'usersImages',
-        format: async (req, file) => { 
+        format: async (req, file) => {
             return "jpg,png,jpeg"
             // return ['jpg', 'png', "jpeg"]
         },
@@ -42,6 +42,8 @@ const router = Router();
 
 router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
+    console.log('user sign up, files=', req.files);
+
     const isAuthenticated = user.typeLogin == "email" ||
         (user?.facebookAuth && await verifyFBToken(user.facebookAuth?.userId, user.facebookAuth?.token)) ||
         (user?.googleAuth && await verifyGoogleToken(user.googleAuth?.userId, user.googleAuth?.token, user?.email));
