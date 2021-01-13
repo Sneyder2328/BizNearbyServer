@@ -95,9 +95,10 @@ router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErr
 /**
  * Delete user
  */
-router.delete(endpoints.users.DELETE_ACCOUNT, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = {password: req.body?.password, id: req.params.userId};
-    await deleteUser(user);
+    const deleted = await deleteUser(user);
+    res.json({deleted});
 }))
 
 export { router as userRouter }

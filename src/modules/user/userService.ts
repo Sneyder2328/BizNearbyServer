@@ -5,10 +5,12 @@ import { AppError } from '../../utils/errors/AppError';
 import { AuthError } from '../../utils/errors/AuthError';
 import { UserNotFoundError } from '../../utils/errors/UserNotFoundError';
 import { User } from '../../database/models/User';
+import { Business } from '../../database/models/Business';
 import { Session } from '../../database/models/Session';
 import { genUUID } from '../../utils/utils';
 import { verifyPassword } from '../../utils/utils';
 import { verifyFBToken, verifyGoogleToken } from './authService';
+import { raw } from 'objection';
 
 export const signUpUser = async ({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin }) => {
     const user = await User.query().findOne('email', email);
@@ -65,10 +67,15 @@ export const logoutUser = async (accessToken: string): Promise<boolean> => {
 }
 
 export const deleteUser = async ({password, id}) => {
-    const user = await User.query().findOne('id', id);
+    const user = await User.query().findOne('id', id).where(raw('deletedAt IS NULL'));
+
     if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
     const isPasswordCorrect = await verifyPassword(password, user.password);
-    if(!isPasswordCorrect) throw new AuthError(errors.AUTH_ERROR, errors.message.INCORRECT_CREDENTIALS);
+    if(!isPasswordCorrect) throw new AuthError(errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);
+
+    const userDeleted = await User.query().updateAndFetchById(id, {'deletedAt': new Date()});
+    const BusinessDeleted = await Business.query().updateAndFetch({'deletedAt': new Date()})
+        .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = '+ userDeleted.id +')'))
+        .andWhere(raw('deletedAt IS NULL'));
     
-    await User.query().updateAndFetchById(id, {})
 }

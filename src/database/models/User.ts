@@ -9,6 +9,7 @@ export class User extends Model {
     password!: string | null;
     typeUser!: "moderator" | "normal" | "admin";
     typeLogin!: "email" | "facebook" | "google";
+    deletedAt!: Date;
 
     async $beforeInsert(context) {
         if (this.password) {
