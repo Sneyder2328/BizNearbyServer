@@ -42,14 +42,14 @@ export async function wipeOutDatabase(){
     await BusinessPhoneNumber.query().insert({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", phoneNumber: "04125568177"});
  
 }    
-export async function CreateUser(user){
+export async function createUser(user){
     delete user?.googleAuth;
     delete user?.facebookAuth;
     
     await User.query().insert(user);
 }
 
-export async function CreateBusiness(business){
+export async function createBusiness(business){
     await Business.query().insert(business);
 }
 
@@ -57,26 +57,26 @@ export async function createSession(uuid){
     await Session.query().insert(uuid);
 }
 
-export async function CreateUserBusiness(userBusiness){
+export async function createUserBusiness(userBusiness){
     await UserBusiness.query().insert(userBusiness);
 }
 
-export async function CreateBusinessAddress(businessAddress){
+export async function createBusinessAddress(businessAddress){
     await BusinessAddress.query().insert(businessAddress);
 }
 
-export async function CreateBusinessCategory(businessCategory){
+export async function createBusinessCategory(businessCategory){
     await BusinessCategory.query().insert(businessCategory);
 }
 
-export async function CreateBusinessHours(businessHours){
+export async function createBusinessHours(businessHours){
     await BusinessHours.query().insert(businessHours);
 }
 
-export async function CreateBusinessImage(businessImage){
+export async function createBusinessImage(businessImage){
     await BusinessImage.query().insert(businessImage);
 }
 
-export async function CreateBusinessPhoneNumber(businessPhoneNumber){
+export async function createBusinessPhoneNumber(businessPhoneNumber){
     await BusinessPhoneNumber.query().insert(businessPhoneNumber);
 }

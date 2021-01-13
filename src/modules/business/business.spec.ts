@@ -14,8 +14,6 @@ describe('POST' + '/businesses', () => {
     let session: string;
     beforeEach(async () => {
         await wipeOutDatabase();
-        session=genUUID();
-        await createSession(session);
     });
 
     it('should create new business', (done) => {
