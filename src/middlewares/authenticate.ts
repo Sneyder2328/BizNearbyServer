@@ -19,3 +19,20 @@ export const authenticate = async (req, res, next) => {
     req.userId = session.userId
     next();
 };
+
+export const authenticateAdmin = async (req, res, next) => {
+    const accessToken = req.header(config.headers.accessToken).split(" ")[1];
+    
+    if (!config.regex.uuidV4.test(accessToken)) {
+        return next(new AuthError('accessToken', errors.message.ACCESS_TOKEN_INVALID), req, res, next);
+    }
+    const session = await findSession(accessToken)
+    if (!session) {
+        return next(new AuthError(), req, res, next);
+    }
+    if (isSessionExpired(session)) {
+        return next(new AuthError('accessToken', errors.message.ACCESS_TOKEN_EXPIRED), req, res, next);
+    }
+    req.userId = session.userId
+    next();
+};

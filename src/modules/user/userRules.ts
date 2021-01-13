@@ -54,6 +54,7 @@ export const logInValidationRules = [
 ];
 
 export const editValidationRules = [
+    param('userId').exists().matches(config.regex.uuidV4),
     body('email').trim().escape(),
     body('password').escape()
         .optional({ nullable: true }),
@@ -67,6 +68,11 @@ export const editValidationRules = [
         .optional({ nullable: true })
         .isLength({ max: 500 }).withMessage('thumbnailUrl too long'),
 ];
+
+export const deleteValidationRules = [
+    header(config.headers.accessToken).matches(config.regex.authorization),
+    body('password').escape()
+]
 
 export const logOutValidationRules = [
     header(config.headers.accessToken).matches(config.regex.authorization)

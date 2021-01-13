@@ -13,10 +13,11 @@ export const endpoints = {
             BUSINESS_UPDATE: '/businesses/update/',
             BUSINESS_DELETE: '/businesses/delete/',
         },
-        moderator:{
-            GET_ALL_REPORTS: '/businesses/getReports',
-        },
         REPORT: (bizId) => `/users/report/${bizId}`,
+    },
+    moderator:{
+        CREATE_MODERATOR: '/moderators/:moderatorId',
+        GET_ALL_REPORTS: '/businesses/getReports',
     },
     review: {
         REVIEW_ADD: (bizId) => `/reviews/create/${bizId}`,

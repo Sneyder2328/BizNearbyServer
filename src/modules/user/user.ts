@@ -1,17 +1,49 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { signUpValidationRules, logInValidationRules, logOutValidationRules, editValidationRules } from './userRules';
+import { signUpValidationRules, logInValidationRules, logOutValidationRules, editValidationRules, deleteValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { signUpUser, logInUser, logoutUser, editUser } from './userService';
+import { signUpUser, logInUser, logoutUser, editUser, deleteUser } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
 import config from '../../config/config';
 import { verifyFBToken, verifyGoogleToken } from './authService';
 import { AuthError } from '../../utils/errors/AuthError';
 import { authenticate } from '../../middlewares/authenticate';
+import { cloudinary } from "../../config/cloudinaryConfig";
+import cloudinaryStorage from "multer-storage-cloudinary";
+import multer from "multer";
+import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
+
+const storage = cloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'usersImages',
+        format: () => ("jpeg"),
+        public_id: () => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+            return uniqueSuffix
+        },
+        transformation: [{ width: 960, height: 960, crop: 'limit' }]
+    }
+});
+const parser = multer({
+    storage,
+    limits: { fileSize: MAX_IMG_FILE_SIZE }
+});
+const imageUpload = parser.single('imageProfile');
+
 const router = Router();
 
-router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
+/**
+ * Sign up new user
+ */
+router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
+
+    // if there's an image(file) uploaded, then take url(path)
+    if (req.file?.path) {
+        user.thumbnailUrl = req.file?.path
+    }
+
     const isAuthenticated = user.typeLogin == "email" ||
         (user?.facebookAuth && await verifyFBToken(user.facebookAuth?.userId, user.facebookAuth?.token)) ||
         (user?.googleAuth && await verifyGoogleToken(user.googleAuth?.userId, user.googleAuth?.token, user?.email));
@@ -23,24 +55,49 @@ router.post(endpoints.users.SIGN_UP, signUpValidationRules, validate, handleErro
         .json({ profile });
 }));
 
+
+/**
+ * Log in
+ */
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const {accessToken, profile} = await logInUser(req.body);
+    const { accessToken, profile } = await logInUser(req.body);
     res.header(config.headers.accessToken, accessToken)
         .json({ profile });
 }));
 
-router.put(endpoints.users.UPDATE_PROFILE, authenticate, editValidationRules, validate, handleErrorAsync(async (req, res) => {
+
+/**
+ * Update user profile
+ */
+router.put(endpoints.users.UPDATE_PROFILE, authenticate, imageUpload, editValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
-    user.id = req.params?.userId;
+
+    // if there's an image(file) uploaded, then take url(path)
+    if (req.file?.path) {
+        user.thumbnailUrl = req.file?.path
+    }
+    user.id = req.params.userId;
+
     const { profile } = await editUser(user);
     res.json({ profile })
 }))
 
+
+/**
+ * Log out
+ */
 router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErrorAsync(async (req, res) => {
     const accessToken = req.headers[config.headers.accessToken].split(' ')[1];
     if (!accessToken) throw new AuthError();
     const logOut = await logoutUser(accessToken);
-    res.send({logOut});
+    res.send({ logOut });
 }));
+/**
+ * Delete user
+ */
+router.delete(endpoints.users.DELETE_ACCOUNT, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const user = {password: req.body?.password, id: req.params.userId};
+    await deleteUser(user);
+}))
 
 export { router as userRouter }
