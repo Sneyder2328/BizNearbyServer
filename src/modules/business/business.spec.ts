@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app, server } from '../../index';
-import { wipeOutDatabase, insertBusinessData, createUser, createSession } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusiness } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { business, updateBusiness } from '../../test/seed';
 import knex from "../../database/knex";
@@ -254,7 +254,9 @@ describe('PUT' + `/businesses/${businessId}`, () => {
 describe('DELETE' + `/businesses/${businessId}`, () => {
     beforeEach(async () => {
         await wipeOutDatabase();
-        await insertBusinessData();
+        await createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
+        await createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
+        await createBusiness({id: "a8bcd05e-4606-4a55-a5dd-002f8516493e", name: "Bodega Mi encanto", description: "My business it's so nice", bannerUrl: "AnURL"});
     });
 
     it('should delete a business', (done) => {
@@ -272,7 +274,7 @@ describe('DELETE' + `/businesses/${businessId}`, () => {
         request(app)
             .delete('/businesses/8d4b7b25-e249-4550-af02-c43be3054d4f')
             .set('authorization', token)
-            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(httpCodes.NOT_FOUND)
             .expect(res => {
                 expect(res.body['errors'])
             })

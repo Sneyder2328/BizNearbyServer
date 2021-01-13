@@ -60,15 +60,15 @@ export async function createBusinessPhoneNumber({businessId, phoneNumber}:{busin
 }
 
 export async function insertBusinessData(){
-    createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
-    createUser({id: 'f94bcebf-f181-447b-b85f-3c5f36c2a269', fullname: 'Andres Alvarez', email: 'andres@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
-    createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
-    createSession({token: 'b337e27e-bcf0-4154-8a77-96daa873c9e5', userId: 'f94bcebf-f181-447b-b85f-3c5f36c2a269'});
-    createBusiness({id: "a8bcd05e-4606-4a55-a5dd-002f8516493e", name: "Bodega Mi encanto", description: "My business it's so nice", bannerUrl: "AnURL"});
-    createUserBusiness({userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e"});
-    createBusinessAddress({id: "eee15b20-917f-4d69-a055-e306d938d196", businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", address: "Calle 50 entre carreras 14 y 15", cityCode: 212, stateCode: 12, countryCode: 862, latitude: 10.059972, longitude: -69.340570});
-    createBusinessCategory({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", categoryCode: 1});
-    createBusinessHours([{
+    await createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
+    await createUser({id: 'f94bcebf-f181-447b-b85f-3c5f36c2a269', fullname: 'Andres Alvarez', email: 'andres@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
+    await createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
+    await createSession({token: 'b337e27e-bcf0-4154-8a77-96daa873c9e5', userId: 'f94bcebf-f181-447b-b85f-3c5f36c2a269'});
+    await createBusiness({id: "a8bcd05e-4606-4a55-a5dd-002f8516493e", name: "Bodega Mi encanto", description: "My business it's so nice", bannerUrl: "AnURL"});
+    await createUserBusiness({userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e"});
+    await createBusinessAddress({id: "eee15b20-917f-4d69-a055-e306d938d196", businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", address: "Calle 50 entre carreras 14 y 15", cityCode: 212, stateCode: 12, countryCode: 862, latitude: 10.059972, longitude: -69.340570});
+    await createBusinessCategory({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", categoryCode: 1});
+    await createBusinessHours([{
         day: 1,
         openTime: 600,
         closeTime: 1200
@@ -78,5 +78,5 @@ export async function insertBusinessData(){
         openTime: 1300,
         closeTime: 1830
     }]);
-    createBusinessPhoneNumber({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", phoneNumber: "04125568177"})
+    await createBusinessPhoneNumber({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", phoneNumber: "04125568177"})
 }

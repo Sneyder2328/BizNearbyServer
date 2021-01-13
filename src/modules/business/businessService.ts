@@ -69,7 +69,7 @@ export const addNewBusiness = async ({ userId, businessId, addressId, name, desc
 const verifyUserHasAccessToBusiness = async (userId: string, businessId: string) => {
     const userBusiness = (await UserBusiness.query().where('userId', userId).andWhere('businessId', businessId))[0];
     if (!userBusiness) {
-        throw new AppError(httpCodes.FORBIDDEN, 'No permission error', 'You do not have admin permission for the given business');
+        throw new AppError(httpCodes.UNAUTHORIZED, 'No permission error', 'You do not have admin permission for the given business');
     }
 };
 
