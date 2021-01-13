@@ -75,7 +75,7 @@ export const deleteUser = async ({password, id}) => {
 
     const userDeleted = await User.query().updateAndFetchById(id, {'deletedAt': new Date()});
     await Business.query().patch({'deletedAt': new Date()})
-        .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = '+ userDeleted.id +')'))
+        .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = "'+ userDeleted.id +'")'))
         .andWhere(raw('deletedAt IS NULL'));
     
     return userDeleted.deletedAt != null;
