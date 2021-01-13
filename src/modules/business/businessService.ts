@@ -141,12 +141,6 @@ export const updateBusiness = async ({userId, businessId, addressId, emailNewUse
         businessPhoneNumbersAdded = await Promise.all(businessPhoneNumbers);
     }
 
-    console.log({
-        businessAddress: { businessAddressUpdated },
-        categories: { businessCategoriesAdded },
-        hours: { businessHoursAdded },
-        phoneNumbers: { businessPhoneNumbersAdded }
-    });
     return {
         ...businessUpdated,
         businessAddress: businessAddressUpdated,
