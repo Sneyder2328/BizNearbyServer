@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app, server } from '../../index';
-import { wipeOutDatabase, createSession } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { business, updateBusiness } from '../../test/seed';
 import knex from "../../database/knex";
@@ -11,11 +11,9 @@ const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
 const businessId = "a8bcd05e-4606-4a55-a5dd-002f8516493e"
 
 describe('POST' + '/businesses', () => {
-    let session: string;
     beforeEach(async () => {
         await wipeOutDatabase();
-        session=genUUID();
-        await createSession(session);
+        await insertBusinessData();
     });
 
     it('should create new business', (done) => {
@@ -90,7 +88,10 @@ describe('POST' + '/businesses', () => {
 });
 
 describe('PUT' + `/businesses/${businessId}`, () => {
-    // UPDATE BUSINESS TESTS
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        await insertBusinessData();
+    });
 
     it('should update business name', (done) => {
         request(app)
@@ -250,7 +251,10 @@ describe('PUT' + `/businesses/${businessId}`, () => {
 });
 
 describe('DELETE' + `/businesses/${businessId}`, () => {
-    // DELETE TEST
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        await insertBusinessData();
+    });
 
     it('should delete a business', (done) => {
         request(app)
