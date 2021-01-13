@@ -3,12 +3,14 @@ import { userRouter } from './user/user';
 import { businessRouter } from './business/business';
 import { errorHandler } from '../middlewares/errorHandler';
 import { moderatorRouter } from './moderator/moderator';
+import { reportRouter } from './report/report';
 
 const router = Router();
 
 router.use('/', userRouter);
 router.use('/', businessRouter);
 router.use('/', moderatorRouter);
+router.use('/', reportRouter);
 router.use(errorHandler)
 
 export default router;

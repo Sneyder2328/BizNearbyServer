@@ -10,8 +10,8 @@ export const paramUserIdValidationRules = [
 export const signUpValidationRules = [
     body('id').trim().matches(config.regex.uuidV4).withMessage("Invalid Id"),
     body('fullname').customSanitizer(trimInside()).escape().isString()
-        .isLength({ min: 5 }).withMessage('Full name must be at least 5 characters long')
-        .isLength({ max: 250 }).withMessage("Full Name too long"),
+        .isLength({ min: 4 }).withMessage('Full name must be at least 4 characters long')
+        .isLength({ max: 70 }).withMessage("Full Name too long"),
     body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address')
         .isLength({ max: 250 }).withMessage('email too long'),
     body('phoneNumber').trim().isString().escape()
