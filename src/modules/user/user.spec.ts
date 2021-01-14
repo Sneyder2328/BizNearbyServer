@@ -207,7 +207,6 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     });
 })
 
-
 describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();

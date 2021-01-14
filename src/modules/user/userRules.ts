@@ -55,18 +55,21 @@ export const logInValidationRules = [
 
 export const editValidationRules = [
     param('userId').exists().matches(config.regex.uuidV4),
-    body('email').trim().escape(),
-    body('password').escape()
-        .optional({ nullable: true }),
     body('fullname').customSanitizer(trimInside()).escape().isString()
-        .isLength({ min: 5 }).withMessage('Full name must be at least 5 characters long')
-        .isLength({ max: 250 }).withMessage("Full Name too long"),
+        .isLength({ min: 4 }).withMessage('Full name must be at least 4 characters long')
+        .isLength({ max: 70 }).withMessage("Full Name too long"),
+    body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address')
+        .isLength({ max: 250 }).withMessage('email too long'),
     body('phoneNumber').trim().isString().escape()
         .optional({ nullable: true })
         .isLength({ max: 50 }).withMessage('phoneNumber too long'),
     body('thumbnailUrl').trim().isString().escape()
         .optional({ nullable: true })
         .isLength({ max: 500 }).withMessage('thumbnailUrl too long'),
+    body('password').trim().isString().escape()
+        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+        .isLength({ max: 255 }).withMessage('Password too long')
+        .optional({ nullable: true })
 ];
 
 export const deleteValidationRules = [
