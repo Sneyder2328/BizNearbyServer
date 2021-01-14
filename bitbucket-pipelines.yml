@@ -12,35 +12,15 @@
 # For advanced cases, please, follow examples from the pipe's README https://bitbucket.org/microsoft/azure-web-apps-deploy/src/1.0.3/README.md
 image: node:10.15.3
 
+clone:
+  depth: full
+
 pipelines:
   branches:
     master:
-      - step:
-          name: Build
-          caches:
-            - node
-          script:
-            - npm install
-            - npm run build-tsc
-            #- npm test
-            #- apt update && apt install zip
-            # Exclude files to be ignored
-            #- zip -r app-$BITBUCKET_BUILD_NUMBER.zip . -x *.git* bitbucket-pipelines.yml
-          artifacts:
-            - dist/** # this will make sure the dist/ folder is available to the next 
-      - step:
-          name: Create artifact
-          script:
-            - tar czfv application.tgz dist/
-          artifacts:
-            - application.tgz
       - step:
           name: Deploy to Production
           trigger: manual
           deployment: Production
           script:
-            - pipe: atlassian/heroku-deploy:1.2.1
-              variables:
-                HEROKU_API_KEY: $HEROKU_API_KEY
-                HEROKU_APP_NAME: $HEROKU_APP_NAME
-                ZIP_FILE: "application.tgz"
+            - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master -f
