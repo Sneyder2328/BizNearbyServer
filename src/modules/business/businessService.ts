@@ -22,7 +22,7 @@ const verifyUser = async (userId: string) => {
 
 export const addNewBusiness = async ({ userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
 
-    verifyUser(userId);
+    await verifyUser(userId);
 
     const business = await Business.query().insert({ id: businessId, name, bannerUrl, description });
 
@@ -75,7 +75,7 @@ const verifyUserHasAccessToBusiness = async (userId: string, businessId: string)
 
 /**
  * Verify if the business exist in the database
- * @param businessIdId
+ * @param businessId
  */
 const verifyBusiness = async (businessId: string) => {
     if (!await Business.query().findById(businessId)){
@@ -83,13 +83,29 @@ const verifyBusiness = async (businessId: string) => {
     } 
 };
 
+/**
+ * Verify if the business address exist in the database and if is relationated with businessId
+ * @param businessId
+ */
+const verifyBusinessAddress = async (addressId: string, businessId: string) => {
+    if (!await BusinessAddress.query().findById(addressId)){
+        throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+    } else{
+        if(!await BusinessAddress.query().findOne({id: addressId, businessId: businessId})){
+            throw new AppError(httpCodes.BAD_REQUEST, errors.BAD_REQUEST, errors.message.BAD_REQUEST);
+        }
+    }
+};
+
 export const updateBusiness = async ({userId, businessId, addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
 
-    verifyUser(userId);
+    await verifyUser(userId);
 
-    verifyBusiness(businessId);
+    await verifyBusiness(businessId);
 
-    verifyUserHasAccessToBusiness(userId, businessId);
+    await verifyUserHasAccessToBusiness(userId, businessId);
+
+    await verifyBusinessAddress(addressId, businessId)
 
     const businessUpdated = await Business.query().patchAndFetchById(businessId, {
         name, bannerUrl, description
@@ -151,11 +167,11 @@ export const updateBusiness = async ({userId, businessId, addressId, emailNewUse
 };
 
 export const deleteBusiness = async (userId, businessId) => {
-    verifyUser(userId);
+    await verifyUser(userId);
 
-    verifyBusiness(businessId);
+    await verifyBusiness(businessId);
 
-    verifyUserHasAccessToBusiness(userId, businessId);
+    await verifyUserHasAccessToBusiness(userId, businessId);
 
     const businessDeleted = await Business.query().patch({deletedAt: new Date()}).where('id', businessId);
 

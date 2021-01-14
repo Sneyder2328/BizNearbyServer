@@ -1,4 +1,5 @@
 export const errors = {
+    BAD_REQUEST: 'Bad request',
     NOT_FOUND: 'Not found',
     EMAIL: 'email',
     DEFAULT_ERROR: 'Error',
@@ -11,6 +12,7 @@ export const errors = {
     FORBIDDEN: "Forbidden",
 
     message: {
+        BAD_REQUEST: 'Bad request',
         RECORD_DUPLICATED: 'The record you are trying to create already exists in the database',
         PERMISSION_NOT_GRANTED: "You do not have permissions to access this route",
         USER_NOT_FOUND: "User not found",

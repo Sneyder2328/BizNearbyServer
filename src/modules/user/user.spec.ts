@@ -105,7 +105,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
 describe('POST ' + endpoints.auth.LOG_IN, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
-        await Promise.all(users.slice(0,3).map(async user => await createUser(user)));
+        // await Promise.all(users.slice(0,3).map(async user => await createUser(user)));
     });
 
     it("should Log in with email", done=>{
