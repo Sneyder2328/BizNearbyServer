@@ -1,11 +1,14 @@
 import request from "supertest";
 import {app, server} from "../../index";
-import {wipeOutDatabase, createUser} from "../../test/setup";
+import {wipeOutDatabase, createUser, createSession} from "../../test/setup";
 import {endpoints} from "../../utils/constants/endpoints";
 import {httpCodes} from "../../utils/constants/httpResponseCodes";
 import {admin, users, moderator} from "../../test/seed";
 import {errors} from "../../utils/constants/errors";
 import knex from "../../database/knex";
+
+const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
+const userId = users[0].id;
 
 describe('POST ' + endpoints.users.SIGN_UP, () => {
     beforeEach(async () => {
@@ -115,8 +118,12 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
 describe('POST ' + endpoints.auth.LOG_IN, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
+        //@ts-ignore
         await Promise.all(users.slice(0,3).map(async user => await createUser(user)));
+        //@ts-ignore
         await createUser(admin);
+        //@ts-ignore
+        await createUser(moderator);
     });
 
     it("should Log in with email", done=>{
@@ -180,8 +187,8 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .send({email: users[0], password: '123', typeLogin: 'email'})
             .expect(httpCodes.NOT_FOUND)
             .expect(res=>{
-                expect(res.body?.error).toBe(errors.USER_NOT_FOUND_ERROR);
-                expect(res.body?.message).toBe(errors.message.USER_NOT_FOUND);
+                expect(res.body.error).toBe(errors.USER_NOT_FOUND_ERROR);
+                expect(res.body.message).toBe(errors.message.USER_NOT_FOUND);
             })
             .end(done);
     });
@@ -193,12 +200,90 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .send({email: "1212121212dfssdfsdf", password: '123', typeLogin: 'google'})
             .expect(httpCodes.NOT_FOUND)
             .expect(res=>{
-                expect(res.body?.error).toBe(errors.USER_NOT_FOUND_ERROR);
-                expect(res.body?.message).toBe(errors.message.USER_NOT_FOUND);
+                expect(res.body.error).toBe(errors.USER_NOT_FOUND_ERROR);
+                expect(res.body.message).toBe(errors.message.USER_NOT_FOUND);
             })
             .end(done);
     });
 })
+
+
+describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
+    beforeEach(async ()=>{
+        await wipeOutDatabase();
+        //@ts-ignore
+        await createUser({...users[0]});
+        await createSession({token: token.split(' ')[1], userId });
+    })
+
+    it('should update user', done => {
+        request(app)
+            .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
+            .set('authorization', token)
+            .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.profile).toStrictEqual({fullname: "the mandalorean", email: "john@gmail.com", id: users[0].id, thumbnailUrl: users[0].thumbnailUrl, typeUser: users[0].typeUser})
+            })
+            .end(done)
+    });
+
+    it('should not update user due to password being too short', done => {
+        request(app)
+            .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
+            .set('authorization', token)
+            .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: "123"})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                console.log(res.body);
+                expect(res.body.errors);
+            })
+            .end(done)
+    });
+})
+
+describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
+
+    beforeEach(async ()=>{
+        await wipeOutDatabase();
+        //@ts-ignore
+        await createUser({...users[0]});
+        await createSession({token: token.split(' ')[1], userId });
+    })
+
+    it('should logout user', done => {
+        request(app)
+            .delete(endpoints.auth.LOG_OUT)
+            .set('authorization', token)
+            .expect(httpCodes.OK)
+            .expect(res=>{
+                expect(res.body.logOut).toBe(true)
+            })
+            .end(done)
+    });
+
+    it('should not logout user due to wrong authorization token', done => {
+        request(app)
+            .delete(endpoints.auth.LOG_OUT)
+            .set('authorization', token + "21")
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res=>{
+                expect(res.body.errors)
+            })
+            .end(done)
+    });
+
+    it('should not logout user due to absence of a token', done => {
+        request(app)
+            .delete(endpoints.auth.LOG_OUT)
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res=>{
+                expect(res.body.errors)
+            })
+            .end(done)
+    });
+})
+
 
 afterAll(()=>{
     knex.destroy();

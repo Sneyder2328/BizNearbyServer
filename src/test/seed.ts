@@ -137,7 +137,7 @@ export const moderator = {
     thumbnailUrl: 'myPic',
     password: '123456789',
     typeLogin: 'email',
-    typeUser: 'admin'
+    typeUser: 'moderator'
 }
 
 export const business = [
