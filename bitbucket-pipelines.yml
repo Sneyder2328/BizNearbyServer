@@ -2,33 +2,67 @@
 # Use a skeleton to build, test and deploy using manual and parallel steps
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: atlassian/default-image:2
+#  Template NodeJS Web Application for Azure Web App service
+
+#  This template allows you to deploy your NodeJS web application to Azure Web App Service.
+#  The workflow allows running tests, code linting and security scans on feature branches (as well as master).
+#  The NodeJS application will be validated after the code is merged to master and deployment can be triggered manually.
+
+# Prerequisites: $$AZURE_APP_ID, $AZURE_PASSWORD, $AZURE_TENANT_ID, $AZURE_RESOURCE_GROUP, $AZURE_APP_NAME setup in the Deployment variables.
+# For advanced cases, please, follow examples from the pipe's README https://bitbucket.org/microsoft/azure-web-apps-deploy/src/1.0.3/README.md
+image: node:10.15.3
 
 pipelines:
   default:
     - parallel:
       - step:
-          name: 'Build and Test'
+          name: Build and Test
+          caches:
+            - node
           script:
-            - echo "Your build and test goes here..."
+            - npm install
+            - npm test
       - step:
-          name: 'Lint'
+          name: Code linting
           script:
-            - echo "Your linting goes here..."
+            - npm install eslint
+            - npx eslint .
+          caches:
+            - node
+  branches:
+    master:
+      - parallel:
+        - step:
+            name: Build and Test
+            caches:
+              - node
+            script:
+              - npm install
+              - npm test
+              - apt update && apt install zip
+              # Exclude files to be ignored
+              - zip -r app-$BITBUCKET_BUILD_NUMBER.zip . -x *.git* bitbucket-pipelines.yml
+            artifacts:
+              - "*.zip"
+        - step:
+            name: Security Scan
+            script:
+              # Run a security scan for sensitive data.
+              # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
+              - pipe: atlassian/git-secrets-scan:0.4.3
       - step:
-          name: 'Security scan'
+          name: Create artifact
           script:
-            - echo "Your security scan goes here..."
-
-    # The following deployment steps will be executed for each pipeline run. To configure your steps and conditionally deploy see https://support.atlassian.com/bitbucket-cloud/docs/configure-bitbucket-pipelinesyml/
-    - step:
-        name: 'Deployment to Staging'
-        deployment: staging
-        script:
-          - echo "Your deployment to staging script goes here..."
-    - step:
-        name: 'Deployment to Production'
-        deployment: production
-        trigger: 'manual'
-        script:
-          - echo "Your deployment to production script goes here..."
+            - tar czfv application.tgz dist/
+          artifacts:
+            - application.tgz
+      - step:
+          name: Deploy to Production
+          trigger: manual
+          deployment: Production
+          script:
+            - pipe: atlassian/heroku-deploy:1.2.1
+              variables:
+                HEROKU_API_KEY: $HEROKU_API_KEY
+                HEROKU_APP_NAME: $HEROKU_APP_NAME
+                ZIP_FILE: "application.tgz"
