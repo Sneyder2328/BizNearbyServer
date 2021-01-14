@@ -15,26 +15,19 @@ image: node:10.15.3
 pipelines:
   branches:
     master:
-      - parallel:
-        - step:
-            name: Build
-            caches:
-              - node
-            script:
-              - npm install
-              - npm run build-tsc
-              #- npm test
-              #- apt update && apt install zip
-              # Exclude files to be ignored
-              #- zip -r app-$BITBUCKET_BUILD_NUMBER.zip . -x *.git* bitbucket-pipelines.yml
-            artifacts:
-              - "dist/"
-        - step:
-            name: Security Scan
-            script:
-              # Run a security scan for sensitive data.
-              # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
-              - pipe: atlassian/git-secrets-scan:0.4.3
+      - step:
+          name: Build
+          caches:
+            - node
+          script:
+            - npm install
+            - npm run build-tsc
+            #- npm test
+            #- apt update && apt install zip
+            # Exclude files to be ignored
+            #- zip -r app-$BITBUCKET_BUILD_NUMBER.zip . -x *.git* bitbucket-pipelines.yml
+          artifacts:
+            - dist/
       - step:
           name: Create artifact
           script:
