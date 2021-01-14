@@ -28,7 +28,7 @@ pipelines:
               # Exclude files to be ignored
               #- zip -r app-$BITBUCKET_BUILD_NUMBER.zip . -x *.git* bitbucket-pipelines.yml
             artifacts:
-              - "*.zip"
+              - "dist/"
         - step:
             name: Security Scan
             script:
