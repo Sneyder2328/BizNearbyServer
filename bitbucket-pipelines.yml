@@ -13,35 +13,19 @@
 image: node:10.15.3
 
 pipelines:
-  default:
-    - parallel:
-      - step:
-          name: Build and Test
-          caches:
-            - node
-          script:
-            - npm install
-            - npm test || true
-      - step:
-          name: Code linting
-          script:
-            - npm install eslint
-            - npx eslint .
-          caches:
-            - node
   branches:
     master:
       - parallel:
         - step:
-            name: Build and Test
+            name: Build
             caches:
               - node
             script:
               - npm install
-              - npm test
-              - apt update && apt install zip
+              #- npm test
+              #- apt update && apt install zip
               # Exclude files to be ignored
-              - zip -r app-$BITBUCKET_BUILD_NUMBER.zip . -x *.git* bitbucket-pipelines.yml
+              #- zip -r app-$BITBUCKET_BUILD_NUMBER.zip . -x *.git* bitbucket-pipelines.yml
             artifacts:
               - "*.zip"
         - step:
