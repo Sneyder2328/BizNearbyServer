@@ -52,7 +52,7 @@ router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validat
 
     const { profile, accessToken } = await signUpUser(user);
     res.header(config.headers.accessToken, accessToken)
-        .json({ profile });
+        .json({ ...profile });
 }));
 
 
@@ -62,7 +62,7 @@ router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validat
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
     const { accessToken, profile } = await logInUser(req.body);
     res.header(config.headers.accessToken, accessToken)
-        .json({ profile });
+        .json({ ...profile });
 }));
 
 
@@ -79,7 +79,7 @@ router.put(endpoints.users.UPDATE_PROFILE, authenticate, imageUpload, editValida
     user.id = req.params.userId;
 
     const { profile } = await editUser(user);
-    res.json({ profile })
+    res.json({ ...profile })
 }))
 
 
@@ -92,6 +92,8 @@ router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErr
     const logOut = await logoutUser(accessToken);
     res.send({ logOut });
 }));
+
+
 /**
  * Delete user
  */
