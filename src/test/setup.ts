@@ -7,6 +7,7 @@ import { BusinessImage } from '../database/models/BusinessImage';
 import { BusinessPhoneNumber } from '../database/models/BusinessPhoneNumber';
 import { UserBusiness } from '../database/models/UserBusiness';
 import { Session } from '../database/models/Session';
+import { Report } from '../database/models/Report';
 
 export async function wipeOutDatabase(){
     await User.query().delete();
@@ -17,6 +18,7 @@ export async function wipeOutDatabase(){
     await BusinessHours.query().delete();
     await BusinessImage.query().delete();
     await BusinessPhoneNumber.query().delete();
+    await Report.query().delete();
 }    
 export async function createUser({id, fullname, email, password, typeLogin, typeUser}:{id: string; fullname: string; email: string; password: string; typeLogin: "email" | "facebook" | "google"; typeUser: "moderator" | "normal" | "admin";}){
     //delete user?.googleAuth;

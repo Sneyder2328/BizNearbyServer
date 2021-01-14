@@ -6,7 +6,6 @@ import { wipeOutDatabase, createUser, createSession, createBusiness, createUserB
 import { newReport } from '../../test/seed';
 
 const token = 'Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5';
-const businessId = 'a8bcd05e-4606-4a55-a5dd-002f8516493e';
 
 describe('POST' + '/reports', () => {
     beforeEach(async () => {
@@ -94,7 +93,7 @@ describe('POST' + '/reports', () => {
             .post('/reports')
             .set('authorization', token)
             .send(newReport[5])
-            .expect(httpCodes.OK)
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body['errors']);
             })
