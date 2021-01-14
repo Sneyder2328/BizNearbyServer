@@ -22,6 +22,7 @@ pipelines:
               - node
             script:
               - npm install
+              - npm run build-tsc
               #- npm test
               #- apt update && apt install zip
               # Exclude files to be ignored
