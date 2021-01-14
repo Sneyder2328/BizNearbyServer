@@ -71,7 +71,7 @@ router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAs
  */
 router.put(endpoints.users.UPDATE_PROFILE, authenticate, imageUpload, editValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
-
+    console.log(user);
     // if there's an image(file) uploaded, then take url(path)
     if (req.file?.path) {
         user.thumbnailUrl = req.file?.path
