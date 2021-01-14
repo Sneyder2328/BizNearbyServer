@@ -27,7 +27,7 @@ pipelines:
             # Exclude files to be ignored
             #- zip -r app-$BITBUCKET_BUILD_NUMBER.zip . -x *.git* bitbucket-pipelines.yml
           artifacts:
-            - dist/
+            - dist/** # this will make sure the dist/ folder is available to the next 
       - step:
           name: Create artifact
           script:
