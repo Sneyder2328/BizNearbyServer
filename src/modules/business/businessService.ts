@@ -180,17 +180,22 @@ export const deleteBusiness = async (userId, businessId) => {
     return isBusinessDeleted;
 };
 
-export const businessesByUser = async (userId) => {
+export const businessesByUser = async (userId, reqUserId) => {
     await verifyUser(userId);
-    const businesses = await UserBusiness.query().where('userId', userId);
-    const result = await Promise.all(businesses.map(async ({ businessId }) => {
-        return {
-            ...(await Business.query().where({ id: businessId }))?.[0],
-            address: (await BusinessAddress.query().where({ businessId: businessId }))?.[0],
-            hours: await BusinessHours.query().where({ businessId: businessId}),
-            categories: await BusinessCategory.query().where({ businessId: businessId }),
-            phoneNumbers: await BusinessPhoneNumber.query().where({ businessId: businessId })
-        };
-    }));
-    return result;
+    const reqUserType = await User.query().findById(reqUserId);
+    if(userId === reqUserId || reqUserType.typeUser === 'admin' || reqUserType.typeUser === 'moderator'){
+        const businesses = await UserBusiness.query().where('userId', userId);
+        const result = await Promise.all(businesses.map(async ({ businessId }) => {
+            return {
+                ...(await Business.query().where({ id: businessId }))?.[0],
+                address: (await BusinessAddress.query().where({ businessId: businessId }))?.[0],
+                hours: await BusinessHours.query().where({ businessId: businessId}),
+                categories: await BusinessCategory.query().where({ businessId: businessId }),
+                phoneNumbers: await BusinessPhoneNumber.query().where({ businessId: businessId })
+            };
+        }));
+        return result;
+    } else{
+        throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+    }
 };
