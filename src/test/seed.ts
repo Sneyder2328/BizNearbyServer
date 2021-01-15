@@ -118,6 +118,28 @@ export const users = [
     }
 ];
 
+export const admin = {
+    id: genUUID(),
+    fullname: 'Douglas Matias',
+    email: 'douglas@gmail.com',
+    phoneNumber: '123456',
+    thumbnailUrl: 'myPic',
+    password: '123456789',
+    typeLogin: 'email',
+    typeUser: 'admin'
+}
+
+export const moderator = {
+    id: genUUID(),
+    fullname: 'Abel moderator',
+    email: 'Abel@gmail.com',
+    phoneNumber: '123456',
+    thumbnailUrl: 'myPic',
+    password: '123456789',
+    typeLogin: 'email',
+    typeUser: 'moderator'
+}
+
 export const business = [
     {
         // GOOD BUSINESS

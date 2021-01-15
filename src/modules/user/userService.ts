@@ -56,6 +56,8 @@ export const logInUser = async ({ email, password, typeLogin, facebookAuth, goog
 export const editUser = async ({ id, fullname, password, email, phoneNumber, thumbnailUrl }) => {
     const userExists = await User.query().findById(id);
     if (!userExists) throw new UserNotFoundError();
+    const emailConflict = await User.query().findOne({'email': email})
+    if (emailConflict && emailConflict.email != email) throw new AppError(httpCodes.CONFLICT, errors.EMAIL, errors.message.EMAIL_TAKEN);
 
     const userUpdated = await User.query().patchAndFetchById(id, { fullname, password, email, phoneNumber, thumbnailUrl });
     return { profile: _.pick(userUpdated, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser']) }
