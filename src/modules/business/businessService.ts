@@ -187,6 +187,7 @@ export const businessesByUser = async (userId) => {
         return {
             ...(await Business.query().where({ id: businessId }))?.[0],
             address: (await BusinessAddress.query().where({ businessId: businessId }))?.[0],
+            hours: await BusinessHours.query().where({ businessId: businessId}),
             categories: await BusinessCategory.query().where({ businessId: businessId }),
             phoneNumbers: await BusinessPhoneNumber.query().where({ businessId: businessId })
         };
