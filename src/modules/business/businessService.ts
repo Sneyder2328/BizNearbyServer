@@ -14,9 +14,9 @@ import { User } from '../../database/models/User';
  * @param userId
  */
 const verifyUser = async (userId: string) => {
-    if (!await User.query().findById(userId)){
+    if (!await User.query().findById(userId)) {
         throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
-    } 
+    }
 };
 
 
@@ -78,9 +78,9 @@ const verifyUserHasAccessToBusiness = async (userId: string, businessId: string)
  * @param businessId
  */
 const verifyBusiness = async (businessId: string) => {
-    if (!await Business.query().findById(businessId)){
+    if (!await Business.query().findById(businessId)) {
         throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
-    } 
+    }
 };
 
 /**
@@ -88,16 +88,16 @@ const verifyBusiness = async (businessId: string) => {
  * @param businessId
  */
 const verifyBusinessAddress = async (addressId: string, businessId: string) => {
-    if (!await BusinessAddress.query().findById(addressId)){
+    if (!await BusinessAddress.query().findById(addressId)) {
         throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
-    } else{
-        if(!await BusinessAddress.query().findOne({id: addressId, businessId: businessId})){
+    } else {
+        if (!await BusinessAddress.query().findOne({ id: addressId, businessId: businessId })) {
             throw new AppError(httpCodes.BAD_REQUEST, errors.BAD_REQUEST, errors.message.BAD_REQUEST);
         }
     }
 };
 
-export const updateBusiness = async ({userId, businessId, addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
+export const updateBusiness = async ({ userId, businessId, addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
 
     await verifyUser(userId);
 
@@ -173,9 +173,29 @@ export const deleteBusiness = async (userId, businessId) => {
 
     await verifyUserHasAccessToBusiness(userId, businessId);
 
-    const businessDeleted = await Business.query().patch({deletedAt: new Date()}).where('id', businessId);
+    const businessDeleted = await Business.query().patch({ deletedAt: new Date() }).where('id', businessId);
 
     const isBusinessDeleted = businessDeleted > 0;
 
     return isBusinessDeleted;
+};
+
+export const businessesByUser = async (userId, reqUserId) => {
+    await verifyUser(userId);
+    const reqUserType = await User.query().findById(reqUserId);
+    if(userId === reqUserId || reqUserType.typeUser === 'admin' || reqUserType.typeUser === 'moderator'){
+        const businesses = await UserBusiness.query().where('userId', userId);
+        const result = await Promise.all(businesses.map(async ({ businessId }) => {
+            return {
+                ...(await Business.query().where({ id: businessId }))?.[0],
+                address: (await BusinessAddress.query().where({ businessId: businessId }))?.[0],
+                hours: await BusinessHours.query().where({ businessId: businessId}),
+                categories: await BusinessCategory.query().where({ businessId: businessId }),
+                phoneNumbers: await BusinessPhoneNumber.query().where({ businessId: businessId })
+            };
+        }));
+        return result;
+    } else{
+        throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+    }
 };
