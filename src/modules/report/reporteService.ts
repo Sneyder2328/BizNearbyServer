@@ -26,9 +26,9 @@ const verifyBusiness = async (businessId: string) => {
 };
 
 export const newReport = async ({id, userId, businessId, title, description}) => {
-    verifyUser(userId);
+    await verifyUser(userId);
 
-    verifyBusiness(businessId);
+    await verifyBusiness(businessId);
 
     const report = await Report.query().insert({id, userId, businessId, title, description});
 
