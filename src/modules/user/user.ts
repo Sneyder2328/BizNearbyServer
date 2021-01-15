@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { signUpValidationRules, logInValidationRules, logOutValidationRules, editValidationRules, deleteValidationRules } from './userRules';
+import { signUpValidationRules, logInValidationRules, editValidationRules, deleteValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { signUpUser, logInUser, logoutUser, editUser, deleteUser } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
@@ -69,9 +69,9 @@ router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAs
 /**
  * Update user profile
  */
-router.put(endpoints.users.UPDATE_PROFILE, authenticate, imageUpload, editValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.put(endpoints.users.UPDATE_PROFILE, editValidationRules, validate, authenticate, imageUpload, handleErrorAsync(async (req, res) => {
     const user = req.body;
-    console.log(user);
+    if (req.userId != req.params.userId) throw new AuthError();
     // if there's an image(file) uploaded, then take url(path)
     if (req.file?.path) {
         user.thumbnailUrl = req.file?.path
@@ -86,9 +86,8 @@ router.put(endpoints.users.UPDATE_PROFILE, authenticate, imageUpload, editValida
 /**
  * Log out
  */
-router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.delete(endpoints.auth.LOG_OUT, authenticate, handleErrorAsync(async (req, res) => {
     const accessToken = req.headers[config.headers.accessToken].split(' ')[1];
-    if (!accessToken) throw new AuthError();
     const logOut = await logoutUser(accessToken);
     res.send({ logOut });
 }));
@@ -98,6 +97,8 @@ router.delete(endpoints.auth.LOG_OUT, logOutValidationRules, validate, handleErr
  * Delete user
  */
 router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
+    if(req.userId != req.params.userId) throw new AuthError();
+
     const user = {password: req.body?.password, id: req.params.userId};
     const deleted = await deleteUser(user);
     res.json({deleted});

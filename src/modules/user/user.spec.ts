@@ -9,6 +9,8 @@ import knex from "../../database/knex";
 
 const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
 const userId = users[0].id;
+const userId2 = users[1].id;
+const token2 = "Bearer fcd84d1f-ee2b-4636-9f61-78dc349f23e5";
 
 describe('POST ' + endpoints.users.SIGN_UP, () => {
     beforeEach(async () => {
@@ -222,23 +224,117 @@ describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
             .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body.profile).toStrictEqual({fullname: "the mandalorean", email: "john@gmail.com", id: users[0].id, thumbnailUrl: users[0].thumbnailUrl, typeUser: users[0].typeUser})
+                expect(res.body).toStrictEqual({fullname: "the mandalorean", email: "john@gmail.com", id: users[0].id, thumbnailUrl: users[0].thumbnailUrl, typeUser: users[0].typeUser})
             })
             .end(done)
     });
 
-    it('should not update user due to password being too short', done => {
+    it('should not update user without authorization', done => {
+        request(app)
+            .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
+            .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.errors)
+            })
+            .end(done)
+    });
+
+    it('should not update user due to bad input data', done => {
         request(app)
             .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
             .set('authorization', token)
-            .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: "123"})
-            .expect(httpCodes.OK)
+            .send({fullname: "KFC", email: "johngmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: "123"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                console.log(res.body);
+                expect(res.body.errors.length).toBe(3);
+            })
+            .end(done)
+    });
+
+    it('should not update user due to null email and fullname', done => {
+        request(app)
+            .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
+            .set('authorization', token)
+            .send({fullname: null, email: null, phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: "123"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
                 expect(res.body.errors);
             })
             .end(done)
     });
+})
+
+describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
+    beforeEach(async ()=>{
+        await wipeOutDatabase();
+        //@ts-ignore
+        await createUser({...users[0]});
+        //@ts-ignore
+        await createUser({...users[1]});
+        await createSession({token: token.split(' ')[1], userId });
+        await createSession({token: token2.split(' ')[1], userId: userId2 });
+    })
+
+    it('should delete account', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .set('authorization', token)
+            .send({'password': users[0].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    });
+
+    it('should not delete account without authorization', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .send({'password': users[0].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.errors);
+            })
+            .end(done)
+    });
+
+    it('should not delete account due to wrong password', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .set('authorization', token)
+            .send({'password': users[0].password + "1"})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                console.log(res.body);
+                expect(res.body.error).toBe(errors.CREDENTIAL);
+            })
+            .end(done)
+    });
+
+    it('should delete account due to nothing being sent', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .set('authorization', token)
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body);
+            })
+            .end(done)
+    });
+
+    it('should not delete account by another user', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .set('authorization', token2)
+            .send({'password': users[0].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body);
+            })
+            .end(done)
+    });
+
 })
 
 describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
@@ -265,7 +361,7 @@ describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
         request(app)
             .delete(endpoints.auth.LOG_OUT)
             .set('authorization', token + "21")
-            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(httpCodes.UNAUTHORIZED)
             .expect(res=>{
                 expect(res.body.errors)
             })
@@ -275,14 +371,13 @@ describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
     it('should not logout user due to absence of a token', done => {
         request(app)
             .delete(endpoints.auth.LOG_OUT)
-            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(httpCodes.UNAUTHORIZED)
             .expect(res=>{
                 expect(res.body.errors)
             })
             .end(done)
     });
 })
-
 
 afterAll(()=>{
     knex.destroy();

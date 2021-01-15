@@ -1,7 +1,7 @@
 import config from "../../config/config";
 import { body, header, param } from "express-validator";
 
-const trimInside = () => str => str.replace(/\s\s/g, ' ');
+const trimInside = () => (str?: String) => str?.replace(/\s\s/g, ' ');
 
 export const paramUserIdValidationRules = [
     param('userId').trim().matches(config.regex.uuidV4)
@@ -75,10 +75,6 @@ export const editValidationRules = [
 export const deleteValidationRules = [
     header(config.headers.accessToken).matches(config.regex.authorization),
     body('password').escape()
-]
-
-export const logOutValidationRules = [
-    header(config.headers.accessToken).matches(config.regex.authorization)
 ]
 
 /*
