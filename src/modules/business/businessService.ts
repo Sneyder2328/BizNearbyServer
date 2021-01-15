@@ -179,3 +179,44 @@ export const deleteBusiness = async (userId, businessId) => {
 
     return isBusinessDeleted;
 };
+
+export const businessesByUser = async (userId) => {
+    await verifyUser(userId);
+
+    const businessIds = await UserBusiness.query().where('userId', userId);
+
+    const businessesPromise = businessIds.map(async ({businessId}) => {
+        return await Business.query().where('id', businessId);
+    });
+
+
+    const businessesAddressPromise = businessIds.map(async ({businessId}) => {
+        return await BusinessAddress.query().where('businessId', businessId);
+    });
+
+    const businessesCategoryPromise = businessIds.map(async ({businessId}) => {
+        return await BusinessCategory.query().where('businessId', businessId);
+    });
+
+    const businessesHoursPromise = businessIds.map(async ({businessId}) => {
+        return await BusinessHours.query().where('businessId', businessId);
+    });
+
+    const businessesPhoneNumberPromise = businessIds.map(async ({businessId}) => {
+        return await BusinessPhoneNumber.query().where('businessId', businessId);
+    });
+
+    const businesses = await Promise.all(businessesPromise);
+    const businessesAddress = await Promise.all(businessesAddressPromise);
+    const businessesCategory = await Promise.all(businessesCategoryPromise);
+    const businessesHours = await Promise.all(businessesHoursPromise);
+    const businessesPhoneNumber = await Promise.all(businessesPhoneNumberPromise);
+
+    console.log(businessIds);
+    
+    return {businesses,
+        businessesAddress,
+        businessesCategory,
+        businessesHours,
+        businessesPhoneNumber};
+};
