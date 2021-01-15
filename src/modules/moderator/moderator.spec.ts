@@ -7,17 +7,16 @@ import {admin, users, moderator} from "../../test/seed";
 import {errors} from "../../utils/constants/errors";
 import knex from "../../database/knex";
 
-const adminId = admin.id;
-const adminToken = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5"
 const userId = users[0].id;
 const token = "Bearer fcd84d1f-ee2b-4636-9f61-78dc349f23e5";
+const adminToken = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5"
 
 describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();
         //@ts-ignore
         await createUser({...admin});
-        await createSession({token: adminToken.split(' ')[1], userId: adminId});
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
         //@ts-ignore
         await createUser({...users[0]});
         await createSession({token: token.split(' ')[1], userId})
@@ -57,7 +56,7 @@ describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
 
     it('should not give the role moderator to admin', done => {
         request(app)
-            .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',adminId))
+            .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',admin[0].id))
             .set('authorization', adminToken)
             .expect(httpCodes.FORBIDDEN)
             .expect(res => {
@@ -73,7 +72,7 @@ describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
         await wipeOutDatabase();
         //@ts-ignore
         await createUser({...admin});
-        await createSession({token: adminToken.split(' ')[1], userId: adminId});
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
         //@ts-ignore
         await createUser({...users[0]});
         await createSession({token: token.split(' ')[1], userId})
@@ -113,7 +112,7 @@ describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
 
     it('should not try to remove the role moderator of admin', done => {
         request(app)
-            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',adminId))
+            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',admin[0].id))
             .set('authorization', token)
             .expect(httpCodes.FORBIDDEN)
             .expect(res => {

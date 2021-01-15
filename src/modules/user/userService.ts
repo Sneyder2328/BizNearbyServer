@@ -63,18 +63,38 @@ export const editUser = async ({ id, fullname, password, email, phoneNumber, thu
     return { profile: _.pick(userUpdated, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser']) }
 }
 
+export const getProfile = async (userId) => {
+    const user = await User.query().findById(userId);
+    if(!user) throw new UserNotFoundError();
+    return { profile: _.pick(user, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser'])}
+}
+
 export const logoutUser = async (accessToken: string): Promise<boolean> => {
     const deletedRows = await Session.query().delete().where('token', accessToken);
     return deletedRows != 0
 }
 
-export const deleteUser = async ({password, id}) => {
+export const deleteUser = async ({password, id}, sessionId) => {
     const user = await User.query().findOne('id', id).where(raw('deletedAt IS NULL'));
-
     if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
-    const isPasswordCorrect = await verifyPassword(password, user.password);
-    if(!isPasswordCorrect) throw new AuthError(errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);
-
+    const sessionUser = await User.query().findOne('id', sessionId).where(raw('deletedAt IS NULL'));
+    if(!sessionUser) throw new AuthError();
+    if(sessionId != user.id){
+        switch(sessionUser.typeUser){
+            case 'admin':
+                if(user.typeUser == 'admin') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+                break;
+            case 'moderator':
+                if(user.typeUser != 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+                break;
+            default:
+                throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+        }
+    }
+    if(password != null || sessionUser.typeLogin=='email'){
+        const isPasswordCorrect = await verifyPassword(password, sessionUser.password);
+        if(!isPasswordCorrect) throw new AuthError(errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);      
+    }
     const userDeleted = await User.query().updateAndFetchById(id, {'deletedAt': new Date()});
     await Business.query().patch({'deletedAt': new Date()})
         .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = "'+ userDeleted.id +'")'))
@@ -82,3 +102,39 @@ export const deleteUser = async ({password, id}) => {
     
     return userDeleted.deletedAt != null;
 }
+
+/*   -------------UNDER CONSTRUCTION, DON'T TOUCH-------------
+export const deleteMultipleUsers = async ({password, ids}, sessionId) => {
+    const users = ids.map(async id => {
+        return await User.query().findOne('id', id).where(raw('deletedAt IS NULL'));
+
+    })
+
+    const user = await User.query().findOne('id', id).where(raw('deletedAt IS NULL'));
+    if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    const sessionUser = await User.query().findOne('id', sessionId).where(raw('deletedAt IS NULL'));
+    if(!sessionUser) throw new AuthError();
+    if(sessionId != user.id){
+        switch(sessionUser.typeUser){
+            case 'admin':
+                if(user.typeUser == 'admin') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+                break;
+            case 'moderator':
+                if(user.typeUser != 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+                break;
+            default:
+                throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+        }
+    }
+    if(password != null || sessionUser.typeLogin=='email'){
+        const isPasswordCorrect = await verifyPassword(password, sessionUser.password);
+        if(!isPasswordCorrect) throw new AuthError(errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);      
+    }
+    const userDeleted = await User.query().updateAndFetchById(id, {'deletedAt': new Date()});
+    await Business.query().patch({'deletedAt': new Date()})
+        .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = "'+ userDeleted.id +'")'))
+        .andWhere(raw('deletedAt IS NULL'));
+    
+    return userDeleted.deletedAt != null;
+}
+*/

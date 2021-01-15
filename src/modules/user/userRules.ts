@@ -74,7 +74,7 @@ export const editValidationRules = [
 
 export const deleteValidationRules = [
     header(config.headers.accessToken).matches(config.regex.authorization),
-    body('password').escape()
+    body('password').escape().optional({nullable: true})
 ]
 
 /*
