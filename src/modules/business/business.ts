@@ -24,7 +24,7 @@ router.delete('/businesses/:businessId', authenticate, paramBusinessIdValidation
     res.json({businessDeleted: isBusinessDeleted});
 }));
 
-router.get('/businesses/:userId', authenticate, validate, handleErrorAsync(async (req,res) => {
+router.get('/users/:userId/businesses', authenticate, validate, handleErrorAsync(async (req,res) => {
     const businesses = await businessesByUser(req.params.userId, req.userId);
     res.json(businesses);
 }));
