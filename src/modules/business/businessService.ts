@@ -199,3 +199,19 @@ export const businessesByUser = async (userId, reqUserId) => {
         throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
     }
 };
+
+export const businessById = async (businessId) => {
+    verifyBusiness(businessId);
+
+    const business = Business.query().findById(businessId);
+    const businessAddress = await BusinessAddress.query().where({ businessId: businessId});
+
+    const businessArrays = await Promise.all(
+        [await BusinessHours.query().where({businessId: businessId}), 
+        await BusinessCategory.query().where({businessId: businessId}),
+        await BusinessPhoneNumber.query().where({businessId: businessId})]);
+
+    const result = {...business,
+                    address: businessAddress};
+    return result;
+};
