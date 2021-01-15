@@ -1,6 +1,6 @@
 module.exports = {
     roots: ['<rootDir>/dist'],
-    testRegex: `moderator.spec.js$`,
+    testRegex: `user.spec.js$`,
     testEnvironment: "node",
     testPathIgnorePatterns: ['/node_modules/']
 };

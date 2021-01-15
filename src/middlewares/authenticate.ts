@@ -18,6 +18,6 @@ export const authenticate = async (req, res, next) => {
     if (isSessionExpired(session)) {
         return next(new AuthError('accessToken', errors.message.ACCESS_TOKEN_EXPIRED), req, res, next);
     }
-    req.userId = session.userId
+    req.userId = session.userId;
     next();
 };
