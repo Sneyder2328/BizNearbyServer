@@ -82,7 +82,7 @@ router.put(endpoints.users.UPDATE_PROFILE, editValidationRules, validate, authen
     res.json({ ...profile });
 }))
 /**
- * Update user profile
+ * Get user profile
  */
 router.get(endpoints.users.GET_PROFILE, authenticate, handleErrorAsync(async (req, res) => {
     const userId = req.params.userId;
