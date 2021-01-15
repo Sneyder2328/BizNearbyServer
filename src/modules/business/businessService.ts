@@ -183,26 +183,44 @@ export const deleteBusiness = async (userId, businessId) => {
 export const businessesByUser = async (userId) => {
     await verifyUser(userId);
 
-    const businessIds = await UserBusiness.query().where('userId', userId);
+    /*const business = await UserBusiness.query().where('userId', userId);
 
-    const businessesPromise = businessIds.map(async ({businessId}) => {
-        return await Business.query().where('id', businessId);
+    const businessIds = business.map(({businessId}) => (businessId));*/
+
+    const businesses = await UserBusiness.query().where('userId', userId);
+    const result = businesses.map(async ({businessId})=>{
+        let business = {
+            ...await Business.query().where({id: businessId});
+        };
+        business.address = (await BusinessAddress.query().where({businessId: businessId}))?.[0];
+        business.categories = await BusinessCategory.query().where({businessId: businessId});
+        business.phoneNumbers = await BusinessPhoneNumber.query().where({businessId: businessId});
+        return business;
+    });
+    //console.log(business);
+    console.log(result);
+    return result?.['userBusinesses']?.[0];
+
+console.log(result);
+return result
+    /*
+    const businessesPromise = businessIds.map(async (businessId) => {
+        return await Business.query().findById(businessId);
     });
 
-
-    const businessesAddressPromise = businessIds.map(async ({businessId}) => {
-        return await BusinessAddress.query().where('businessId', businessId);
+    const businessesAddressPromise = businessIds.map(async (businessId) => {
+        return (await BusinessAddress.query().where('businessId', businessId))[0];
     });
 
-    const businessesCategoryPromise = businessIds.map(async ({businessId}) => {
+    const businessesCategoryPromise = businessIds.map(async (businessId) => {
         return await BusinessCategory.query().where('businessId', businessId);
     });
 
-    const businessesHoursPromise = businessIds.map(async ({businessId}) => {
+    const businessesHoursPromise = businessIds.map(async (businessId) => {
         return await BusinessHours.query().where('businessId', businessId);
     });
 
-    const businessesPhoneNumberPromise = businessIds.map(async ({businessId}) => {
+    const businessesPhoneNumberPromise = businessIds.map(async (businessId) => {
         return await BusinessPhoneNumber.query().where('businessId', businessId);
     });
 
@@ -211,12 +229,7 @@ export const businessesByUser = async (userId) => {
     const businessesCategory = await Promise.all(businessesCategoryPromise);
     const businessesHours = await Promise.all(businessesHoursPromise);
     const businessesPhoneNumber = await Promise.all(businessesPhoneNumberPromise);
+    */
 
-    console.log(businessIds);
     
-    return {businesses,
-        businessesAddress,
-        businessesCategory,
-        businessesHours,
-        businessesPhoneNumber};
 };
