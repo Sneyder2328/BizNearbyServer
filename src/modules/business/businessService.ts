@@ -201,7 +201,7 @@ export const businessesByUser = async (userId, reqUserId) => {
 };
 
 export const businessById = async (businessId) => {
-    verifyBusiness(businessId);
+    await verifyBusiness(businessId);
 
     const business = await 
     Business.query().findById(businessId);

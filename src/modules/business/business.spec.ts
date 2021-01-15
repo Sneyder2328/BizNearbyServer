@@ -293,7 +293,7 @@ describe('DELETE' + `/businesses/${businessId}`, () => {
     })
 });
 
-describe('GET' + `/businesses/${userId}`, () => {
+describe('GET' + `/users/${userId}/businesses`, () => {
     beforeEach(async () => {
         await wipeOutDatabase();
         await insertBusinessData();
@@ -301,7 +301,7 @@ describe('GET' + `/businesses/${userId}`, () => {
 
     it('should return businesses by userId', (done) => {
         request(app)
-            .get(`/businesses/${userId}`)
+            .get(`/users/${userId}/businesses`)
             .set('authorization', token)
             .expect(httpCodes.OK)
             .expect(res => {
@@ -312,7 +312,7 @@ describe('GET' + `/businesses/${userId}`, () => {
 
     it('should not return businesses with a wrong userIder', (done) => {
         request(app)
-            .get('/businesses/eee15b20-917f-4d69-a055-e306d938d196')
+            .get('/users/eee15b20-917f-4d69-a055-e306d938d196/businesses')
             .set('authorization', token)
             .expect(httpCodes.NOT_FOUND)
             .expect(res => {
@@ -323,9 +323,38 @@ describe('GET' + `/businesses/${userId}`, () => {
 
     it('should not return businesses without authorization', (done) => {
         request(app)
-            .get(`/businesses/${userId}`)
+            .get(`/users/${userId}/businesses`)
             .set('authorization', 'Bearer b337e27e-bcf0-4154-8a77-96daa873c9e5')
             .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body['errors'])
+            })
+            .end(done);
+    });
+});
+
+describe('GET' + `/businesses/${businessId}`, () => {
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        await insertBusinessData();
+    });
+
+    it('should return a business', (done) => {
+        request(app)
+            .get(`/businesses/${businessId}`)
+            .set('authorization', token)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body)
+            })
+            .end(done);
+    });
+
+    it('should not return a business that does not exist', (done) => {
+        request(app)
+            .get('/businesses/b337e27e-bcf0-4154-8a77-96daa873c9e5')
+            .set('authorization', token)
+            .expect(httpCodes.NOT_FOUND)
             .expect(res => {
                 expect(res.body['errors'])
             })
