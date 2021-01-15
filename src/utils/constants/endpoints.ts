@@ -8,6 +8,7 @@ export const endpoints = {
         SIGN_UP: '/users',
         UPDATE_PROFILE: `/users/:userId`, 
         DELETE_ACCOUNT: `/users/:userId`,
+        GET_PROFILE: `/users/:userId`,
         owner:{
             BUSINESS_REGISTER: 'post/businesses',
             BUSINESS_UPDATE: '/businesses/update/',

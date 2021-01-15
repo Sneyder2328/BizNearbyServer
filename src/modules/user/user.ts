@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
 import { signUpValidationRules, logInValidationRules, editValidationRules, deleteValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { signUpUser, logInUser, logoutUser, editUser, deleteUser } from './userService';
+import { signUpUser, logInUser, logoutUser, editUser, deleteUser, getProfile } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
 import config from '../../config/config';
 import { verifyFBToken, verifyGoogleToken } from './authService';
@@ -79,9 +79,17 @@ router.put(endpoints.users.UPDATE_PROFILE, editValidationRules, validate, authen
     user.id = req.params.userId;
 
     const { profile } = await editUser(user);
-    res.json({ ...profile })
+    res.json({ ...profile });
 }))
-
+/**
+ * Update user profile
+ */
+router.get(endpoints.users.GET_PROFILE, authenticate, handleErrorAsync(async (req, res) => {
+    const userId = req.params.userId;
+    if(userId != req.userId) throw new AuthError();
+    const profile = await getProfile(userId);
+    res.json({...profile});
+}))
 
 /**
  * Log out
@@ -104,6 +112,7 @@ router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteValidationRule
 /**
  * Delete multiple users
  */
+//  ----------UNDER CONSTRUCTION DON'T TOUCH--------------
 router.delete(endpoints.DELETE_USERS, authenticate, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = {password: req.body?.password, id: req.body.userIds};
     const deleted = await deleteUser(user, req.userId);
