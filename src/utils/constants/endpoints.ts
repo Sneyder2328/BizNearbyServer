@@ -20,6 +20,7 @@ export const endpoints = {
         REMOVE_MODERATOR: '/moderators/:moderatorId',
         GET_ALL_REPORTS: '/businesses/getReports',
     },
+    DELETE_USERS: `/users`,
     review: {
         REVIEW_ADD: (bizId) => `/reviews/create/${bizId}`,
         REVIEW_UPDATE: (bizId) => `/reviews/update/${bizId}`,

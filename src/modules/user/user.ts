@@ -101,5 +101,12 @@ router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteValidationRule
     const deleted = await deleteUser(user, req.userId);
     res.json({deleted});
 }))
-
+/**
+ * Delete multiple users
+ */
+router.delete(endpoints.DELETE_USERS, authenticate, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const user = {password: req.body?.password, id: req.body.userIds};
+    const deleted = await deleteUser(user, req.userId);
+    res.json({deleted});
+}))
 export { router as userRouter }
