@@ -44,7 +44,7 @@ describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
             .end(done)
     });
 
-    it('should not give the role moderator to user with no-admin session', done => {
+    it('should not give the role moderator to user with an user session', done => {
         request(app)
             .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
             .set('authorization', token)
@@ -56,17 +56,6 @@ describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
     });
 
     it('should not give the role moderator to admin', done => {
-        request(app)
-            .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',adminId))
-            .set('authorization', adminToken)
-            .expect(httpCodes.FORBIDDEN)
-            .expect(res => {
-                expect(res.body.error).toBe(errors.FORBIDDEN);
-            })
-            .end(done)
-    });
-
-    it('should not give the role moderator due to using a not admin session', done => {
         request(app)
             .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',adminId))
             .set('authorization', adminToken)
@@ -90,16 +79,49 @@ describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
         await createSession({token: token.split(' ')[1], userId})
     })
 
-    it('should give the role moderator to user', done => {
+    it('should remove the role moderator of user', done => {
         request(app)
-            .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
             .set('authorization', adminToken)
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.updated).toBe(true);
             })
             .end(done)
-    })
+    });
+
+    it('should not remove the role moderator of user without authorization', done => {
+        request(app)
+            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    });
+
+    it('should not remove the role moderator of user with user session', done => {
+        request(app)
+            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .set('authorization', token)
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    });
+
+    it('should not try to remove the role moderator of admin', done => {
+        request(app)
+            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',adminId))
+            .set('authorization', token)
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    });
+
 })
 
 afterAll(()=>{
