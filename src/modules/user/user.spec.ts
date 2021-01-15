@@ -8,9 +8,13 @@ import {errors} from "../../utils/constants/errors";
 import knex from "../../database/knex";
 
 const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
+const token2 = "Bearer fcd84d1f-ee2b-4636-9f61-78dc349f23e5";
+const adminToken = "Bearer fcd84d1f-ee3b-4636-9f61-78dc349f23e5";
+const admin2Token = "Bearer fcd84d1f-ee8b-4636-9f61-78dc349f23e5";
+const moderatorToken = "Bearer fcd84d1f-ee5b-4636-9f61-78dc349f23e5";
+const moderator2Token = "Bearer fcd84d1f-ee6b-4636-9f61-78dc349f23e5";
 const userId = users[0].id;
 const userId2 = users[1].id;
-const token2 = "Bearer fcd84d1f-ee2b-4636-9f61-78dc349f23e5";
 
 describe('POST ' + endpoints.users.SIGN_UP, () => {
     beforeEach(async () => {
@@ -123,9 +127,9 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
         //@ts-ignore
         await Promise.all(users.slice(0,3).map(async user => await createUser(user)));
         //@ts-ignore
-        await createUser(admin);
+        await createUser(admin[0]);
         //@ts-ignore
-        await createUser(moderator);
+        await createUser(moderator[0]);
     });
 
     it("should Log in with email", done=>{
@@ -164,7 +168,7 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     it('should login as an admin', done=>{
         request(app)
             .post(endpoints.auth.LOG_IN)
-            .send({email: admin.email, password: admin.password, typeLogin: admin.typeLogin})
+            .send({email: admin[0].email, password: admin[0].password, typeLogin: admin[0].typeLogin})
             .expect(httpCodes.OK)
             .expect(res=>{
                 expect(res.body['profile']);
@@ -175,7 +179,7 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     it('should login as an moderator', done=>{
         request(app)
             .post(endpoints.auth.LOG_IN)
-            .send({email: moderator.email, password: moderator.password, typeLogin: moderator.typeLogin})
+            .send({email: moderator[0].email, password: moderator[0].password, typeLogin: moderator[0].typeLogin})
             .expect(httpCodes.OK)
             .expect(res=>{
                 expect(res.body['profile']);
@@ -272,11 +276,23 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
         await createUser({...users[0]});
         //@ts-ignore
         await createUser({...users[1]});
+        //@ts-ignore
+        await createUser({...admin[0]});
+        //@ts-ignore
+        await createUser({...admin[1]});
+        //@ts-ignore
+        await createUser({...moderator[0]});
+        //@ts-ignore
+        await createUser({...moderator[1]});
         await createSession({token: token.split(' ')[1], userId });
         await createSession({token: token2.split(' ')[1], userId: userId2 });
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
+        await createSession({token: moderator2Token.split(' ')[1], userId: moderator[1].id });
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id });
+        await createSession({token: admin2Token.split(' ')[1], userId: admin[1].id });
     })
 
-    it('should delete account', done => {
+    it('should delete user by the user itself (email)', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', token)
@@ -288,7 +304,55 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it('should not delete account without authorization', done => {
+    it('should delete user by the user itself (facebook)', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[1].id))
+            .set('authorization', token2)
+            .send({'password': users[1].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    });
+
+    it('should delete user by moderator', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .set('authorization', moderatorToken)
+            .send({'password': moderator[0].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    });
+
+    it('should delete user by admin', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .set('authorization', adminToken)
+            .send({'password': admin[0].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    });
+
+    it('should delete user by admin', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',moderator[0].id))
+            .set('authorization', adminToken)
+            .send({'password': admin[0].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    });
+
+    it('should not delete user without authorization', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .send({'password': users[0].password})
@@ -299,20 +363,31 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it('should not delete account due to wrong password', done => {
+    it('should not delete user due to wrong password', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', token)
             .send({'password': users[0].password + "1"})
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
-                console.log(res.body);
                 expect(res.body.error).toBe(errors.CREDENTIAL);
             })
             .end(done)
     });
 
-    it('should delete account due to nothing being sent', done => {
+    it("should not delete user due to using user's password by admin", done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .set('authorization', adminToken)
+            .send({'password': users[0].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.CREDENTIAL);
+            })
+            .end(done)
+    });
+
+    it('should not delete user due to the abcense of password', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', token)
@@ -323,7 +398,19 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it('should not delete account by another user', done => {
+    it("should not delete user by user2 with user2's password", done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
+            .set('authorization', token2)
+            .send({'password': users[1].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body);
+            })
+            .end(done)
+    });
+
+    it("should not delete user by user2 with user password", done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', token2)
@@ -335,6 +422,41 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
+    it('should not delete moderator by another moderator', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',moderator[0].id))
+            .set('authorization', moderator2Token)
+            .send({'password': moderator[1].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    });
+
+    it('should not delete admin by moderator', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',admin[0].id))
+            .set('authorization', moderatorToken)
+            .send({'password': moderator[0].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    });
+
+    it('should not delete admin by admin', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',admin[0].id))
+            .set('authorization', admin2Token)
+            .send({'password': admin[1].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    });
 })
 
 describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
