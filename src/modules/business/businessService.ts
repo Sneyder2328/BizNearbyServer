@@ -199,3 +199,25 @@ export const businessesByUser = async (userId, reqUserId) => {
         throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
     }
 };
+
+export const businessById = async (businessId) => {
+    await verifyBusiness(businessId);
+
+    const business = await 
+    Business.query().findById(businessId);
+    const businessAddress = (await BusinessAddress.query().where({ businessId: businessId}))[0];
+
+    const businessArrays = await Promise.all(
+        [await BusinessHours.query().where({businessId: businessId}), 
+        await BusinessCategory.query().where({businessId: businessId}),
+        await BusinessPhoneNumber.query().where({businessId: businessId})
+    ]);
+
+    const result = {...business,
+                    address: businessAddress,
+                    hours: businessArrays[0],
+                    categories: businessArrays[1],
+                    phoneNumbers: businessArrays[2]};
+    console.log(result);
+    return result;
+};

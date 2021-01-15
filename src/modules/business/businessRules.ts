@@ -54,6 +54,6 @@ export const updateBusinessValidationRules = [
     ...businessValidationRules
 ];
 
-export const deleteBusinessValidationRules = [
+export const paramBusinessIdValidationRules = [
     param('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId')
 ];
