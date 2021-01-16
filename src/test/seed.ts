@@ -136,7 +136,7 @@ export const admin = [{
     email: 'Elon@gmail.com',
     phoneNumber: '123456',
     thumbnailUrl: 'myPic',
-    password: '123456789admin2',
+    password: '123456789admin',
     typeLogin: 'email',
     typeUser: 'admin'
 }

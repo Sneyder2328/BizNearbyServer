@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
 import { signUpValidationRules, logInValidationRules, editValidationRules, deleteValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { signUpUser, logInUser, logoutUser, editUser, deleteUser, getProfile } from './userService';
+import { signUpUser, logInUser, logoutUser, editUser, deleteUser, getProfile, deleteMultipleUsers } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
 import config from '../../config/config';
 import { verifyFBToken, verifyGoogleToken } from './authService';
@@ -110,13 +110,15 @@ router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteValidationRule
     const deleted = await deleteUser(user, req.userId);
     res.json({deleted});
 }))
+
 /**
  * Delete multiple users
  */
 //  ----------UNDER CONSTRUCTION DON'T TOUCH--------------
 router.delete(endpoints.DELETE_USERS, authenticate, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const user = {password: req.body?.password, id: req.body.userIds};
-    const deleted = await deleteUser(user, req.userId);
-    res.json({deleted});
+    const user = {password: req.body?.password, ids: req.body.userIds};
+    const usersDeleted = await deleteMultipleUsers(user, req.userId);
+    res.json({usersDeleted});
 }))
+
 export { router as userRouter }

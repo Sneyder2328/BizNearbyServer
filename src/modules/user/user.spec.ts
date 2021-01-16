@@ -22,12 +22,19 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
     });
 
     it('should sign up a new user with email', (done) => {
+        const user = {
+            id: users[0].id,
+            fullname: users[0].fullname,
+            email: users[0].email,
+            thumbnailUrl: users[0].thumbnailUrl,
+            typeUser: users[0].typeUser
+        }
         request(app)
             .post(endpoints.users.SIGN_UP)
             .send({...users[0]})
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body["profile"]);
+                expect(res.body).toEqual({...user});
             })
             .end(done);
     });
@@ -55,12 +62,19 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
     // });
 
     it('should sign up a new user with max input capacity', done => {
+        const user = {
+            id: users[7].id,
+            fullname: users[7].fullname,
+            email: users[7].email,
+            thumbnailUrl: users[7].thumbnailUrl,
+            typeUser: users[7].typeUser
+        }
         request(app)
         .post(endpoints.users.SIGN_UP)
         .send({...users[7]})
         .expect(httpCodes.OK)
         .expect(res => {
-            expect(res.body["profile"]);
+            expect(res.body).toEqual({...user});
         })
         .end(done);
     })
@@ -71,7 +85,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .send({...users[3]})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                expect(res.body['errors']);
+                expect(res.body['errors'].length).toBeGreaterThan(0);
             })
             .end(done)
     })
@@ -82,7 +96,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .send({...users[0], typeLogin:"admin"})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                expect(res.body['errors']);
+                expect(res.body['errors'].length).toBeGreaterThan(0);
             })
             .end(done)
     });
@@ -93,7 +107,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .send({...users[4]})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                expect(res.body["errors"]);
+                expect(res.body["errors"].length).toBeGreaterThan(0);
             })
             .end(done);
     });
@@ -104,7 +118,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .send({...users[5]})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                expect(res.body["errors"]);
+                expect(res.body["errors"].length).toBeGreaterThan(0);
             })
             .end(done);
     });
@@ -115,7 +129,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .send({...users[6]})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                expect(res.body["errors"]);
+                expect(res.body["errors"].length).toBeGreaterThan(0);
             })
             .end(done);
     });
@@ -133,12 +147,19 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     });
 
     it("should Log in with email", done=>{
+        const user = {
+            id: users[0].id,
+            fullname: users[0].fullname,
+            email: users[0].email,
+            thumbnailUrl: null,
+            typeUser: users[0].typeUser
+        }
         request(app)
             .post(endpoints.auth.LOG_IN)
             .send({email: users[0].email, password: users[0].password, typeLogin: users[0].typeLogin})
             .expect(httpCodes.OK)
             .expect(res=>{
-                expect(res.body['profile']);
+                expect(res.body).toEqual({...user});
             })
             .end(done);
     });
@@ -166,23 +187,37 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     // });
 
     it('should login as an admin', done=>{
+        const user = {
+            id: admin[0].id,
+            fullname: admin[0].fullname,
+            email: admin[0].email,
+            thumbnailUrl: null,
+            typeUser: admin[0].typeUser
+        }
         request(app)
             .post(endpoints.auth.LOG_IN)
             .send({email: admin[0].email, password: admin[0].password, typeLogin: admin[0].typeLogin})
             .expect(httpCodes.OK)
             .expect(res=>{
-                expect(res.body['profile']);
+                expect(res.body).toEqual({...user});
             })
             .end(done)
     });
 
     it('should login as an moderator', done=>{
+        const user = {
+            id: moderator[0].id,
+            fullname: moderator[0].fullname,
+            email: moderator[0].email,
+            thumbnailUrl: null,
+            typeUser: moderator[0].typeUser
+        }
         request(app)
             .post(endpoints.auth.LOG_IN)
             .send({email: moderator[0].email, password: moderator[0].password, typeLogin: moderator[0].typeLogin})
             .expect(httpCodes.OK)
             .expect(res=>{
-                expect(res.body['profile']);
+                expect(res.body).toEqual({...user});
             })
             .end(done)
     })
@@ -194,12 +229,10 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .expect(httpCodes.NOT_FOUND)
             .expect(res=>{
                 expect(res.body.error).toBe(errors.USER_NOT_FOUND_ERROR);
-                expect(res.body.message).toBe(errors.message.USER_NOT_FOUND);
             })
             .end(done);
     });
     
-
     it('should not login due to wrong credentials', done=>{
         request(app)
             .post(endpoints.auth.LOG_IN)
@@ -207,7 +240,6 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .expect(httpCodes.NOT_FOUND)
             .expect(res=>{
                 expect(res.body.error).toBe(errors.USER_NOT_FOUND_ERROR);
-                expect(res.body.message).toBe(errors.message.USER_NOT_FOUND);
             })
             .end(done);
     });
@@ -218,7 +250,10 @@ describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
         await wipeOutDatabase();
         //@ts-ignore
         await createUser({...users[0]});
+        //@ts-ignore
+        await createUser({...users[1]});
         await createSession({token: token.split(' ')[1], userId });
+        await createSession({token: token2.split(' ')[1], userId: users[1].id });
     })
 
     it('should update user', done => {
@@ -239,7 +274,19 @@ describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
             .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
-                expect(res.body.errors)
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done)
+    });
+
+    it('should not update user with authorization token of another user', done => {
+        request(app)
+            .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
+            .set('authorization', token2)
+            .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.CREDENTIAL)
             })
             .end(done)
     });
@@ -263,7 +310,7 @@ describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
             .send({fullname: null, email: null, phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: "123"})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                expect(res.body.errors);
+                expect(res.body.errors.length).toBeGreaterThan(0);
             })
             .end(done)
     });
@@ -526,8 +573,187 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
     });
 })
 
-describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
+describe('DELETE' + endpoints.DELETE_USERS, ()=>{
+    beforeEach(async ()=>{
+        await wipeOutDatabase();
+        //@ts-ignore
+        await createUser({...users[0]});
+        //@ts-ignore
+        await createUser({...users[1]});
+        //@ts-ignore
+        await createUser({...admin[0]});
+        //@ts-ignore
+        await createUser({...admin[1]});
+        //@ts-ignore
+        await createUser({...moderator[0]});
+        //@ts-ignore
+        await createUser({...moderator[1]});
+        await createSession({token: token.split(' ')[1], userId });
+        await createSession({token: token2.split(' ')[1], userId: userId2 });
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
+        await createSession({token: moderator2Token.split(' ')[1], userId: moderator[1].id });
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id });
+        await createSession({token: admin2Token.split(' ')[1], userId: admin[1].id });
+    })
 
+    it('should delete 2 normal users by moderator', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', moderatorToken)
+            .send({password: moderator[0].password, userIds: [users[0].id, users[1].id]})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.usersDeleted).toEqual(([{updated: true}, {updated: true}]))
+            })
+            .end(done)
+    });
+
+    it('should delete 1 normal user by admin', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', adminToken)
+            .send({password: admin[0].password, userIds: [users[1].id]})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.usersDeleted).toEqual([{updated: true}])
+            })
+            .end(done)
+    });
+
+    it('should delete 1 moderator by admin', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', adminToken)
+            .send({password: admin[0].password, userIds: [moderator[0].id]})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.usersDeleted).toEqual([{updated: true}])
+            })
+            .end(done)
+    });
+
+    it('admin should delete moderator and user', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', adminToken)
+            .send({password: admin[0].password, userIds: [users[0].id,moderator[0].id]})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.usersDeleted).toEqual([{updated: true}, {updated: true}])
+            })
+            .end(done)
+    });
+
+    it('should delete if the list of ids has a non-existing userId', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', adminToken)
+            .send({password: admin[0].password, userIds: [users[1].id,'123']})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.usersDeleted).toEqual([{updated: true}, {updated: false}])
+            })
+            .end(done)
+    });
+
+    it('normal user should not delete any user', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', token)
+            .send({password: users[0].password, userIds: [users[1].id]})
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done)
+    });
+
+    it('admin should not delete itself', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', adminToken)
+            .send({password: admin[0].password, userIds: [admin[0].id, users[0].id]})
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done);
+    });
+
+    it('moderator should not delete itself', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', moderatorToken)
+            .send({password: moderator[0].password, userIds: [moderator[0].id]})
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done);
+    })
+
+    it('moderator should not delete admin', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', moderatorToken)
+            .send({password: moderator[0].password, userIds: [admin[0].id]})
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done)
+    });
+
+    it('moderator should not delete another moderator', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', moderatorToken)
+            .send({password: moderator[0].password, userIds: [moderator[1].id]})
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done)
+    });
+
+    it('admin should not delete another admin', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', adminToken)
+            .send({password: admin[0].password, userIds: [admin[1].id]})
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done)
+    });
+
+    it('should not delete users without authorization token', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .send({password: users[0].password, userIds: [users[1].id]})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done)
+    });
+    
+    it('moderator should not delete with admin password', done => {
+        request(app)
+            .delete(endpoints.DELETE_USERS)
+            .set('authorization', moderatorToken)
+            .send({password: admin[0].password, userIds: [users[1].id]})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.CREDENTIAL)
+            })
+            .end(done)
+    });
+
+})
+
+describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();
         //@ts-ignore
@@ -566,6 +792,8 @@ describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
             })
             .end(done)
     });
+
+
 })
 
 afterAll(()=>{
