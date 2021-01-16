@@ -659,7 +659,7 @@ export const updateBusiness = [
 
 export const newReport = [
     {
-        // GOD REPORT
+        // GOOD REPORT
         id: genUUID(),
         businessId: 'a8bcd05e-4606-4a55-a5dd-002f8516493e',
         title: 'A report for example',

@@ -1,7 +1,7 @@
 import config from '../../config/config';
 import { body } from 'express-validator';
 
-const trimInside = () => str => str.replace(/\s\s/g, ' ');
+const trimInside = () => (str?: String) => str?.replace(/\s\s/g, ' ');
 
 export const reportValidationRules = [
     body('id').trim().matches(config.regex.uuidV4).withMessage('Invalid id').exists(),

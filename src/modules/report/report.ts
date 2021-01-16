@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
 import { reportValidationRules } from './reportRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { newReport } from './reporteService';
+import { newReport } from './reportService';
 import { authenticate } from '../../middlewares/authenticate';
 
 const router = Router();
