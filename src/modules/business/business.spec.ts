@@ -82,6 +82,79 @@ describe('POST' + '/businesses', () => {
             .post('/businesses')
             .set('authorization', token)
             .send(business[5])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done);
+    });
+
+    it('should not create a new business without businessId', (done) => {
+        request(app)
+            .post('/businesses')
+            .set('authorization', token)
+            .send(business[6])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done);
+    });
+
+    it('should not create a new business without addressId', (done) => {
+        request(app)
+            .post('/businesses')
+            .set('authorization', token)
+            .send(business[7])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done);
+    });
+
+    it('should not create a new business without name', (done) => {
+        request(app)
+            .post('/businesses')
+            .set('authorization', token)
+            .send(business[8])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done);
+    });
+
+    it('should not create a new business without latitute and longitude', (done) => {
+        request(app)
+            .post('/businesses')
+            .set('authorization', token)
+            .send(business[9])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done);
+    });
+
+    it('should not create a new business without hours', (done) => {
+        request(app)
+            .post('/businesses')
+            .set('authorization', token)
+            .send(business[10])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body['errors']);
+            })
+            .end(done);
+    });
+
+    it('should not create a new business without categories', (done) => {
+        request(app)
+            .post('/businesses')
+            .set('authorization', token)
+            .send(business[11])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body['errors']);
             })
@@ -244,8 +317,67 @@ describe('PUT' + `/businesses/${businessId}`, () => {
             .put(`/businesses/${businessId}`)
             .set('authorization', token)
             .send(updateBusiness[10])
-            .expect(httpCodes.NOT_FOUND
-                )
+            .expect(httpCodes.NOT_FOUND)
+            .expect(res => {
+                expect(res.body)
+            })
+            .end(done);
+    });
+
+    it('should not update without addressId', (done) => {
+        request(app)
+            .put(`/businesses/${businessId}`)
+            .set('authorization', token)
+            .send(updateBusiness[11])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body)
+            })
+            .end(done);
+    });
+
+    it('should not update without name', (done) => {
+        request(app)
+            .put(`/businesses/${businessId}`)
+            .set('authorization', token)
+            .send(updateBusiness[12])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body)
+            })
+            .end(done);
+    });
+
+    it('should not update without latitude and longitude', (done) => {
+        request(app)
+            .put(`/businesses/${businessId}`)
+            .set('authorization', token)
+            .send(updateBusiness[13])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body)
+            })
+            .end(done);
+    });
+
+    it('should not update without hours', (done) => {
+        request(app)
+            .put(`/businesses/${businessId}`)
+            .set('authorization', token)
+            .send(updateBusiness[14])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body)
+            })
+            .end(done);
+    });
+
+    it('should not update without categories', (done) => {
+        request(app)
+            .put(`/businesses/${businessId}`)
+            .set('authorization', token)
+            .send(updateBusiness[15])
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body)
             })
