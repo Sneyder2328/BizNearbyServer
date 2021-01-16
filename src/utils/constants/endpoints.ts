@@ -27,6 +27,9 @@ export const endpoints = {
         REVIEW_UPDATE: (bizId) => `/reviews/update/${bizId}`,
         REVIEW_DELETE: (bizId) => `/reviews/delete/${bizId}`,
     },
+    report: {
+        GET_REPORTS: `/reports/`
+    },
     REVIEW_GET: (bizId)=>`/reviews/get/${bizId}`,
     NEARBY_BUSINESS_GET: `/businesses/get`,
 }

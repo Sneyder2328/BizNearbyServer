@@ -4,7 +4,9 @@ import { AppError } from '../../utils/errors/AppError';
 import { Report } from '../../database/models/Report';
 import { Business } from '../../database/models/Business';
 import { User } from '../../database/models/User';
-
+import { raw } from 'objection';
+import { AuthError } from '../../utils/errors/AuthError';
+import _ from 'lodash';
 /**
  * Verify if the user exist in the database
  * @param userId
@@ -34,3 +36,10 @@ export const newReport = async ({id, userId, businessId, title, description}) =>
 
     return report;
 };
+
+export const getReport = async (userId) => {
+    const sessionUser = await User.query().findById(userId).where(raw('deletedAt IS NULL'));
+    if(!sessionUser) throw new AuthError();
+    const reports = await Report.query().join(raw('ReportReview ON ReportReview.reportId = id'));
+    return {report: _.pick(reports, ['id','businessId','title','description','createdAt'])};
+}
