@@ -28,6 +28,7 @@ export const endpoints = {
         REVIEW_UPDATE: (bizId) => `/reviews/update/${bizId}`,
         REVIEW_DELETE: (bizId) => `/reviews/delete/${bizId}`,
     },
+    LOCATION_AUTOCOMPLETE: `/locations/`,
     REVIEW_GET: (bizId)=>`/reviews/get/${bizId}`,
     NEARBY_BUSINESS_GET: `/businesses/get`,
     GET_BUSINESS: '/businesses/:businessId'
