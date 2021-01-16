@@ -269,6 +269,73 @@ describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
     });
 })
 
+describe('GET ' + endpoints.users.GET_PROFILE, () => {
+    beforeAll(async ()=>{
+        await wipeOutDatabase();
+        //@ts-ignore
+        await createUser({...users[0]});
+        //@ts-ignore
+        await createUser({...admin[0]});
+        //@ts-ignore
+        await createUser({...moderator[0]});
+        await createSession({token: token.split(' ')[1], userId });
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id });
+    })
+
+    it('should return profile of user', done => {
+        let user={};
+        ['id','fullname','email','typeUser'].forEach(key => {user[key]=users[0][key]});
+        request(app)
+            .get(endpoints.users.GET_PROFILE.replace(":userId", users[0].id))
+            .set('authorization', token)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toMatchObject({...user, thumbnailUrl: null});
+            })
+            .end(done)
+    });
+    
+    it('should return profile of moderator', done => {
+        let user={};
+        ['id','fullname','email','typeUser'].forEach(key => {user[key]=moderator[0][key]});
+        request(app)
+            .get(endpoints.users.GET_PROFILE.replace(":userId", moderator[0].id))
+            .set('authorization', moderatorToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toMatchObject({...user, thumbnailUrl: null});
+            })
+            .end(done)
+    });
+
+    
+    it('should return profile', done => {
+        let user={};
+        ['id','fullname','email','typeUser'].forEach(key => {user[key]=admin[0][key]});
+        request(app)
+            .get(endpoints.users.GET_PROFILE.replace(":userId", admin[0].id))
+            .set('authorization', adminToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toMatchObject({...user, thumbnailUrl: null});
+            })
+            .end(done)
+    });
+    
+    it('should not return profile of user without authorization', done => {
+        let user={};
+        ['id','fullname','email','typeUser'].forEach(key => {user[key]=users[0][key]});
+        request(app)
+            .get(endpoints.users.GET_PROFILE.replace(":userId", users[0].id))
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done)
+    });
+})
+
 describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();

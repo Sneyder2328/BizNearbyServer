@@ -66,6 +66,7 @@ export const editUser = async ({ id, fullname, password, email, phoneNumber, thu
 export const getProfile = async (userId) => {
     const user = await User.query().findById(userId);
     if(!user) throw new UserNotFoundError();
+    console.log(user.thumbnailUrl);
     return { profile: _.pick(user, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser'])}
 }
 
