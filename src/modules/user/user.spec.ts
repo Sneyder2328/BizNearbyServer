@@ -35,6 +35,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body).toEqual({...user});
+                expect(res.header['authorization']).toBeTruthy();
             })
             .end(done);
     });
@@ -75,31 +76,60 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
         .expect(httpCodes.OK)
         .expect(res => {
             expect(res.body).toEqual({...user});
+            expect(res.header['authorization']).toBeTruthy();
         })
         .end(done);
     })
 
-    it('should not sign up due to an empty password', done => {
+    it('should not sign up a user of rank moderator', done => {
+        const user = {
+            id: users[0].id,
+            fullname: users[0].fullname,
+            email: users[0].email,
+            thumbnailUrl: users[0].thumbnailUrl,
+            typeUser: users[0].typeUser
+        }
+        request(app)
+        .post(endpoints.users.SIGN_UP)
+        .send({...users[0], typeUser: 'moderator'})
+        .expect(httpCodes.UNAUTHORIZED)
+        .expect(res => {
+            expect(res.body.error).toBe(errors.FORBIDDEN);
+            expect(res.header['authorization']).toBe(undefined);
+        })
+        .end(done);
+    })
+
+    it('should not sign up a user of rank admin', done => {
+        const user = {
+            id: users[0].id,
+            fullname: users[0].fullname,
+            email: users[0].email,
+            thumbnailUrl: users[0].thumbnailUrl,
+            typeUser: users[0].typeUser
+        }
+        request(app)
+        .post(endpoints.users.SIGN_UP)
+        .send({...users[0], typeUser: 'admin'})
+        .expect(httpCodes.UNAUTHORIZED)
+        .expect(res => {
+            expect(res.body.error).toBe(errors.FORBIDDEN);
+            expect(res.header['authorization']).toBe(undefined);
+        })
+        .end(done);
+    })
+
+    it('should not sign up via email due to an empty password', done => {
         request(app)
             .post(endpoints.users.SIGN_UP)
             .send({...users[3]})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body['errors'].length).toBeGreaterThan(0);
+                expect(res.header['authorization']).toBe(undefined);
             })
             .end(done)
     })
-
-    it('should not sign up due to invalid typeUser admin', done => {
-        request(app)
-            .post(endpoints.users.SIGN_UP)
-            .send({...users[0], typeLogin:"admin"})
-            .expect(httpCodes.UNPROCESSABLE_ENTITY)
-            .expect(res => {
-                expect(res.body['errors'].length).toBeGreaterThan(0);
-            })
-            .end(done)
-    });
 
     it('should not sign up due to name being too long', (done) => {
         request(app)
@@ -108,6 +138,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body["errors"].length).toBeGreaterThan(0);
+                expect(res.header['authorization']).toBe(undefined);
             })
             .end(done);
     });
@@ -119,6 +150,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body["errors"].length).toBeGreaterThan(0);
+                expect(res.header['authorization']).toBe(undefined);
             })
             .end(done);
     });
@@ -130,6 +162,7 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body["errors"].length).toBeGreaterThan(0);
+                expect(res.header['authorization']).toBe(undefined);
             })
             .end(done);
     });
@@ -160,6 +193,7 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .expect(httpCodes.OK)
             .expect(res=>{
                 expect(res.body).toEqual({...user});
+                expect(res.header['authorization']).toBeTruthy();
             })
             .end(done);
     });
@@ -200,6 +234,7 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .expect(httpCodes.OK)
             .expect(res=>{
                 expect(res.body).toEqual({...user});
+                expect(res.header['authorization']).toBeTruthy();
             })
             .end(done)
     });
@@ -218,6 +253,31 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .expect(httpCodes.OK)
             .expect(res=>{
                 expect(res.body).toEqual({...user});
+                expect(res.header['authorization']).toBeTruthy();
+            })
+            .end(done)
+    })
+
+    it('should not login as an moderator with user password', done=>{
+        request(app)
+            .post(endpoints.auth.LOG_IN)
+            .send({email: moderator[0].email, password: users[0].password, typeLogin: moderator[0].typeLogin})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res=>{
+                expect(res.body.error).toEqual(errors.CREDENTIAL);
+                expect(res.header['authorization']).toBe(undefined);
+            })
+            .end(done)
+    })
+
+    it('should not login with wrong typeLogin', done=>{
+        request(app)
+            .post(endpoints.auth.LOG_IN)
+            .send({email: users[0].email, password: users[0].password, typeLogin: 'facebook'})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res=>{
+                expect(res.body.error).toEqual(errors.CREDENTIAL);
+                expect(res.header['authorization']).toBe(undefined);
             })
             .end(done)
     })
@@ -229,6 +289,7 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .expect(httpCodes.NOT_FOUND)
             .expect(res=>{
                 expect(res.body.error).toBe(errors.USER_NOT_FOUND_ERROR);
+                expect(res.header['authorization']).toBe(undefined);
             })
             .end(done);
     });
@@ -240,6 +301,8 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
             .expect(httpCodes.NOT_FOUND)
             .expect(res=>{
                 expect(res.body.error).toBe(errors.USER_NOT_FOUND_ERROR);
+                expect(res.header['authorization']).toBe(undefined);
+
             })
             .end(done);
     });
@@ -263,7 +326,19 @@ describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
             .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toStrictEqual({fullname: "the mandalorean", email: "john@gmail.com", id: users[0].id, thumbnailUrl: users[0].thumbnailUrl, typeUser: users[0].typeUser})
+                expect(res.body).toEqual({fullname: "the mandalorean", email: "john@gmail.com", id: users[0].id, thumbnailUrl: users[0].thumbnailUrl, typeUser: users[0].typeUser});
+            })
+            .end(done)
+    });
+
+    it('should update user 2', done => {
+        request(app)
+            .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[1].id))
+            .set('authorization', token2)
+            .send({fullname: "the mandalorean", email: users[1].email, phoneNumber: "123", thumbnailUrl: null, password: users[1].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toEqual({fullname: "the mandalorean", email: users[1].email, id: users[1].id, thumbnailUrl: null, typeUser: users[1].typeUser});
             })
             .end(done)
     });
@@ -283,6 +358,30 @@ describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
         request(app)
             .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
             .set('authorization', token2)
+            .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.CREDENTIAL)
+            })
+            .end(done)
+    });
+
+    it('should not update user with authorization token of admin', done => {
+        request(app)
+            .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
+            .set('authorization', adminToken)
+            .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.CREDENTIAL)
+            })
+            .end(done)
+    });
+
+    it('should not update user with authorization token of moderator', done => {
+        request(app)
+            .put(endpoints.users.UPDATE_PROFILE.replace(':userId',users[0].id))
+            .set('authorization', moderatorToken)
             .send({fullname: "the mandalorean", email: "john@gmail.com", phoneNumber: "123", thumbnailUrl: users[0].thumbnailUrl, password: users[0].password})
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
@@ -355,7 +454,6 @@ describe('GET ' + endpoints.users.GET_PROFILE, () => {
             })
             .end(done)
     });
-
     
     it('should return profile', done => {
         let user={};

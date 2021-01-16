@@ -12,6 +12,7 @@ import { cloudinary } from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import multer from "multer";
 import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
+import { httpCodes } from '../../utils/constants/httpResponseCodes';
 
 const storage = cloudinaryStorage({
     cloudinary,
@@ -49,7 +50,6 @@ router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validat
         (user?.googleAuth && await verifyGoogleToken(user.googleAuth?.userId, user.googleAuth?.token, user?.email));
 
     if (!isAuthenticated) throw new AuthError();
-
     const { profile, accessToken } = await signUpUser(user);
     res.header(config.headers.accessToken, accessToken)
         .json({ ...profile });
