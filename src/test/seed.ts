@@ -164,7 +164,7 @@ export const moderator = [{
 }
 ]
 
-export const business = [
+export const businesses = [
     {
         // GOOD BUSINESS
         businessId: genUUID(),
