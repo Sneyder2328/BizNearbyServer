@@ -12,9 +12,11 @@ import { verifyPassword } from '../../utils/utils';
 import { verifyFBToken, verifyGoogleToken } from './authService';
 import { raw } from 'objection';
 
+const findUser = async (id: string, idContent: string) => User.query().findOne(id, idContent).where(raw('deletedAt IS NULL'));
+
 export const signUpUser = async ({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin, typeUser }) => {
     if (typeUser != "normal") throw new AuthError(errors.FORBIDDEN,errors.message.PERMISSION_NOT_GRANTED);
-    const user = await User.query().findOne('email', email).where(raw('deletedAt IS NULL'));
+    const user = await findUser('email',email);
     if (user) throw new AppError(httpCodes.CONFLICT, errors.EMAIL, errors.message.EMAIL_TAKEN);
     const insertResult = await User.query().insert({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin, typeUser: 'normal' });
 
@@ -27,7 +29,7 @@ export const signUpUser = async ({ id, fullname, email, phoneNumber, thumbnailUr
 }
 
 export const logInUser = async ({ email, password, typeLogin, facebookAuth, googleAuth }) => {
-    const user = await User.query().findOne('email', email).where(raw('deletedAt IS NULL'));
+    const user = await findUser('email',email);
     if (!user) throw new UserNotFoundError();
     // User is using a different typeLogin than expected
     if (user.typeLogin != typeLogin) {
@@ -54,10 +56,10 @@ export const logInUser = async ({ email, password, typeLogin, facebookAuth, goog
 }
 
 export const editUser = async ({ id, fullname, password, email, phoneNumber, thumbnailUrl }) => {
-    const userExists = await User.query().findById(id).where(raw('deletedAt IS NULL'));
+    const userExists = await findUser('id',id);
     if (!userExists) throw new UserNotFoundError();
     if(userExists.typeUser != 'normal' && (email != userExists.email || password != null) ) throw new AuthError();
-    const emailConflict = await User.query().findOne({'email': email}).where(raw('deletedAt IS NULL'));
+    const emailConflict = await findUser('email', email);
     if (emailConflict && emailConflict.email != email) throw new AppError(httpCodes.CONFLICT, errors.EMAIL, errors.message.EMAIL_TAKEN);
 
 
@@ -66,7 +68,7 @@ export const editUser = async ({ id, fullname, password, email, phoneNumber, thu
 }
 
 export const getProfile = async (userId) => {
-    const user = await User.query().findById(userId).where(raw('deletedAt IS NULL'));
+    const user = await findUser('id',userId);
     if(!user) throw new UserNotFoundError();
     return { profile: _.pick(user, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser'])}
 }
@@ -77,9 +79,9 @@ export const logoutUser = async (accessToken: string): Promise<boolean> => {
 }
 
 export const deleteUser = async ({password, id}, sessionId: string) => {
-    const user = await User.query().findById(id).where(raw('deletedAt IS NULL'));
+    const user = await findUser('id',id);
     if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
-    const sessionUser = await User.query().findOne('id', sessionId).where(raw('deletedAt IS NULL'));
+    const sessionUser = await findUser('id',sessionId);
     if(!sessionUser) throw new AuthError();
     if(sessionId != user.id){
         switch(sessionUser.typeUser){
@@ -106,7 +108,7 @@ export const deleteUser = async ({password, id}, sessionId: string) => {
 }
 
 export const deleteMultipleUsers = async ({password, ids}, sessionId:string) => {
-    const sessionUser = await User.query().findById(sessionId).where(raw('deletedAt IS NULL'));
+    const sessionUser = await findUser('id', sessionId);
     if(!sessionUser) throw new AuthError();
     if(password != null || sessionUser.typeLogin=='email'){
         const isPasswordCorrect = await verifyPassword(password, sessionUser.password);
