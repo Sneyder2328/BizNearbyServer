@@ -605,7 +605,7 @@ describe('GET' + endpoints.users.owner.GET_ALL_CATEGORIES, () => {
         request(app)
             .get(endpoints.users.owner.GET_ALL_CATEGORIES)
             .set('authorization', 'Bearer ebf9b67a-50a4-439b-9af6-25dd7ff4810f')
-            .expect(httpCodes.FORBIDDEN)
+            .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body['errors'])
             })
