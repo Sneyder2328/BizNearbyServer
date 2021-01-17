@@ -1,6 +1,6 @@
 module.exports = {
     roots: ['<rootDir>/dist'],
-    testRegex: `business.spec.js$`,
+    testRegex: `search.spec.js$`,
     testEnvironment: "node",
     testPathIgnorePatterns: ['/node_modules/']
 };
