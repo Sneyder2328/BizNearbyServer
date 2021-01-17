@@ -10,6 +10,7 @@ import { BusinessPhoneNumber } from '../../database/models/BusinessPhoneNumber';
 import { BusinessImage } from '../../database/models/BusinessImage';
 import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
+import { Category } from '../../database/models/Category';
 import { raw } from 'objection';
 
 /**
@@ -241,4 +242,11 @@ export const businessById = async (businessId) => {
                     images: businessArrays[3]};
 
     return result;
+};
+
+export const allCategories = async () => {
+
+    const categories = await Category.query().select();
+
+    return categories;
 };
