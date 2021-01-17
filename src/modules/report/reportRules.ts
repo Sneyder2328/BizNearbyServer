@@ -9,3 +9,7 @@ export const reportValidationRules = [
     body('title').customSanitizer(trimInside()).escape().isString().isLength({ min: 1, max: 250 }).withMessage('Title must be at least 1 character long').exists(),
     body('description').customSanitizer(trimInside()).escape().isString().isLength({ min: 1, max: 500 }).withMessage('Description must be at least 1 character long').exists()
 ];
+
+export const reviewReportValidationRules = [
+    body('analysis').customSanitizer(trimInside()).escape().isString().isLength({ min: 1, max: 250 }).withMessage('Analysis must be at least 1 character long').exists()
+]

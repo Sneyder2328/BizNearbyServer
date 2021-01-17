@@ -7,6 +7,7 @@ import { User } from '../../database/models/User';
 import { raw } from 'objection';
 import { AuthError } from '../../utils/errors/AuthError';
 import _ from 'lodash';
+import { ReportReview } from '../../database/models/ReportReview';
 /**
  * Verify if the user exist in the database
  * @param userId
@@ -53,4 +54,17 @@ export const getReport = async (userId) => {
         }
     })
     return reports;
+}
+
+export const reviewReport = async ({id, analysis}, sessionId) => {
+    const sessionUser = await User.query().findById(sessionId).where(raw('deletedAt IS NULL'));
+    if(!sessionUser) throw new AuthError(errors.NOT_FOUND,errors.message.USER_NOT_FOUND);
+    if(sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+    const alreadyReviewed = await ReportReview.query().findOne('reportId', id);
+    if(alreadyReviewed) throw new AuthError(errors.REPORT,errors.message.REPORT_REVIEWED);
+
+    const report = await Report.query().findById(id).where(raw('deletedAt IS NULL'));
+    if(!report) throw new AuthError(errors.NOT_FOUND,errors.message.REPORT_NOT_FOUND);
+    const reportReviewed = await ReportReview.query().insert({userId: sessionId, reportId: id, analysis});
+    return {...reportReviewed};
 }

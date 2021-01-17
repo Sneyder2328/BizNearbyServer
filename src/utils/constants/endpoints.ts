@@ -15,7 +15,6 @@ export const endpoints = {
             BUSINESS_DELETE: '/businesses/:businessId',
             GET_ALL_BUSINESSES: '/users/:userId/businesses'
         },
-        REPORT: (bizId) => `/users/report/${bizId}`,
     },
     moderator:{
         CREATE_MODERATOR: '/moderators/:moderatorId',
@@ -29,7 +28,8 @@ export const endpoints = {
         REVIEW_DELETE: (bizId) => `/reviews/delete/${bizId}`,
     },
     report: {
-        GET_REPORTS: `/reports/`
+        GET_REPORTS: `/reports/`,
+        REVIEW_REPORT: `/reports/:reportId`
     },
     LOCATION_AUTOCOMPLETE: `/locations/`,
     REVIEW_GET: (bizId)=>`/reviews/get/${bizId}`,

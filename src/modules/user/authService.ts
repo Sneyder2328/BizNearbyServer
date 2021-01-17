@@ -2,6 +2,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { Session, SessionObject } from '../../database/models/Session';
 import { User, UserObject } from '../../database/models/User';
 import axios from 'axios';
+import { raw } from 'objection';
 
 export const findSession = async (accessToken: string): Promise<SessionObject> => {
     return await Session.query().findById(accessToken)
@@ -14,7 +15,7 @@ export const isSessionExpired = (session: SessionObject): boolean => {
 }
 
 export const findUserById = async (userId: string): Promise<UserObject> => {
-    return await User.query().findById(userId)
+    return await User.query().findById(userId).where(raw('deletedAt IS NULL'));
 }
 
 export const verifyGoogleToken = async (userId: string, token: string, email: string) => {    
