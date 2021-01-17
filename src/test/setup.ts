@@ -20,7 +20,7 @@ export async function wipeOutDatabase(){
     await BusinessPhoneNumber.query().delete();
     await Report.query().delete();
 }    
-export async function createUser({id, fullname, email, password, typeLogin, typeUser}:{id: string; fullname: string; email: string; password: string; typeLogin: "email" | "facebook" | "google"; typeUser: "moderator" | "normal" | "admin";}){
+export async function createUser({id, fullname, email, password, typeLogin, typeUser}:{id: string; fullname: string; email: string; password: string|null; typeLogin: "email" | "facebook" | "google"; typeUser: "moderator" | "normal" | "admin";}){
     //delete user?.googleAuth;
     // delete user?.facebookAuth;
     
@@ -59,6 +59,10 @@ export async function createBusinessImage(businessImage){
 
 export async function createBusinessPhoneNumber({businessId, phoneNumber}:{businessId: string; phoneNumber: string}){
     await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
+}
+
+export async function createReport({id, businessId, title, description}:{id: string; businessId: string; title: string|null; description: string|null;}){
+    await Report.query().insert({id, businessId, title, description});
 }
 
 export async function insertBusinessData(){

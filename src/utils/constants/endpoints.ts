@@ -10,9 +10,10 @@ export const endpoints = {
         DELETE_ACCOUNT: `/users/:userId`,
         GET_PROFILE: `/users/:userId`,
         owner:{
-            BUSINESS_REGISTER: 'post/businesses',
-            BUSINESS_UPDATE: '/businesses/update/',
-            BUSINESS_DELETE: '/businesses/delete/',
+            BUSINESS_REGISTER: '/businesses',
+            BUSINESS_UPDATE: '/businesses/:businessId',
+            BUSINESS_DELETE: '/businesses/:businessId',
+            GET_ALL_BUSINESSES: '/users/:userId/businesses'
         },
         REPORT: (bizId) => `/users/report/${bizId}`,
     },
@@ -30,6 +31,8 @@ export const endpoints = {
     report: {
         GET_REPORTS: `/reports/`
     },
+    LOCATION_AUTOCOMPLETE: `/locations/`,
     REVIEW_GET: (bizId)=>`/reviews/get/${bizId}`,
     NEARBY_BUSINESS_GET: `/businesses/get`,
+    GET_BUSINESS: '/businesses/:businessId'
 }

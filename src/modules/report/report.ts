@@ -5,6 +5,7 @@ import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { getReport, newReport } from './reportService';
 import { authenticate } from '../../middlewares/authenticate';
 import { endpoints } from '../../utils/constants/endpoints';
+import { verifyUserType } from '../../middlewares/verifyUserType';
 
 const router = Router();
 
@@ -15,8 +16,8 @@ router.post('/reports', authenticate, reportValidationRules, validate, handleErr
 }));
 
 router.get(endpoints.report.GET_REPORTS, authenticate, handleErrorAsync( async (req, res)=>{
-    const { report } = await getReport(req.userId);
-    res.json({...report});
+    const reports = await getReport(req.userId);
+    res.json(reports);
 }))
 
 export {router as reportRouter}

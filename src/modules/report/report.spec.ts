@@ -2,10 +2,13 @@ import request from 'supertest';
 import { app, server} from '../../index';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import knex from "../../database/knex";
-import { wipeOutDatabase, insertBusinessData } from '../../test/setup';
-import { newReport } from '../../test/seed';
+import { wipeOutDatabase, insertBusinessData, createReport } from '../../test/setup';
+import { admin, moderator, newReport, users } from '../../test/seed';
+import { endpoints } from '../../utils/constants/endpoints';
 
 const token = 'Bearer b337e27e-bcf0-4154-8a77-96daa873c9e5';
+const moderatorToken = "Bearer fcd84d1f-ee5b-4636-9f61-78dc349f23e5";
+const adminToken = "Bearer fcd84d1f-ee3b-4636-9f61-78dc349f23e5";
 
 describe('POST' + '/reports', () => {
     beforeEach(async () => {
@@ -97,6 +100,20 @@ describe('POST' + '/reports', () => {
             .end(done);
     });
 });
+
+describe('GET' + endpoints.report.GET_REPORTS, () => {
+    beforeAll(async ()=>{
+        await wipeOutDatabase();
+        await insertBusinessData();
+        await createReport(newReport[0]);
+        await createReport(newReport[1]);
+        await createReport(newReport[2]);
+    })
+
+    it('should return reports', done => {
+        
+    })
+})
 
 afterAll(()=>{
     knex.destroy();

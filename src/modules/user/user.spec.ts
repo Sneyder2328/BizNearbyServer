@@ -171,11 +171,8 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
 describe('POST ' + endpoints.auth.LOG_IN, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
-        //@ts-ignore
         await Promise.all(users.slice(0,3).map(async user => await createUser(user)));
-        //@ts-ignore
         await createUser(admin[0]);
-        //@ts-ignore
         await createUser(moderator[0]);
     });
 
@@ -311,9 +308,7 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
 describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();
-        //@ts-ignore
         await createUser({...users[0]});
-        //@ts-ignore
         await createUser({...users[1]});
         await createSession({token: token.split(' ')[1], userId });
         await createSession({token: token2.split(' ')[1], userId: users[1].id });
@@ -418,11 +413,8 @@ describe('PUT ' + endpoints.users.UPDATE_PROFILE, () => {
 describe('GET ' + endpoints.users.GET_PROFILE, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
-        //@ts-ignore
         await createUser({...users[0]});
-        //@ts-ignore
         await createUser({...admin[0]});
-        //@ts-ignore
         await createUser({...moderator[0]});
         await createSession({token: token.split(' ')[1], userId });
         await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
@@ -484,17 +476,11 @@ describe('GET ' + endpoints.users.GET_PROFILE, () => {
 describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();
-        //@ts-ignore
         await createUser({...users[0]});
-        //@ts-ignore
         await createUser({...users[1]});
-        //@ts-ignore
         await createUser({...admin[0]});
-        //@ts-ignore
         await createUser({...admin[1]});
-        //@ts-ignore
         await createUser({...moderator[0]});
-        //@ts-ignore
         await createUser({...moderator[1]});
         await createSession({token: token.split(' ')[1], userId });
         await createSession({token: token2.split(' ')[1], userId: userId2 });
@@ -674,17 +660,11 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
 describe('DELETE' + endpoints.DELETE_USERS, ()=>{
     beforeEach(async ()=>{
         await wipeOutDatabase();
-        //@ts-ignore
         await createUser({...users[0]});
-        //@ts-ignore
         await createUser({...users[1]});
-        //@ts-ignore
         await createUser({...admin[0]});
-        //@ts-ignore
         await createUser({...admin[1]});
-        //@ts-ignore
         await createUser({...moderator[0]});
-        //@ts-ignore
         await createUser({...moderator[1]});
         await createSession({token: token.split(' ')[1], userId });
         await createSession({token: token2.split(' ')[1], userId: userId2 });
@@ -854,7 +834,6 @@ describe('DELETE' + endpoints.DELETE_USERS, ()=>{
 describe('DELETE ' + endpoints.auth.LOG_OUT, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();
-        //@ts-ignore
         await createUser({...users[0]});
         await createSession({token: token.split(' ')[1], userId });
     })

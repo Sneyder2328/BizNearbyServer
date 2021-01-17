@@ -40,6 +40,17 @@ export const newReport = async ({id, userId, businessId, title, description}) =>
 export const getReport = async (userId) => {
     const sessionUser = await User.query().findById(userId).where(raw('deletedAt IS NULL'));
     if(!sessionUser) throw new AuthError();
-    const reports = await Report.query().join(raw('ReportReview ON ReportReview.reportId = id'));
-    return {report: _.pick(reports, ['id','businessId','title','description','createdAt'])};
+    if(sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN,errors.message.PERMISSION_NOT_GRANTED);
+    const queryReports = await Report.query().leftJoin(raw('ReportReview ON ReportReview.reportId = id'));
+    const reports = queryReports.map( report => {
+        return {
+            id: report.id,
+            userId: report.userId,
+            businessId: report.businessId,
+            title: report.title,
+            description: report.description,
+            createdAt: report['createdAt']
+        }
+    })
+    return reports;
 }
