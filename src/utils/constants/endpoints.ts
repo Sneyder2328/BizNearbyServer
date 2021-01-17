@@ -13,7 +13,8 @@ export const endpoints = {
             BUSINESS_REGISTER: '/businesses',
             BUSINESS_UPDATE: '/businesses/:businessId',
             BUSINESS_DELETE: '/businesses/:businessId',
-            GET_ALL_BUSINESSES: '/users/:userId/businesses'
+            GET_ALL_BUSINESSES: '/users/:userId/businesses',
+            GET_ALL_CATEGORIES: '/categories'
         },
     },
     moderator:{

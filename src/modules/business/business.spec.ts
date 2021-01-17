@@ -583,6 +583,36 @@ describe('GET' + endpoints.GET_BUSINESS, () => {
     });
 });
 
+describe('GET' + endpoints.users.owner.GET_ALL_CATEGORIES, () => {
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        await createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
+        await createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
+    });
+
+    it('should return all categories', (done) => {
+        request(app)
+            .get(endpoints.users.owner.GET_ALL_CATEGORIES)
+            .set('authorization', token)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body)
+            })
+            .end(done);
+    });
+
+    it('should not return without authorization', (done) => {
+        request(app)
+            .get(endpoints.users.owner.GET_ALL_CATEGORIES)
+            .set('authorization', 'Bearer ebf9b67a-50a4-439b-9af6-25dd7ff4810f')
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body['errors'])
+            })
+            .end(done);
+    })
+});
+
 afterAll(()=>{
     knex.destroy();
     server.close();
