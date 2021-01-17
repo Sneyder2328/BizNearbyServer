@@ -25,7 +25,6 @@ export const errors = {
         DEFAULT_ERROR: "Something went wrong. Please try again.",
         UNDEFINED_ROUTE: "Route not found on the server",
         INCORRECT_CREDENTIALS: "Incorrect credentials",
-        REFRESH_TOKEN_NOT_FOUND: "Refresh token not found",
         USERNAME_TAKEN: "Username already exists",
         EMAIL_TAKEN: "Email already exists"
     }
