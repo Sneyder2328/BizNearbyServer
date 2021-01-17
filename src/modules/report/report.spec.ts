@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app, server} from '../../index';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import knex from "../../database/knex";
-import { wipeOutDatabase, insertBusinessData, createReport } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createReport, createUser, createSession } from '../../test/setup';
 import { admin, moderator, newReport, users } from '../../test/seed';
 import { endpoints } from '../../utils/constants/endpoints';
 
@@ -101,17 +101,27 @@ describe('POST' + '/reports', () => {
     });
 });
 
-describe('GET' + endpoints.report.GET_REPORTS, () => {
+describe('GET' + endpoints.report.REVIEW_REPORT, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
         await insertBusinessData();
         await createReport(newReport[0]);
         await createReport(newReport[1]);
         await createReport(newReport[2]);
+        await createUser(moderator[0]);
+        await createSession({token: moderatorToken.split("")[1],userId: moderator[0].id})
     })
 
     it('should return reports', done => {
-        
+        request(app)
+            .post(endpoints.report.REVIEW_REPORT.replace(":reportId",newReport[0].id))
+            .set('authorization',moderatorToken)
+            .send({analysis:"este negocio es una estafa, me prometieron un ps4 y me vendieron fue la caja de la consola llena de tierra!"})
+            .expect(httpCodes.OK)
+            .expect(res=>{
+                expect(res.body)
+            })
+
     })
 })
 

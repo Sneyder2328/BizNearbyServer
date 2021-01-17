@@ -4,7 +4,8 @@ export class ReportReview extends Model{
     userId!: string;
     reportId!: string;
     analysis!: string|null;
-
+    createdAt!: Date;
+    
     static tableName = 'ReportReview';
     static idName = ['userId','reportId']; 
 }
