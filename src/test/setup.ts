@@ -53,16 +53,16 @@ export async function createBusinessHours(businessHours){
     });
 }
 
-export async function createBusinessImage(businessImage){
-    await BusinessImage.query().insert(businessImage);
-}
-
 export async function createBusinessPhoneNumber({businessId, phoneNumber}:{businessId: string; phoneNumber: string}){
     await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
 }
 
 export async function createReport({id, businessId, title, description}:{id: string; businessId: string; title: string|null; description: string|null;}){
     await Report.query().insert({id, businessId, title, description});
+}
+
+export async function createBusinessImage({businessId, imageUrl}:{businessId: string; imageUrl: string}){
+    await BusinessImage.query().insert({businessId, imageUrl});
 }
 
 export async function insertBusinessData(){
@@ -85,4 +85,5 @@ export async function insertBusinessData(){
         closeTime: 1830
     }]);
     await createBusinessPhoneNumber({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", phoneNumber: "04125568177"})
+    await createBusinessImage({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", imageUrl: "UrlForExample"})
 }

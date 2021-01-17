@@ -212,6 +212,7 @@ export const businesses = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // BUSINESS WITHOUT CITYCODE, STATECODE, AND COUNTRYCODE
@@ -268,6 +269,7 @@ export const businesses = [
         ],
         phoneNumbers: [],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // BUSINESS WITHOUT LATITUTE AND LONGITUDE
@@ -296,6 +298,7 @@ export const businesses = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // USER NOT FOUND IN DATABASE
@@ -325,6 +328,7 @@ export const businesses = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // BUSINESS NAME TOO LONG
@@ -353,6 +357,7 @@ export const businesses = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // NULL BUSINESSID
@@ -380,7 +385,8 @@ export const businesses = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // NULL ADDRESSID
@@ -408,7 +414,8 @@ export const businesses = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // BUSINESS NAME NULL
@@ -436,7 +443,8 @@ export const businesses = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // LATITUDE AND LONGITUDE NULL
@@ -464,7 +472,8 @@ export const businesses = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // HOURS EMPTY
@@ -481,7 +490,8 @@ export const businesses = [
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // CATEGORIES EMPTY
@@ -509,7 +519,8 @@ export const businesses = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: []
+        categories: [],
+        images: ["UrlForExample"]
     }
 ];
 
@@ -541,6 +552,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // UPDATE DESCRIPTION
@@ -569,6 +581,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // UPDATE ADDRESS
@@ -597,6 +610,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // UPDATE LATITUTE AND LONGITUDE
@@ -625,6 +639,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // UPDATE CITYCODE, STATECODE AND COUNTRYCODE
@@ -653,6 +668,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // UPDATE BANNERURL
@@ -681,6 +697,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // UPDATE HOURS
@@ -719,6 +736,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // UPDATE PHONE NUMBER
@@ -747,6 +765,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04122697450"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // UPDATE CATEGORIES
@@ -775,6 +794,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1,2],
+        images: ["UrlForExample"]
     },
     {
         // ADD NEW USER TO USERBUSINESS
@@ -803,6 +823,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // WRONG ADRESSID 
@@ -831,6 +852,7 @@ export const updateBusiness = [
         ],
         phoneNumbers: ["04120984532"],
         categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // ADDRESSID NULL
@@ -858,7 +880,8 @@ export const updateBusiness = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // NAME NULL
@@ -886,7 +909,8 @@ export const updateBusiness = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // LATITUTE AND LONGITUDE NULL
@@ -914,7 +938,8 @@ export const updateBusiness = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // HOURS ARRAY EMPTY
@@ -931,7 +956,8 @@ export const updateBusiness = [
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [],
         phoneNumbers: ["04120984532"],
-        categories: [1]
+        categories: [1],
+        images: ["UrlForExample"]
     },
     {
         // CATEGORIES ARRAY EMPTY
@@ -959,7 +985,8 @@ export const updateBusiness = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: []
+        categories: [],
+        images: ["UrlForExample"]
     }
 ];
 
