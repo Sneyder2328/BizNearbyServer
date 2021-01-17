@@ -21,20 +21,21 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
         await wipeOutDatabase();
     });
 
+    const user = (user) => {return {
+        id: user.id,
+        fullname: user.fullname,
+        email: user.email,
+        thumbnailUrl: user.thumbnailUrl,
+        typeUser: user.typeUser
+    }}
+
     it('should sign up a new user with email', (done) => {
-        const user = {
-            id: users[0].id,
-            fullname: users[0].fullname,
-            email: users[0].email,
-            thumbnailUrl: users[0].thumbnailUrl,
-            typeUser: users[0].typeUser
-        }
         request(app)
             .post(endpoints.users.SIGN_UP)
             .send({...users[0]})
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...user});
+                expect(res.body).toEqual(user(users[0]));
                 expect(res.header['authorization']).toBeTruthy();
             })
             .end(done);
@@ -63,32 +64,18 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
     // });
 
     it('should sign up a new user with max input capacity', done => {
-        const user = {
-            id: users[7].id,
-            fullname: users[7].fullname,
-            email: users[7].email,
-            thumbnailUrl: users[7].thumbnailUrl,
-            typeUser: users[7].typeUser
-        }
         request(app)
         .post(endpoints.users.SIGN_UP)
         .send({...users[7]})
         .expect(httpCodes.OK)
         .expect(res => {
-            expect(res.body).toEqual({...user});
+            expect(res.body).toEqual(user(users[7]));
             expect(res.header['authorization']).toBeTruthy();
         })
         .end(done);
     })
 
     it('should not sign up a user of rank moderator', done => {
-        const user = {
-            id: users[0].id,
-            fullname: users[0].fullname,
-            email: users[0].email,
-            thumbnailUrl: users[0].thumbnailUrl,
-            typeUser: users[0].typeUser
-        }
         request(app)
         .post(endpoints.users.SIGN_UP)
         .send({...users[0], typeUser: 'moderator'})
@@ -101,13 +88,6 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
     })
 
     it('should not sign up a user of rank admin', done => {
-        const user = {
-            id: users[0].id,
-            fullname: users[0].fullname,
-            email: users[0].email,
-            thumbnailUrl: users[0].thumbnailUrl,
-            typeUser: users[0].typeUser
-        }
         request(app)
         .post(endpoints.users.SIGN_UP)
         .send({...users[0], typeUser: 'admin'})
@@ -176,20 +156,21 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
         await createUser(moderator[0]);
     });
 
+    const user = (user) => {return {
+        id: user.id,
+        fullname: user.fullname,
+        email: user.email,
+        thumbnailUrl: null,
+        typeUser: user.typeUser
+    }}
+
     it("should Log in with email", done=>{
-        const user = {
-            id: users[0].id,
-            fullname: users[0].fullname,
-            email: users[0].email,
-            thumbnailUrl: null,
-            typeUser: users[0].typeUser
-        }
         request(app)
             .post(endpoints.auth.LOG_IN)
             .send({email: users[0].email, password: users[0].password, typeLogin: users[0].typeLogin})
             .expect(httpCodes.OK)
             .expect(res=>{
-                expect(res.body).toEqual({...user});
+                expect(res.body).toEqual(user(users[0]));
                 expect(res.header['authorization']).toBeTruthy();
             })
             .end(done);
@@ -218,38 +199,24 @@ describe('POST ' + endpoints.auth.LOG_IN, () => {
     // });
 
     it('should login as an admin', done=>{
-        const user = {
-            id: admin[0].id,
-            fullname: admin[0].fullname,
-            email: admin[0].email,
-            thumbnailUrl: null,
-            typeUser: admin[0].typeUser
-        }
         request(app)
             .post(endpoints.auth.LOG_IN)
             .send({email: admin[0].email, password: admin[0].password, typeLogin: admin[0].typeLogin})
             .expect(httpCodes.OK)
             .expect(res=>{
-                expect(res.body).toEqual({...user});
+                expect(res.body).toEqual(user(admin[0]));
                 expect(res.header['authorization']).toBeTruthy();
             })
             .end(done)
     });
 
     it('should login as an moderator', done=>{
-        const user = {
-            id: moderator[0].id,
-            fullname: moderator[0].fullname,
-            email: moderator[0].email,
-            thumbnailUrl: null,
-            typeUser: moderator[0].typeUser
-        }
         request(app)
             .post(endpoints.auth.LOG_IN)
             .send({email: moderator[0].email, password: moderator[0].password, typeLogin: moderator[0].typeLogin})
             .expect(httpCodes.OK)
             .expect(res=>{
-                expect(res.body).toEqual({...user});
+                expect(res.body).toEqual(user(moderator[0]));
                 expect(res.header['authorization']).toBeTruthy();
             })
             .end(done)
@@ -420,49 +387,46 @@ describe('GET ' + endpoints.users.GET_PROFILE, () => {
         await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
         await createSession({token: adminToken.split(' ')[1], userId: admin[0].id });
     })
+    let user = (_user) => {
+        let user = {};
+        ['id','fullname','email','typeUser'].forEach(key => {user[key]=_user[key]})
+        return user;
+    };
 
     it('should return profile of user', done => {
-        let user={};
-        ['id','fullname','email','typeUser'].forEach(key => {user[key]=users[0][key]});
         request(app)
             .get(endpoints.users.GET_PROFILE.replace(":userId", users[0].id))
             .set('authorization', token)
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toMatchObject({...user, thumbnailUrl: null});
+                expect(res.body).toMatchObject({...user(users[0]), thumbnailUrl: null});
             })
             .end(done)
     });
     
     it('should return profile of moderator', done => {
-        let user={};
-        ['id','fullname','email','typeUser'].forEach(key => {user[key]=moderator[0][key]});
         request(app)
             .get(endpoints.users.GET_PROFILE.replace(":userId", moderator[0].id))
             .set('authorization', moderatorToken)
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toMatchObject({...user, thumbnailUrl: null});
+                expect(res.body).toMatchObject({...user(moderator[0]), thumbnailUrl: null});
             })
             .end(done)
     });
     
     it('should return profile', done => {
-        let user={};
-        ['id','fullname','email','typeUser'].forEach(key => {user[key]=admin[0][key]});
         request(app)
             .get(endpoints.users.GET_PROFILE.replace(":userId", admin[0].id))
             .set('authorization', adminToken)
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toMatchObject({...user, thumbnailUrl: null});
+                expect(res.body).toMatchObject({...user(admin[0]), thumbnailUrl: null});
             })
             .end(done)
     });
     
     it('should not return profile of user without authorization', done => {
-        let user={};
-        ['id','fullname','email','typeUser'].forEach(key => {user[key]=users[0][key]});
         request(app)
             .get(endpoints.users.GET_PROFILE.replace(":userId", users[0].id))
             .expect(httpCodes.UNAUTHORIZED)
