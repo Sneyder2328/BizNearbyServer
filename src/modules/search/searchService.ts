@@ -11,7 +11,7 @@ export const searchLocations =async  (pattern: string, sessionId: string,limit: 
                                 .select("city.code", "city.name", "state.name as stateName", "country.name as countryName")
                                 .join(raw('state ON  city.stateCode = state.code'))
                                 .join(raw('country ON state.countryCode = country.code'))
-                                .where(raw('city.name LIKE "%'+ pattern +'%" limit ' + limit));
+                                .where(raw('city.name LIKE "%'+ pattern +'%" ' + limit));
     const searchResult = cities.map(city => {
         return {
             city: {

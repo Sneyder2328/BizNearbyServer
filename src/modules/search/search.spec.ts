@@ -10,6 +10,19 @@ import knex from "../../database/knex";
 const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
 
 describe('GET ' + endpoints.LOCATION_AUTOCOMPLETE, () => {
+    const city = (query: string) => {return {
+        city: {
+            name: expect.stringMatching(new RegExp(query,'i')),
+            code: expect.anything()
+        },
+        state: {
+            name: expect.anything()
+        },
+        country: {
+            name: expect.anything()
+        }
+    }}
+
     beforeAll(async ()=>{
         await wipeOutDatabase();
         //@ts-ignore
@@ -17,52 +30,50 @@ describe('GET ' + endpoints.LOCATION_AUTOCOMPLETE, () => {
         await createSession({token: token.split(' ')[1], userId: users[0].id});
     })
 
-    it('should return every city with "tocuyo" in it', done => {
-        const city ={
-            city: {
-                name: expect.stringMatching(/tocuyo/i),
-                code: expect.anything()
-            },
-            state: {
-                name: expect.anything()
-            },
-            country: {
-                name: expect.anything()
-            }
-        }
-
+    it('should return every city with "El Tocuyo" in it', done => {
         request(app)
             .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=El Tocuyo")
             .set('authorization', token)
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBeGreaterThan(0);
-                expect(res.body[0]).toEqual(city);
+                expect(res.body[0]).toEqual(city('El Tocuyo'));
             })
             .end(done)
     })
 
-    it('should return every city with "  com  " in it', done => {
-        const city ={
-            city: {
-                name: expect.stringMatching(/toc/i),
-                code: expect.anything()
-            },
-            state: {
-                name: expect.anything()
-            },
-            country: {
-                name: expect.anything()
-            }
-        }
+    it('should return every city with "El Tocuyo" in it (query with too much whitespace)', done => {
+        request(app)
+            .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=    El         Tocuyo    ")
+            .set('authorization', token)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBeGreaterThan(0);
+                expect(res.body[0]).toEqual(city('El Tocuyo'));
+            })
+            .end(done)
+    })
 
+    it('should return 10 cities with "a" in it', done => {
+        request(app)
+            .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=a&limit=10")
+            .set('authorization', token)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(10)
+                expect(res.body[0]).toEqual(city('a'));
+            })
+            .end(done)
+    })
+
+    it('should return every city with "  toc  " in it', done => {
         request(app)
             .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=  toc  ")
             .set('authorization', token)
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBeGreaterThan(0);
-                expect(res.body[0]).toEqual(city);
+                expect(res.body[0]).toEqual(city('toc'));
             })
             .end(done)
     })

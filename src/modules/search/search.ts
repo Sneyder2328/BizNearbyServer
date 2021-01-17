@@ -10,7 +10,7 @@ const router = Router();
 router.get(endpoints.LOCATION_AUTOCOMPLETE, authenticate, handleErrorAsync(async (req, res) => {
     let searchPattern = req.query['query'];
     if(!searchPattern) throw new AppError(httpCodes.BAD_REQUEST);
-    const limit = req.query['limit']?req.query['limit']:20;
+    const limit = req.query['limit']?`limit ${req.query['limit']}`:"";
     searchPattern = searchPattern.trim().replace(/\s\s+/g, ' ');
     const searchResult = await searchLocations(searchPattern, req.userId, limit);
     res.json(searchResult);
