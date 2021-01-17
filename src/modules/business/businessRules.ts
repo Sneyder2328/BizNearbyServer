@@ -44,7 +44,15 @@ const businessValidationRules = [
             }
         }
         return true;
-    })
+    }),
+    body('images').custom(arr => {
+        for (let i = 0; i < arr.length; i++) {
+            if (typeof arr[i] !== 'string' || arr[i].length > 500) {
+                return false;
+            }
+        }
+        return true;
+    }).optional({ nullable: true })
 ]
 
 export const newBusinessValidationRules = [

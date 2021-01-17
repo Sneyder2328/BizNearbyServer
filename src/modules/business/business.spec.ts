@@ -48,6 +48,12 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
                     businessId: businesses[nro].businessId,
                     categoryCode: category
                 }
+            }),
+            images : businesses[nro].images?.map(image => {
+                return {
+                    businessId: businesses[nro].businessId,
+                    imageUrl: image
+                }
             })
         }
     };
@@ -236,6 +242,12 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
                 return {
                     businessId: businessId,
                     categoryCode: category
+                }
+            }),
+            images : updateBusiness[nro].images?.map(image => {
+                return {
+                    businessId: businessId,
+                    imageUrl: image
                 }
             })
         }

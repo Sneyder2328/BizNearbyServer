@@ -7,6 +7,7 @@ import { BusinessAddress } from '../../database/models/BusinessAddress';
 import { BusinessCategory } from '../../database/models/BusinessCategory';
 import { BusinessHours } from '../../database/models/BusinessHours';
 import { BusinessPhoneNumber } from '../../database/models/BusinessPhoneNumber';
+import { BusinessImage } from '../../database/models/BusinessImage';
 import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
 import { raw } from 'objection';
@@ -22,7 +23,7 @@ const verifyUser = async (userId: string) => {
 };
 
 
-export const addNewBusiness = async ({ userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
+export const addNewBusiness = async ({ userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, images }) => {
 
     await verifyUser(userId);
 
@@ -44,7 +45,7 @@ export const addNewBusiness = async ({ userId, businessId, addressId, name, desc
     });
     const businessHoursAdded = await Promise.all(businessHours);
 
-    let phoneNumbersAdded
+    let phoneNumbersAdded;
     if (phoneNumbers) {
         const businessPhoneNumber = phoneNumbers.map(async (phoneNumber) => {
             return await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
@@ -52,14 +53,20 @@ export const addNewBusiness = async ({ userId, businessId, addressId, name, desc
         phoneNumbersAdded = await Promise.all(businessPhoneNumber);
     }
 
-
-
+    let imagesAdded;
+    if(images){
+        const businessImage = images.map(async (image) => {
+            return await BusinessImage.query().insert({businessId, imageUrl: image});
+        });
+        imagesAdded = await Promise.all(businessImage);
+    }
     return {
         ...business,
         businessAddress,
         hours: businessHoursAdded,
         phoneNumbers: phoneNumbersAdded,
-        categories: categoriesAdded
+        categories: categoriesAdded,
+        images: imagesAdded
     };
 };
 
@@ -99,7 +106,7 @@ const verifyBusinessAddress = async (addressId: string, businessId: string) => {
     }
 };
 
-export const updateBusiness = async ({ userId, businessId, addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories }) => {
+export const updateBusiness = async ({ userId, businessId, addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, images }) => {
 
     await verifyUser(userId);
 
@@ -159,12 +166,22 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
         businessPhoneNumbersAdded = await Promise.all(businessPhoneNumbers);
     }
 
+    await BusinessImage.query().delete().where('businessId', businessId);
+    let businessImagesAdded;
+    if(images) {
+        const businessImages = images.map(async (image) => {
+            return await BusinessImage.query().insert({ businessId, imageUrl: image});
+        });
+        businessImagesAdded = await Promise.all(businessImages);
+    }
+
     return {
         ..._.pick(businessUpdated, ['id', 'name', 'description', 'bannerUrl']),
         businessAddress: businessAddressUpdated,
         categories: businessCategoriesAdded,
         hours: businessHoursAdded,
-        phoneNumbers: businessPhoneNumbersAdded
+        phoneNumbers: businessPhoneNumbersAdded,
+        images: businessImagesAdded
     };
 };
 
@@ -193,7 +210,8 @@ export const businessesByUser = async (userId, reqUserId) => {
                 address: (await BusinessAddress.query().where({ businessId: businessId }))?.[0],
                 hours: await BusinessHours.query().where({ businessId: businessId}),
                 categories: await BusinessCategory.query().where({ businessId: businessId }),
-                phoneNumbers: await BusinessPhoneNumber.query().where({ businessId: businessId })
+                phoneNumbers: await BusinessPhoneNumber.query().where({ businessId: businessId }),
+                images: await BusinessImage.query().where({ businessId: businessId })
             };
         }));
         return result;
@@ -211,14 +229,16 @@ export const businessById = async (businessId) => {
     const businessArrays = await Promise.all(
         [await BusinessHours.query().where({businessId: businessId}), 
         await BusinessCategory.query().where({businessId: businessId}),
-        await BusinessPhoneNumber.query().where({businessId: businessId})
+        await BusinessPhoneNumber.query().where({businessId: businessId}),
+        await BusinessImage.query().where({ businessId: businessId})
     ]);
 
     const result = {..._.pick(business, ['id', 'name', 'description', 'bannerUrl']),
                     address: businessAddress,
                     hours: businessArrays[0],
                     categories: businessArrays[1],
-                    phoneNumbers: businessArrays[2]};
-    console.log(result);
+                    phoneNumbers: businessArrays[2],
+                    images: businessArrays[3]};
+
     return result;
 };

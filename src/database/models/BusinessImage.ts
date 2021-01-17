@@ -5,6 +5,7 @@ export class BusinessImage extends Model {
     imageUrl!: string;
 
     static tableName = 'BusinessImage';
+    static idColumn = ['businessId', 'imageUrl'];
 }
 
 export type BusinessImageModel = ModelObject<BusinessImage>
