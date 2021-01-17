@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { errors } from '../../utils/constants/errors';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { AppError } from '../../utils/errors/AppError';
@@ -8,6 +9,7 @@ import { BusinessHours } from '../../database/models/BusinessHours';
 import { BusinessPhoneNumber } from '../../database/models/BusinessPhoneNumber';
 import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
+import { raw } from 'objection';
 
 /**
  * Verify if the user exist in the database
@@ -78,7 +80,7 @@ const verifyUserHasAccessToBusiness = async (userId: string, businessId: string)
  * @param businessId
  */
 const verifyBusiness = async (businessId: string) => {
-    if (!await Business.query().findById(businessId)) {
+    if (!await Business.query().findById(businessId).where(raw('deletedAt IS NULL'))) {
         throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
     }
 };
@@ -158,7 +160,7 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
     }
 
     return {
-        ...businessUpdated,
+        ..._.pick(businessUpdated, ['id', 'name', 'description', 'bannerUrl']),
         businessAddress: businessAddressUpdated,
         categories: businessCategoriesAdded,
         hours: businessHoursAdded,
@@ -187,7 +189,7 @@ export const businessesByUser = async (userId, reqUserId) => {
         const businesses = await UserBusiness.query().where('userId', userId);
         const result = await Promise.all(businesses.map(async ({ businessId }) => {
             return {
-                ...(await Business.query().where({ id: businessId }))?.[0],
+                ..._.pick((await Business.query().where({ id: businessId }))?.[0], ['id', 'name', 'description', 'bannerUrl']),
                 address: (await BusinessAddress.query().where({ businessId: businessId }))?.[0],
                 hours: await BusinessHours.query().where({ businessId: businessId}),
                 categories: await BusinessCategory.query().where({ businessId: businessId }),
@@ -203,8 +205,7 @@ export const businessesByUser = async (userId, reqUserId) => {
 export const businessById = async (businessId) => {
     await verifyBusiness(businessId);
 
-    const business = await 
-    Business.query().findById(businessId);
+    const business = await Business.query().findById(businessId);
     const businessAddress = (await BusinessAddress.query().where({ businessId: businessId}))[0];
 
     const businessArrays = await Promise.all(
@@ -213,7 +214,7 @@ export const businessById = async (businessId) => {
         await BusinessPhoneNumber.query().where({businessId: businessId})
     ]);
 
-    const result = {...business,
+    const result = {..._.pick(business, ['id', 'name', 'description', 'bannerUrl']),
                     address: businessAddress,
                     hours: businessArrays[0],
                     categories: businessArrays[1],
