@@ -21,8 +21,8 @@ router.get(endpoints.report.GET_REPORTS, authenticate, handleErrorAsync( async (
 router.post(endpoints.report.REVIEW_REPORT, authenticate, reviewReportValidationRules, validate, handleErrorAsync(async (req, res)=>{
     const {analysis}  = req.body;
     const id = req.params.reportId;
-    const reportReviewed = await reviewReport({id, analysis}, req.userId);
-    res.json(reportReviewed);
+    const { reportReviewed } = await reviewReport({id, analysis}, req.userId);
+    res.json({...reportReviewed});
 }))
 
 export {router as reportRouter}

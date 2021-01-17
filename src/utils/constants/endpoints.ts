@@ -28,6 +28,7 @@ export const endpoints = {
         REVIEW_DELETE: (bizId) => `/reviews/delete/${bizId}`,
     },
     report: {
+        CREATE_REPORT: `/reports/`,
         GET_REPORTS: `/reports/`,
         REVIEW_REPORT: `/reports/:reportId`
     },

@@ -11,7 +11,8 @@ export const authenticate = async (req, res, next) => {
     if (!config.regex.uuidV4.test(accessToken)) {
         return next(new AuthError('accessToken', errors.message.ACCESS_TOKEN_INVALID), req, res, next);
     }
-    const session = await findSession(accessToken)
+    const session = await findSession(accessToken);
+    
     if (!session) {
         return next(new AuthError(), req, res, next);
     }

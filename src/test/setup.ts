@@ -8,6 +8,7 @@ import { BusinessPhoneNumber } from '../database/models/BusinessPhoneNumber';
 import { UserBusiness } from '../database/models/UserBusiness';
 import { Session } from '../database/models/Session';
 import { Report } from '../database/models/Report';
+import { ReportReview } from '../database/models/ReportReview';
 
 export async function wipeOutDatabase(){
     await User.query().delete();
@@ -57,8 +58,12 @@ export async function createBusinessPhoneNumber({businessId, phoneNumber}:{busin
     await BusinessPhoneNumber.query().insert({businessId, phoneNumber});
 }
 
-export async function createReport({id, businessId, title, description}:{id: string; businessId: string; title: string|null; description: string|null;}){
-    await Report.query().insert({id, businessId, title, description});
+export async function createReport({id, businessId, userId, title, description}:{id: string; businessId: string; userId: string; title: string|null; description: string|null;}){
+    await Report.query().insert({id, businessId, userId, title, description});
+}
+
+export async function createReportReview({reportId, userId, analysis}:{reportId: string, userId: string, analysis: string|null}){
+    await ReportReview.query().insert({userId, reportId, analysis});
 }
 
 export async function createBusinessImage({businessId, imageUrl}:{businessId: string; imageUrl: string}){

@@ -67,5 +67,5 @@ export const reviewReport = async ({id, analysis}, sessionId) => {
     const report = await Report.query().findById(id).where(raw('deletedAt IS NULL'));
     if(!report) throw new AuthError(errors.NOT_FOUND,errors.message.REPORT_NOT_FOUND);
     const reportReviewed = await ReportReview.query().insert({userId: sessionId, reportId: id, analysis});
-    return {...reportReviewed};
+    return {reportReviewed: _.pick(reportReviewed, ['reportId','userId','analysis'])};
 }
