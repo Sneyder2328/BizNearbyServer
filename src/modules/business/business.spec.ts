@@ -843,7 +843,6 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
             .send({...businessReview[0]})
             .expect(httpCodes.OK)
             .expect(res => {
-                console.log(res.body);
                 expect(res.body).toEqual(expectedBusinessReview)
             })
             .end(done);
