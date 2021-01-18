@@ -9,7 +9,7 @@ export const searchLocations =async  (pattern: string, sessionId: string,limit: 
     if(!user) throw new AuthError();
     const cities = await City.query()
                                 .select("City.code", "City.name", "State.name as stateName", "Country.name as countryName")
-                                .join(raw('State ON  City.stateCode = state.code'))
+                                .join(raw('State ON  City.stateCode = State.code'))
                                 .join(raw('Country ON State.countryCode = Country.code'))
                                 .where(raw('City.name LIKE "%'+ pattern +'%" ' + limit));
     const searchResult = cities.map(city => {
