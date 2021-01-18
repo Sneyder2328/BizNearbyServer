@@ -8,10 +8,10 @@ export const searchLocations =async  (pattern: string, sessionId: string,limit: 
     const user = await User.query().findById(sessionId).where(raw('deletedAt IS NULL'));
     if(!user) throw new AuthError();
     const cities = await City.query()
-                                .select("city.code", "city.name", "state.name as stateName", "country.name as countryName")
-                                .join(raw('state ON  city.stateCode = state.code'))
-                                .join(raw('country ON state.countryCode = country.code'))
-                                .where(raw('city.name LIKE "%'+ pattern +'%" ' + limit));
+                                .select("City.code", "City.name", "State.name as stateName", "Country.name as countryName")
+                                .join(raw('State ON  City.stateCode = state.code'))
+                                .join(raw('Country ON State.countryCode = Country.code'))
+                                .where(raw('City.name LIKE "%'+ pattern +'%" ' + limit));
     const searchResult = cities.map(city => {
         return {
             city: {
