@@ -5,8 +5,6 @@ export class BusinessAddress extends Model {
     businessId!: string;
     address!: string;
     cityCode!: number;
-    stateCode!: number;
-    countryCode!: number;
     latitude!: number;
     longitude!: number;
 

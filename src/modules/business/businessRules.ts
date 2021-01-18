@@ -14,8 +14,6 @@ const businessValidationRules = [
     body('latitude').isNumeric().exists(),
     body('longitude').isNumeric().exists(),
     body('cityCode').isNumeric().optional({ nullable: true }),
-    body('stateCode').isNumeric().optional({ nullable: true }),
-    body('countryCode').isNumeric().optional({ nullable: true }),
     body('hours').exists().custom(arr => {
         if(arr.length === 0){
             return false;

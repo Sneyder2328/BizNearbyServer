@@ -195,8 +195,6 @@ export const businesses = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -224,8 +222,6 @@ export const businesses = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: null,
-        stateCode: null,
-        countryCode: null,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -252,8 +248,6 @@ export const businesses = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -281,8 +275,6 @@ export const businesses = [
         latitude: null,
         longitude: null,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -311,8 +303,6 @@ export const businesses = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -340,8 +330,6 @@ export const businesses = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -369,8 +357,6 @@ export const businesses = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -398,8 +384,6 @@ export const businesses = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -424,11 +408,9 @@ export const businesses = [
         name: null,
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
         address: "Calle 50 entre carreras 14 y 15",
+        cityCode: 212,
         latitude: 10.059972,
         longitude: -69.340570,
-        cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -453,11 +435,9 @@ export const businesses = [
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
         address: "Calle 50 entre carreras 14 y 15",
+        cityCode: 212,
         latitude: null,
         longitude: null,
-        cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -482,11 +462,9 @@ export const businesses = [
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
         address: "Calle 50 entre carreras 14 y 15",
+        cityCode: 212,
         latitude: 10.059972,
         longitude: -69.340570,
-        cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [],
         phoneNumbers: ["04120984532"],
@@ -503,8 +481,6 @@ export const businesses = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -535,8 +511,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -564,8 +538,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -593,8 +565,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -622,8 +592,6 @@ export const updateBusiness = [
         latitude: 10.059984,
         longitude: -69.340595,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -651,8 +619,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: null,
-        stateCode: null,
-        countryCode: null,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -680,8 +646,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "NewBanner",
         hours: [
             {
@@ -709,8 +673,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -748,8 +710,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -777,8 +737,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -806,8 +764,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -835,8 +791,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -864,8 +818,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -893,8 +845,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -922,8 +872,6 @@ export const updateBusiness = [
         latitude: null,
         longitude: null,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -951,8 +899,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [],
         phoneNumbers: ["04120984532"],
@@ -969,8 +915,6 @@ export const updateBusiness = [
         latitude: 10.059972,
         longitude: -69.340570,
         cityCode: 212,
-        stateCode: 12,
-        countryCode: 862,
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -1032,5 +976,14 @@ export const newReport: {id: string, businessId: string, title: string|null, des
         businessId: 'a8bcd05e-4606-4a55-a5dd-002f8516493e',
         title: 'A report for example',
         description: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+    }
+];
+
+export const businessReview = [
+    {
+        // GOOD BUSINESS REVIEW
+        businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e",
+        rating: 5,
+        description: "Description for example"
     }
 ];

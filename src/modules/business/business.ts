@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
 import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules } from './businessRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness } from './businessService';
+import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness } from './businessService';
 import { authenticate } from '../../middlewares/authenticate';
 import { endpoints } from '../../utils/constants/endpoints';
 
@@ -45,6 +45,12 @@ router.post(endpoints.businessReview.CREATE_BUSINESS_REVIEW, authenticate, busin
     const {userId} = req;
     const { review } = await reviewBusiness({businessId, rating, description, userId});
     res.json({...review});
-}))
+}));
+
+router.put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW, authenticate, businessReviewValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const businessReview = req.body;
+    const businessReviewUpdated = await editReviewBusiness({...businessReview, userId: req.userId});
+    res.json({...businessReviewUpdated});
+}));
 
 export { router as businessRouter }

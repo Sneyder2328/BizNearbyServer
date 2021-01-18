@@ -1,8 +1,8 @@
 import request from "supertest";
 import { app, server } from '../../index';
-import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusiness } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusinessReview } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
-import { admin, businesses, genText, moderator, updateBusiness, users } from '../../test/seed';
+import { admin, businesses, genText, moderator, updateBusiness, users, businessReview } from '../../test/seed';
 import knex from "../../database/knex";
 import { genUUID } from "../../utils/utils";
 import { endpoints } from '../../utils/constants/endpoints';
@@ -31,8 +31,6 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
                 latitude: businesses[nro].latitude,
                 longitude: businesses[nro].longitude,
                 cityCode: businesses[nro].cityCode,
-                stateCode: businesses[nro].stateCode,
-                countryCode: businesses[nro].countryCode
             },
             hours: businesses[nro].hours.map(hours => {
                 return {
@@ -80,7 +78,7 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             .end(done);
     });
 
-    it('should create a new business without cityCode, stateCode and countryCode', (done) => {
+    it('should create a new business without cityCode', (done) => {
         request(app)
             .post(endpoints.users.owner.BUSINESS_REGISTER)
             .set('authorization', token)
@@ -226,8 +224,6 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
                 latitude: updateBusiness[nro].latitude,
                 longitude: updateBusiness[nro].longitude,
                 cityCode: updateBusiness[nro].cityCode,
-                stateCode: updateBusiness[nro].stateCode,
-                countryCode: updateBusiness[nro].countryCode
             },
             hours: updateBusiness[nro].hours.map(hours => {
                 return {
@@ -629,7 +625,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
         await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
         await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
-    })
+    });
 
     const businessReview = {
         businessId: expect.stringMatching(config.regex.uuidV4),
@@ -751,7 +747,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
             .send({businessId: genUUID(), rating: 4, description: "this is a test"})
-            .expect(httpCodes.UNAUTHORIZED)
+            .expect(httpCodes.NOT_FOUND)
             .expect(res => {
                 expect(res.body.error).toBe(errors.NOT_FOUND)
             })
@@ -804,7 +800,112 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
             })
             .end(done)
     })
-})
+});
+
+describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
+    beforeAll(async ()=>{
+        await wipeOutDatabase();
+        await insertBusinessData();
+        await createUser({...users[0]});
+        await createUser({...moderator[0]});
+        await createUser({...admin[0]});
+        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
+        await createBusinessReview({businessId, userId, rating: 4, description: 'Description for example'});
+    });
+
+    const businessReview = {
+        businessId: expect.stringMatching(config.regex.uuidV4),
+        userId: expect.stringMatching(config.regex.uuidV4),
+        rating: expect.any(Number),
+        description: expect.anything(),
+        createdAt: expect.any(String)
+    };
+
+    it('should update by an user', (done) => {
+        request(app)
+            .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
+            .set('authorization', token)
+            .send(businessReview[0])
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toEqual(businessReview)
+            })
+            .end(done);
+    });
+
+    it('should upate by a moderator', (done) => {
+        request(app)
+            .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
+            .set('authorization', moderatorToken)
+            .send(businessReview[0])
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toEqual(businessReview)
+            })
+            .end(done);
+    });
+
+    it('should update by an admin', (done) => {
+        request(app)
+            .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
+            .set('authorization', adminToken)
+            .send(businessReview[0])
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toEqual(businessReview)
+            })
+            .end(done);
+    });
+
+    it('should not update with a rating grater than 5', (done) => {
+        request(app)
+            .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: 6, description: "this is a test for update"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1)
+            })
+            .end(done);
+    });
+
+    it('should not update with rating less than 1', (done) => {
+        request(app)
+            .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: 0, description: "this is a test for update"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1)
+            })
+            .end(done);
+    });
+
+    it('should not update with description length greater than 200', (done) => {
+        request(app)
+            .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: 4, description: genText(201)})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1)
+            })
+            .end(done);
+    });
+
+    it('should not update without authorization', (done) => {
+        request(app)
+            .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
+            .send({businessId, rating: 4, description: "this is a test for update"})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done);
+    });
+});
 
 afterAll(()=>{
     knex.destroy();
