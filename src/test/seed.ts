@@ -10,7 +10,7 @@ function genUser(id = genUUID()) {
     };
 }
 
-function genText(length: number){
+export function genText(length: number){
     let text = "";
     for(let i=0;i<length;i++) text += "a";
     return text;

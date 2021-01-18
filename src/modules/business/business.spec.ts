@@ -2,11 +2,12 @@ import request from "supertest";
 import { app, server } from '../../index';
 import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusiness } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
-import { admin, businesses, moderator, updateBusiness, users } from '../../test/seed';
+import { admin, businesses, genText, moderator, updateBusiness, users } from '../../test/seed';
 import knex from "../../database/knex";
 import { genUUID } from "../../utils/utils";
 import { endpoints } from '../../utils/constants/endpoints';
 import { errors } from "../../utils/constants/errors";
+import config from "../../config/config";
 
 
 const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
@@ -631,8 +632,8 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
     })
 
     const businessReview = {
-        businessId: expect.any(String),
-        userId: expect.any(String),
+        businessId: expect.stringMatching(config.regex.uuidV4),
+        userId: expect.stringMatching(config.regex.uuidV4),
         rating: expect.any(Number),
         description: expect.anything(),
         createdAt: expect.any(String)
@@ -670,6 +671,42 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body).toEqual(businessReview)
+            })
+            .end(done)
+    })
+
+    it('should not create business review with rating greater than 5', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: 6, description: "this is a test"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1)
+            })
+            .end(done)
+    })
+
+    it('should not create business review with rating less than 1', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: 0, description: "this is a test"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1)
+            })
+            .end(done)
+    })
+
+    it('should not create business review with description length greater than 200', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: 3, description: genText(201)})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1);
             })
             .end(done)
     })
@@ -728,19 +765,42 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
             .send({businessId, rating: null, description: "this is a test"})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                expect(res.body).toBeGreaterThan(0);
+                expect(res.body.errors.length).toBeGreaterThan(0);
             })
             .end(done)
     })
 
-    it('should not create business review without rating', done => {
+    it('should not create business review without description', done => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
             .send({businessId, rating: 2, description: null})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
-                expect(res.body).toBeGreaterThan(0);
+                expect(res.body.errors.length).toBeGreaterThan(0);
+            })
+            .end(done)
+    })
+
+    it('should not create business review without businessId', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId: null, rating: 2, description: "este negocio es el pedo"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBeGreaterThan(0);
+            })
+            .end(done)
+    })
+
+    it('should not create business review without body', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBeGreaterThan(0);
             })
             .end(done)
     })
