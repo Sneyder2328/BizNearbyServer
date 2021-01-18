@@ -12,7 +12,6 @@ import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
 import { Category } from '../../database/models/Category';
 import { raw } from 'objection';
-import { AuthError } from '../../utils/errors/AuthError';
 import { BusinessReview } from '../../database/models/BusinessReview';
 
 /**
@@ -26,7 +25,7 @@ const verifyUser = async (userId: string) => {
 };
 
 
-export const addNewBusiness = async ({ userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, images }) => {
+export const addNewBusiness = async ({ userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, bannerUrl, hours, phoneNumbers, categories, images }) => {
 
     await verifyUser(userId);
 
@@ -34,7 +33,7 @@ export const addNewBusiness = async ({ userId, businessId, addressId, name, desc
 
     await UserBusiness.query().insert({ userId, businessId });
 
-    const businessAddress = await BusinessAddress.query().insert({ id: addressId, businessId, address, cityCode, stateCode, countryCode, latitude, longitude });
+    const businessAddress = await BusinessAddress.query().insert({ id: addressId, businessId, address, cityCode, latitude, longitude });
 
     const businessCategories = categories.map(async (categoryCode) => {
         return await BusinessCategory.query().insert({ businessId, categoryCode });
@@ -136,7 +135,7 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
     let businessAddressUpdated;
     if (businessAddress?.id === addressId) {
         businessAddressUpdated = await BusinessAddress.query().patchAndFetchById(addressId, {
-            address, cityCode, stateCode, countryCode, latitude, longitude
+            address, cityCode, latitude, longitude
         });
     }
 
@@ -253,12 +252,27 @@ export const allCategories = async () => {
     return categories;
 };
 
-export const reviewBusiness = async ({businessId, userId, rating, description}:{businessId: string, userId: string, rating: string, description: string}) => {
-    const business = await Business.query().findById(businessId);
-    if(!business) throw new AuthError(errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+export const reviewBusiness = async ({businessId, userId, rating, description}:{businessId: string, userId: string, rating: number, description: string}) => {
+    // const business = await Business.query().findById(businessId);
+    // if(!business) throw new AuthError(errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+
+    await verifyBusiness(businessId);
 
     await BusinessReview.query().insert({businessId, userId, rating, description});
     const businessReview = await BusinessReview.query().findOne(raw('businessId = "' + businessId + '" and userId = "' + userId + '"'));
 
     return {review: _.pick(businessReview, ["businessId","userId","rating","description","createdAt"])}
 }
+
+export const editReviewBusiness = async ({businessId, userId, rating, description}:{businessId: string, userId: string, rating: number, description: string}) => {
+    await verifyBusiness(businessId);
+
+    /*if(businessReview.userId !== reqUserId){
+        throw new AppError(httpCodes.UNAUTHORIZED, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+    }*/
+
+    await BusinessReview.query().patch({description, rating}).findOne({businessId, userId});
+    const businessReviewUpdated = await BusinessReview.query().findOne({businessId, userId});
+
+    return {review: _.pick(businessReviewUpdated, ["businessId", "userId", "rating", "description", "createdAt"])};
+};

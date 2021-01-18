@@ -34,7 +34,8 @@ export const endpoints = {
         REVIEW_REPORT: `/reports/:reportId`
     },
     businessReview: {
-        CREATE_BUSINESS_REVIEW: `/businessReview/`
+        CREATE_BUSINESS_REVIEW: `/businessReview/`,
+        UPDATE_BUSINESS_REVIEW: `/businessReview/`
     },
     LOCATION_AUTOCOMPLETE: `/locations/`,
     REVIEW_GET: (bizId)=>`/reviews/get/${bizId}`,

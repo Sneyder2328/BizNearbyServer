@@ -75,30 +75,6 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
         .end(done);
     })
 
-    it('should not sign up a user of rank moderator', done => {
-        request(app)
-        .post(endpoints.users.SIGN_UP)
-        .send({...users[0], typeUser: 'moderator'})
-        .expect(httpCodes.UNAUTHORIZED)
-        .expect(res => {
-            expect(res.body.error).toBe(errors.FORBIDDEN);
-            expect(res.header['authorization']).toBe(undefined);
-        })
-        .end(done);
-    })
-
-    it('should not sign up a user of rank admin', done => {
-        request(app)
-        .post(endpoints.users.SIGN_UP)
-        .send({...users[0], typeUser: 'admin'})
-        .expect(httpCodes.UNAUTHORIZED)
-        .expect(res => {
-            expect(res.body.error).toBe(errors.FORBIDDEN);
-            expect(res.header['authorization']).toBe(undefined);
-        })
-        .end(done);
-    })
-
     it('should not sign up via email due to an empty password', done => {
         request(app)
             .post(endpoints.users.SIGN_UP)
@@ -525,7 +501,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it('should not delete user due to wrong password', done => {
+    it('should not delete user with a wrong password', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', token)
@@ -537,7 +513,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it("should not delete user due to using user's password by admin", done => {
+    it("admin should not delete user while using user's password", done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', adminToken)
@@ -572,7 +548,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it("should not delete user by user2 with user password", done => {
+    it("should not delete user by user2 with user'a password", done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', token2)
@@ -584,7 +560,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it('should not delete moderator by another moderator', done => {
+    it('moderator should not delete another moderator', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',moderator[0].id))
             .set('authorization', moderator2Token)
@@ -596,7 +572,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it('should not delete admin by moderator', done => {
+    it('moderator should not delete admin', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',admin[0].id))
             .set('authorization', moderatorToken)
@@ -608,7 +584,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
-    it('should not delete admin by admin', done => {
+    it('admin should not delete another admin', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',admin[0].id))
             .set('authorization', admin2Token)

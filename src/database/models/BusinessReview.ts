@@ -3,7 +3,7 @@ import { Model, ModelObject } from 'objection';
 export class BusinessReview extends Model {
     userId!: string;
     businessId!: string;
-    rating!: string;
+    rating!: number;
     description!: string;
 
     static tableName = 'BusinessReview';
