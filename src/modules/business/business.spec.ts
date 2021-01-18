@@ -361,7 +361,6 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[8])
             .expect(httpCodes.OK)
             .expect(res => {
-                console.log(res.body)
                 expect(res.body).toEqual({...business(8, businessId)})
             })
             .end(done);
@@ -813,9 +812,11 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
         await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
         await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
         await createBusinessReview({businessId, userId, rating: 4, description: 'Description for example'});
+        await createBusinessReview({businessId, userId: moderator[0].id, rating: 4, description: 'Description for example'});
+        await createBusinessReview({businessId, userId: admin[0].id, rating: 4, description: 'Description for example'});
     });
 
-    const businessReview = {
+    const expectedBusinessReview = {
         businessId: expect.stringMatching(config.regex.uuidV4),
         userId: expect.stringMatching(config.regex.uuidV4),
         rating: expect.any(Number),
@@ -827,10 +828,10 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
         request(app)
             .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
             .set('authorization', token)
-            .send(businessReview[0])
+            .send({...businessReview[0]})
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual(businessReview)
+                expect(res.body).toEqual(expectedBusinessReview)
             })
             .end(done);
     });
@@ -839,10 +840,11 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
         request(app)
             .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
             .set('authorization', moderatorToken)
-            .send(businessReview[0])
+            .send({...businessReview[0]})
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual(businessReview)
+                console.log(res.body);
+                expect(res.body).toEqual(expectedBusinessReview)
             })
             .end(done);
     });
@@ -854,7 +856,7 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
             .send(businessReview[0])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual(businessReview)
+                expect(res.body).toEqual(expectedBusinessReview)
             })
             .end(done);
     });

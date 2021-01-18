@@ -75,30 +75,6 @@ describe('POST ' + endpoints.users.SIGN_UP, () => {
         .end(done);
     })
 
-    it('should not sign up a user of rank moderator', done => {
-        request(app)
-        .post(endpoints.users.SIGN_UP)
-        .send({...users[0], typeUser: 'moderator'})
-        .expect(httpCodes.UNAUTHORIZED)
-        .expect(res => {
-            expect(res.body.error).toBe(errors.FORBIDDEN);
-            expect(res.header['authorization']).toBe(undefined);
-        })
-        .end(done);
-    })
-
-    it('should not sign up a user of rank admin', done => {
-        request(app)
-        .post(endpoints.users.SIGN_UP)
-        .send({...users[0], typeUser: 'admin'})
-        .expect(httpCodes.UNAUTHORIZED)
-        .expect(res => {
-            expect(res.body.error).toBe(errors.FORBIDDEN);
-            expect(res.header['authorization']).toBe(undefined);
-        })
-        .end(done);
-    })
-
     it('should not sign up via email due to an empty password', done => {
         request(app)
             .post(endpoints.users.SIGN_UP)

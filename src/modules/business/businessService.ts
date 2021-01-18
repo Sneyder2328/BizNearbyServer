@@ -12,7 +12,6 @@ import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
 import { Category } from '../../database/models/Category';
 import { raw } from 'objection';
-import { AuthError } from '../../utils/errors/AuthError';
 import { BusinessReview } from '../../database/models/BusinessReview';
 
 /**
@@ -274,7 +273,8 @@ export const editReviewBusiness = async ({businessId, userId, rating, descriptio
         throw new AppError(httpCodes.UNAUTHORIZED, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
     }*/
 
-    const businessReviewUpdated = await businessReview.$query().patchAndFetch({rating: rating, description: description});
+    const businessReviewUpdated = await BusinessReview.query().where(raw('businessId = ' + businessId + ' and userId = ' + userId)).patchAndFetch({rating, description});
+    console.log(businessReviewUpdated);
 
     return {review: _.pick(businessReviewUpdated, ["businessId", "userID", "rating", "description", "creadtedAt"])};
 };
