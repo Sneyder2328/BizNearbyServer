@@ -192,8 +192,6 @@ CREATE TABLE IF NOT EXISTS BusinessAddress
     longitude   DOUBLE,
     PRIMARY KEY (id),
     FOREIGN KEY (businessId) REFERENCES Business (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (countryCode) REFERENCES Country (code) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (stateCode) REFERENCES State (code) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (cityCode) REFERENCES City (code) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -990,4 +988,3 @@ VALUES (1, 1, 'Maroa'),
        (520, 25, 'Isla La Blanquilla'),
        (521, 25, 'Isla de Patos'),
        (522, 25, 'Islas Los Hermanos');
-
