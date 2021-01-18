@@ -365,7 +365,6 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[8])
             .expect(httpCodes.OK)
             .expect(res => {
-                console.log(res.body)
                 expect(res.body).toEqual({...business(8, businessId)})
             })
             .end(done);

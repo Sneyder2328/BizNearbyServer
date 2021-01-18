@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { signUpValidationRules, logInValidationRules, editValidationRules, deleteUserValidationRules, deleteUsersValidationRules, deleteValidationRules } from './userRules';
+import { signUpValidationRules, logInValidationRules, editValidationRules, deleteUserValidationRules, deleteUsersValidationRules, deleteValidationRules, getProfileValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { signUpUser, logInUser, logoutUser, editUser, deleteUser, getProfile, deleteMultipleUsers } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
@@ -12,7 +12,6 @@ import { cloudinary } from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import multer from "multer";
 import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
-import { httpCodes } from '../../utils/constants/httpResponseCodes';
 
 const storage = cloudinaryStorage({
     cloudinary,
@@ -85,7 +84,7 @@ router.put(endpoints.users.UPDATE_PROFILE, editValidationRules, validate, authen
 /**
  * Get user profile
  */
-router.get(endpoints.users.GET_PROFILE, authenticate, handleErrorAsync(async (req, res) => {
+router.get(endpoints.users.GET_PROFILE, authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
     const userId = req.params.userId;
     if(userId != req.userId) throw new AuthError();
     const {profile} = await getProfile(userId);
@@ -100,7 +99,6 @@ router.delete(endpoints.auth.LOG_OUT, authenticate, handleErrorAsync(async (req,
     const logOut = await logoutUser(accessToken);
     res.send({ logOut });
 }));
-
 
 /**
  * Delete user
