@@ -4,7 +4,7 @@ import { businessRouter } from './business/business';
 import { errorHandler } from '../middlewares/errorHandler';
 import { moderatorRouter } from './moderator/moderator';
 import { reportRouter } from './report/report';
-import { searchRouter } from './search/search';
+import { searchRouter } from './locations/search';
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { signUpValidationRules, logInValidationRules, editValidationRules, deleteValidationRules } from './userRules';
+import { signUpValidationRules, logInValidationRules, editValidationRules, deleteUserValidationRules, deleteUsersValidationRules, deleteValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { signUpUser, logInUser, logoutUser, editUser, deleteUser, getProfile, deleteMultipleUsers } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
@@ -105,7 +105,7 @@ router.delete(endpoints.auth.LOG_OUT, authenticate, handleErrorAsync(async (req,
 /**
  * Delete user
  */
-router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteUserValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = {password: req.body?.password, id: req.params.userId};
     const deleted = await deleteUser(user, req.userId);
     res.json({deleted});
@@ -114,8 +114,8 @@ router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteValidationRule
 /**
  * Delete multiple users
  */
-//  ----------UNDER CONSTRUCTION DON'T TOUCH--------------
-router.delete(endpoints.DELETE_USERS, authenticate, deleteValidationRules, validate, handleErrorAsync(async (req, res) => {
+
+ router.delete(endpoints.DELETE_USERS, authenticate, deleteUsersValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = {password: req.body?.password, ids: req.body.userIds};
     const usersDeleted = await deleteMultipleUsers(user, req.userId);
     res.json({usersDeleted});

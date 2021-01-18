@@ -43,7 +43,7 @@ export const getReport = async (userId) => {
     if(!sessionUser) throw new AuthError();
     if(sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN,errors.message.PERMISSION_NOT_GRANTED);
     const queryReports = await Report.query().leftJoin(raw('ReportReview ON ReportReview.reportId = id'))
-                                             .where(raw("reportreview.reportId IS NULL"));
+                                             .where(raw("ReportReview.reportId IS NULL"));
     const reports = queryReports.map( report => {
         return {
             id: report.id,

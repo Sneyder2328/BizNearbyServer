@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _ from 'lodash';
 import { errors } from '../../utils/constants/errors';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { AppError } from '../../utils/errors/AppError';
