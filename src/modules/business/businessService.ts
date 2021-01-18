@@ -267,13 +267,8 @@ export const reviewBusiness = async ({businessId, userId, rating, description}:{
 export const editReviewBusiness = async ({businessId, userId, rating, description}:{businessId: string, userId: string, rating: number, description: string}) => {
     await verifyBusiness(businessId);
 
-    const businessReview = await BusinessReview.query().findOne({businessId : businessId, userId: userId});
+    const businessReviewUpdated = await BusinessReview.query().patchAndFetch({rating, description}).where('businessId', businessId).andWhere('userId', userId);
 
-    /*if(businessReview.userId !== reqUserId){
-        throw new AppError(httpCodes.UNAUTHORIZED, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
-    }*/
-
-    const businessReviewUpdated = await BusinessReview.query().where(raw('businessId = ' + businessId + ' and userId = ' + userId)).patchAndFetch({rating, description});
     console.log(businessReviewUpdated);
 
     return {review: _.pick(businessReviewUpdated, ["businessId", "userID", "rating", "description", "creadtedAt"])};
