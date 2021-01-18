@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _ from 'lodash';
 import { errors } from '../../utils/constants/errors';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { AppError } from '../../utils/errors/AppError';
@@ -14,8 +14,7 @@ import { raw } from 'objection';
 
 const findUser = async (id: string, idContent: string) => User.query().findOne(id, idContent).where(raw('deletedAt IS NULL'));
 
-export const signUpUser = async ({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin, typeUser }) => {
-    if (typeUser != "normal") throw new AuthError(errors.FORBIDDEN,errors.message.PERMISSION_NOT_GRANTED);
+export const signUpUser = async ({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin }) => {
     const user = await findUser('email',email);
     if (user) throw new AppError(httpCodes.CONFLICT, errors.EMAIL, errors.message.EMAIL_TAKEN);
     const insertResult = await User.query().insert({ id, fullname, email, phoneNumber, thumbnailUrl, password, typeLogin, typeUser: 'normal' });
