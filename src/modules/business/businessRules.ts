@@ -71,3 +71,9 @@ export const updateBusinessValidationRules = [
 export const paramBusinessIdValidationRules = [
     param('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId').exists()
 ];
+
+export const businessReviewValidationRules = [
+    body('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId').exists(),
+    body('rating').isNumeric().custom(val => val>=1 && val<=5).withMessage('Invalid rating').exists(),
+    body('description').isString()
+]

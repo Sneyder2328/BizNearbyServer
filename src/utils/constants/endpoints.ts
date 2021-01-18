@@ -33,6 +33,9 @@ export const endpoints = {
         GET_REPORTS: `/reports/`,
         REVIEW_REPORT: `/reports/:reportId`
     },
+    businessReview: {
+        CREATE_BUSINESS_REVIEW: `/businessReview/`
+    },
     LOCATION_AUTOCOMPLETE: `/locations/`,
     REVIEW_GET: (bizId)=>`/reviews/get/${bizId}`,
     NEARBY_BUSINESS_GET: `/businesses/get`,

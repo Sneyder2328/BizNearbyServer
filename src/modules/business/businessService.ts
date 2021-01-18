@@ -12,6 +12,8 @@ import { UserBusiness } from '../../database/models/UserBusiness';
 import { User } from '../../database/models/User';
 import { Category } from '../../database/models/Category';
 import { raw } from 'objection';
+import { AuthError } from '../../utils/errors/AuthError';
+import { BusinessReview } from '../../database/models/BusinessReview';
 
 /**
  * Verify if the user exist in the database
@@ -250,3 +252,13 @@ export const allCategories = async () => {
 
     return categories;
 };
+
+export const reviewBusiness = async ({businessId, userId, rating, description}:{businessId: string, userId: string, rating: string, description: string}) => {
+    const business = await Business.query().findById(businessId);
+    if(!business) throw new AuthError(errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
+
+    await BusinessReview.query().insert({businessId, userId, rating, description});
+    const businessReview = await BusinessReview.query().findOne(raw('businessId = "' + businessId + '" and userId = "' + userId + '"'));
+
+    return {review: _.pick(businessReview, ["businessId","userId","rating","description","createdAt"])}
+}

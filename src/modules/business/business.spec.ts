@@ -2,13 +2,17 @@ import request from "supertest";
 import { app, server } from '../../index';
 import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusiness } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
-import { businesses, updateBusiness } from '../../test/seed';
+import { admin, businesses, moderator, updateBusiness, users } from '../../test/seed';
 import knex from "../../database/knex";
 import { genUUID } from "../../utils/utils";
 import { endpoints } from '../../utils/constants/endpoints';
+import { errors } from "../../utils/constants/errors";
 
 
 const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
+const normalToken = "Bearer " + genUUID();
+const adminToken = "Bearer " + genUUID();
+const moderatorToken = "Bearer " + genUUID();
 const businessId = "a8bcd05e-4606-4a55-a5dd-002f8516493e"
 const userId = 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f';
 
@@ -360,6 +364,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[8])
             .expect(httpCodes.OK)
             .expect(res => {
+                console.log(res.body)
                 expect(res.body).toEqual({...business(8, businessId)})
             })
             .end(done);
@@ -612,6 +617,134 @@ describe('GET' + endpoints.users.owner.GET_ALL_CATEGORIES, () => {
             .end(done);
     })
 });
+
+describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
+    beforeAll(async ()=>{
+        await wipeOutDatabase();
+        await insertBusinessData();
+        await createUser({...users[0]});
+        await createUser({...moderator[0]});
+        await createUser({...admin[0]});
+        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
+    })
+
+    const businessReview = {
+        businessId: expect.any(String),
+        userId: expect.any(String),
+        rating: expect.any(Number),
+        description: expect.anything(),
+        createdAt: expect.any(String)
+    }
+
+    it('user should create business review', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: 4, description: "this is a test"})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toEqual(businessReview)
+            })
+            .end(done)
+    })
+
+    it('moderator should create business review', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', moderatorToken)
+            .send({businessId, rating: 5, description: "this is good"})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toEqual(businessReview)
+            })
+            .end(done)
+    })
+
+    it('admin should create business review', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', adminToken)
+            .send({businessId, rating: 3, description: "this is bad"})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toEqual(businessReview)
+            })
+            .end(done)
+    })
+
+    it('should not create business review without authorization', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .send({businessId, rating: 4, description: "this is a test"})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN)
+            })
+            .end(done)
+    })
+
+    it('should not create business review with false authentication token', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken + "1234")
+            .send({businessId, rating: 4, description: "this is a test"})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe('accessToken')
+            })
+            .end(done)
+    })
+
+    it('should not create business review with false businessId (not uuid)', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId: "12345", rating: 4, description: "this is a test"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBeGreaterThan(0)
+            })
+            .end(done)
+    })
+
+    it('should not create business review with false businessId (uuid)', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId: genUUID(), rating: 4, description: "this is a test"})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.NOT_FOUND)
+            })
+            .end(done)
+    })
+
+    it('should not create business review without rating', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: null, description: "this is a test"})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body).toBeGreaterThan(0);
+            })
+            .end(done)
+    })
+
+    it('should not create business review without rating', done => {
+        request(app)
+            .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
+            .set('authorization', normalToken)
+            .send({businessId, rating: 2, description: null})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body).toBeGreaterThan(0);
+            })
+            .end(done)
+    })
+})
 
 afterAll(()=>{
     knex.destroy();
