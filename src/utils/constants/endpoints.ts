@@ -22,7 +22,6 @@ export const endpoints = {
         REMOVE_MODERATOR: '/moderators/:moderatorId',
         GET_ALL_REPORTS: '/businesses/getReports',
     },
-    DELETE_USERS: `/users`,
     report: {
         CREATE_REPORT: `/reports/`,
         GET_REPORTS: `/reports/`,
@@ -35,5 +34,7 @@ export const endpoints = {
     },
     LOCATION_AUTOCOMPLETE: `/locations/`,
     NEARBY_BUSINESS_GET: `/businesses/get`,
-    GET_BUSINESS: '/businesses/:businessId'
+    GET_BUSINESS: '/businesses/:businessId',
+    DELETE_USERS: `/users`,
+    ADD_CATEGORY: `/categories`
 }

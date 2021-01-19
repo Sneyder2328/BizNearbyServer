@@ -3,14 +3,15 @@ import cloudinaryStorage from "multer-storage-cloudinary";
 import multer from "multer";
 import { cloudinary } from "../../config/cloudinaryConfig";
 import { validate } from '../../middlewares/validate';
-import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules } from './businessRules';
+import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules, addCategoryRules } from './businessRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness } from './businessService';
+import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness, addCategory } from './businessService';
 import { authenticate } from '../../middlewares/authenticate';
 import { endpoints } from '../../utils/constants/endpoints';
 import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
 import { AppError } from '../../utils/errors/AppError';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
+import { verifyUserType } from '../../middlewares/verifyUserType';
 
 const storage = cloudinaryStorage({
     cloudinary,
@@ -89,6 +90,15 @@ router.get(endpoints.users.owner.GET_ALL_CATEGORIES, authenticate, validate, han
     const categories = await allCategories();
     res.json(categories);
 }));
+
+/**
+ * Add Category
+ */
+router.post(endpoints.ADD_CATEGORY, authenticate, verifyUserType('admin'), addCategoryRules, validate, handleErrorAsync(async (req, res) => {
+    const { category } = req.body;
+    const {categoryInserted} = await addCategory(category);
+    res.json({...categoryInserted});
+}))
 
 /**
  * Create Business Review

@@ -13,6 +13,7 @@ import { User } from '../../database/models/User';
 import { Category } from '../../database/models/Category';
 import { raw } from 'objection';
 import { BusinessReview } from '../../database/models/BusinessReview';
+import { AuthError } from '../../utils/errors/AuthError';
 
 /**
  * Verify if the user exist in the database
@@ -283,3 +284,11 @@ export const editReviewBusiness = async ({businessId, userId, rating, descriptio
 
     return {review: _.pick(businessReviewUpdated, ["businessId", "userId", "rating", "description", "createdAt"])};
 };
+
+export const addCategory = async (category: string) => {
+    const categoryExists = await Category.query().findOne("category", category);
+    if(categoryExists) throw new AuthError(errors.CATEGORY, errors.message.CATEGORY_FOUND);
+
+    const categoryInserted = await Category.query().insert({category});
+    return {categoryInserted: _.pick(categoryInserted, ["category"])}
+}
