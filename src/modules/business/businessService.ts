@@ -114,16 +114,18 @@ const verifyBusinessAddress = async (addressId: string, businessId: string) => {
     }
 };
 
-export const updateBusiness = async ({ userId, businessId, addressId, emailNewUser, name, description, address, latitude, longitude, cityCode, stateCode, countryCode, bannerUrl, hours, phoneNumbers, categories, images }) => {
+export const updateBusiness = async ({ userId, businessId, emailNewUser, name, description, bannerUrl, address, hours, phoneNumbers, categories, images }) => {
 
+    
     await verifyUser(userId);
 
     await verifyBusiness(businessId);
 
     await verifyUserHasAccessToBusiness(userId, businessId);
 
-    await verifyBusinessAddress(addressId, businessId)
+    const {id: addressId, cityCode, latitude, longitude} = address;
 
+    await verifyBusinessAddress(addressId, businessId);
     const businessUpdated = await Business.query().patchAndFetchById(businessId, {
         name, bannerUrl, description
     });
@@ -161,7 +163,8 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
         const businessHours = hours.map(async ({ day, openTime, closeTime }) => {
             const openTimeInt = parseInt(openTime.replace(':', ''), 10);
             const closeTimeInt = parseInt(closeTime.replace(':', ''), 10);
-            return await BusinessHours.query().insert({ businessId, day, openTime: openTimeInt, closeTime: closeTimeInt });
+            const value = await BusinessHours.query().insert({ businessId, day, openTime: openTimeInt, closeTime: closeTimeInt });
+            return _.pick(value, ["day", "openTime", "closeTime"]);
         });
         businessHoursAdded = await Promise.all(businessHours);
     }
@@ -180,7 +183,8 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
     let businessImagesAdded;
     if(images) {
         const businessImages = images.map(async (image) => {
-            return await BusinessImage.query().insert({ businessId, imageUrl: image});
+            const img = await BusinessImage.query().insert({ businessId, imageUrl: image});
+            return img.imageUrl;
         });
         businessImagesAdded = await Promise.all(businessImages);
     }
@@ -188,9 +192,9 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
     return {
         ..._.pick(businessUpdated, ['id', 'name', 'description', 'bannerUrl']),
         address: businessAddressUpdated,
-        categories: businessCategoriesAdded,
         hours: businessHoursAdded,
         phoneNumbers: businessPhoneNumbersAdded,
+        categories: businessCategoriesAdded,
         images: businessImagesAdded
     };
 };

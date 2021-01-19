@@ -188,13 +188,15 @@ export const businesses = [
     {
         // GOOD BUSINESS
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -213,15 +215,16 @@ export const businesses = [
         images: ["UrlForExample"]
     },
     {
-        // BUSINESS WITHOUT CITYCODE, STATECODE, AND COUNTRYCODE
+        // BUSINESS WITHOUT CITYCODE
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: null,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -241,13 +244,15 @@ export const businesses = [
     {
         // BUSINESS WITHOUT PHONE NUMBERS
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -268,13 +273,13 @@ export const businesses = [
     {
         // BUSINESS WITHOUT LATITUTE AND LONGITUDE
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: null,
-        longitude: null,
-        cityCode: 212,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -296,13 +301,15 @@ export const businesses = [
         // USER NOT FOUND IN DATABASE
         userId: "cad2a3a9-363e-47d0-9dc8-0ff77c90301a",
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -323,13 +330,15 @@ export const businesses = [
     {
         // BUSINESS NAME TOO LONG
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -350,14 +359,16 @@ export const businesses = [
     {
         // NULL BUSINESSID
         businessId: null,
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
         bannerUrl: "SomeExampleOfAnUrl",
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         hours: [
             {
                 day: 1,
@@ -377,13 +388,15 @@ export const businesses = [
     {
         // NULL ADDRESSID
         businessId: genUUID(),
-        addressId: null,
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: null,
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -404,13 +417,15 @@ export const businesses = [
     {
         // BUSINESS NAME NULL
         businessId: genUUID(),
-        addressId: genUUID(),
         name: null,
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        cityCode: 212,
-        latitude: 10.059972,
-        longitude: -69.340570,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -431,13 +446,15 @@ export const businesses = [
     {
         // LATITUDE AND LONGITUDE NULL
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        cityCode: 212,
-        latitude: null,
-        longitude: null,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: null,
+            longitude: null,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -458,13 +475,15 @@ export const businesses = [
     {
         // HOURS EMPTY
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        cityCode: 212,
-        latitude: 10.059972,
-        longitude: -69.340570,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [],
         phoneNumbers: ["04120984532"],
@@ -474,13 +493,15 @@ export const businesses = [
     {
         // CATEGORIES EMPTY
         businessId: genUUID(),
-        addressId: genUUID(),
         name: "Bodega La Trinidad",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -497,20 +518,51 @@ export const businesses = [
         phoneNumbers: ["04120984532"],
         categories: [],
         images: ["UrlForExample"]
+    },
+    {
+        // IMAGES EMPTY
+        businessId: genUUID(),
+        name: "Bodega La Trinidad",
+        description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
+        address: {
+            id: genUUID(),
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212,
+        },
+        bannerUrl: "SomeExampleOfAnUrl",
+        hours: [
+            {
+                day: 1,
+                openTime: "08:00",
+                closeTime: "12:00"
+            },
+            {
+                day: 1,
+                openTime: "14:00",
+                closeTime: "18:00"
+            }
+        ],
+        phoneNumbers: ["04120984532"],
+        categories: [1],
+        images: []
     }
 ];
 
 export const updateBusiness = [
     {
-        // UPDATE NAME
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        // UPDATE NAME 
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -530,14 +582,16 @@ export const updateBusiness = [
     },
     {
         // UPDATE DESCRIPTION
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "New description",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -557,14 +611,16 @@ export const updateBusiness = [
     },
     {
         // UPDATE ADDRESS
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 48 entre carreras 13c y 14",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 48 entre carreras 13 y 14",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -584,14 +640,16 @@ export const updateBusiness = [
     },
     {
         // UPDATE LATITUTE AND LONGITUDE
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059984,
-        longitude: -69.340595,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059971,
+            longitude: -69.340575,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -610,15 +668,17 @@ export const updateBusiness = [
         images: ["UrlForExample"]
     },
     {
-        // UPDATE CITYCODE, STATECODE AND COUNTRYCODE
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
+        // UPDATE CITYCODE
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: null,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: null
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -638,14 +698,16 @@ export const updateBusiness = [
     },
     {
         // UPDATE BANNERURL
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "NewBanner",
         hours: [
             {
@@ -665,14 +727,16 @@ export const updateBusiness = [
     },
     {
         // UPDATE HOURS
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -702,14 +766,16 @@ export const updateBusiness = [
     },
     {
         // UPDATE PHONE NUMBER
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -729,14 +795,16 @@ export const updateBusiness = [
     },
     {
         // UPDATE CATEGORIES
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -756,14 +824,16 @@ export const updateBusiness = [
     },
     {
         // ADD NEW USER TO USERBUSINESS
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: "andres@gmail.com",
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -783,14 +853,16 @@ export const updateBusiness = [
     },
     {
         // WRONG ADRESSID 
-        addressId: "f137edc7-043f-4d89-ac60-e225318688fb",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "f137edc7-043f-4d89-ac60-e225318688fb",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -810,14 +882,16 @@ export const updateBusiness = [
     },
     {
         // ADDRESSID NULL
-        addressId: null,
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: null,
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -837,14 +911,16 @@ export const updateBusiness = [
     },
     {
         // NAME NULL
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: null,
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -864,14 +940,16 @@ export const updateBusiness = [
     },
     {
         // LATITUTE AND LONGITUDE NULL
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: null,
-        longitude: null,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: null,
+            longitude: null,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
@@ -891,14 +969,16 @@ export const updateBusiness = [
     },
     {
         // HOURS ARRAY EMPTY
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [],
         phoneNumbers: ["04120984532"],
@@ -907,14 +987,16 @@ export const updateBusiness = [
     },
     {
         // CATEGORIES ARRAY EMPTY
-        addressId: "eee15b20-917f-4d69-a055-e306d938d196",
         emailNewUser: null,
         name: "Bodega La Comadre",
         description: "Bodega dedicada a la venta de viveres al detal. encontraras todos los articulos que necesitas.",
-        address: "Calle 50 entre carreras 14 y 15",
-        latitude: 10.059972,
-        longitude: -69.340570,
-        cityCode: 212,
+        address: {
+            id: "eee15b20-917f-4d69-a055-e306d938d196",
+            address: "Calle 50 entre carreras 14 y 15",
+            latitude: 10.059972,
+            longitude: -69.340570,
+            cityCode: 212
+        },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
             {
