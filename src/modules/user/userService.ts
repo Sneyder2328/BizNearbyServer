@@ -99,10 +99,10 @@ export const deleteUser = async ({password, id}, sessionId: string) => {
         if(!isPasswordCorrect) throw new AuthError(errors.CREDENTIAL, errors.message.INCORRECT_CREDENTIALS);      
     }
     const userDeleted = await User.query().updateAndFetchById(id, {'deletedAt': new Date()});
-    await Business.query().patch({'deletedAt': new Date()})
-        .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = "'+ userDeleted.id +'")'))
-        .andWhere(raw('deletedAt IS NULL'));
-    
+                        await Session.query().delete().where("userId", id);
+                        await Business.query().patch({'deletedAt': new Date()})
+                            .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = "'+ userDeleted.id +'")'))
+                            .andWhere(raw('deletedAt IS NULL'));
     return userDeleted.deletedAt != null;
 }
 
@@ -130,14 +130,20 @@ export const deleteMultipleUsers = async ({password, ids}, sessionId:string) => 
             break;
         default:
     }
+
     let whereQuery: string = "";
     users.forEach((user,index) => {
         whereQuery += "id = '" + user.id + "' OR ";
         if(index == users.length-1) whereQuery = whereQuery.substr(0, whereQuery.length - 4);
     })
+
     await User.query().update({'deletedAt': new Date()}).where(raw(whereQuery));
+    whereQuery = whereQuery.replace(/id =/g,"userId =");
+    await Business.query().patch({'deletedAt': new Date()})
+            .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE '+ whereQuery +')'))
+            .andWhere(raw('deletedAt IS NULL'));
+    await Session.query().delete().where(raw(whereQuery));
     const usersDeleted = await User.query().select("id").findByIds(ids).where(raw('deletedAt IS NOT NULL'));
     const usersIdDeleted = usersDeleted.map( user => user.id);
-
     return ids.map(id => {return {updated: usersIdDeleted.includes(id)}});
 }
