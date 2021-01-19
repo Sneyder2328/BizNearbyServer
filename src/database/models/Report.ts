@@ -6,6 +6,7 @@ export class Report extends Model{
     businessId!: string;
     title!: string|null;
     description!: string|null;
+    reviewedAt!: Date;
 
     static tableName = 'Report';
     static idName = 'id'; 

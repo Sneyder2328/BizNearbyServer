@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { reportValidationRules, reviewReportValidationRules } from './reportRules';
+import { getReportRules, reportRules, reviewReportRules } from './reportRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { getReport, newReport, reviewReport } from './reportService';
 import { authenticate } from '../../middlewares/authenticate';
@@ -10,7 +10,7 @@ const router = Router();
 /**
  * Create new report
  */
-router.post('/reports', authenticate, reportValidationRules, validate, handleErrorAsync( async (req,res) => {
+router.post('/reports', authenticate, reportRules, validate, handleErrorAsync( async (req,res) => {
     const report = req.body;
     const reportCreated = await newReport({...report, userId: req.userId});
     res.json(reportCreated);
@@ -19,15 +19,16 @@ router.post('/reports', authenticate, reportValidationRules, validate, handleErr
 /**
  * Get reports
  */
-router.get(endpoints.report.GET_REPORTS, authenticate, handleErrorAsync( async (req, res)=>{
-    const reports = await getReport(req.userId);
+router.get(endpoints.report.GET_REPORTS, authenticate, getReportRules, validate, handleErrorAsync( async (req, res)=>{
+    const type = req.query.type;
+    const reports = await getReport(req.userId, type);
     res.json(reports);
 }))
 
 /**
  * Review report
  */
-router.post(endpoints.report.REVIEW_REPORT, authenticate, reviewReportValidationRules, validate, handleErrorAsync(async (req, res)=>{
+router.post(endpoints.report.REVIEW_REPORT, authenticate, reviewReportRules, validate, handleErrorAsync(async (req, res)=>{
     const {analysis}  = req.body;
     const id = req.params.reportId;
     const { reportReviewed } = await reviewReport({id, analysis}, req.userId);

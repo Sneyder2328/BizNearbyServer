@@ -38,12 +38,27 @@ export const newReport = async ({id, userId, businessId, title, description}) =>
     return report;
 };
 
-export const getReport = async (userId) => {
+export const getReport = async (userId: string, type: string) => {
     const sessionUser = await User.query().findById(userId).where(raw('deletedAt IS NULL'));
     if(!sessionUser) throw new AuthError();
     if(sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN,errors.message.PERMISSION_NOT_GRANTED);
-    const queryReports = await Report.query().leftJoin(raw('ReportReview ON ReportReview.reportId = id'))
-                                             .where(raw("ReportReview.reportId IS NULL"));
+    const join = raw('ReportReview ON ReportReview.reportId = id');
+    let queryReports;
+    switch(type){
+        case 'Pending':
+            queryReports = await Report.query().where(raw("reviewedAt IS NULL"))
+                                                .andWhere(raw("deletedAt IS NULL"))
+                                                .orderBy("updatedAt","desc");
+            break;
+        case 'Reviewed':
+            queryReports = await Report.query().where(raw("reviewedAt IS NOT NULL"))
+                                                .andWhere(raw("deletedAt IS NULL"))
+                                                .orderBy("updatedAt","desc");
+            break;
+        case 'All':
+            queryReports = await Report.query().where(raw("deletedAt IS NULL"))
+                                                .orderBy("updatedAt","desc");
+    }
     const reports = queryReports.map( report => {
         return {
             id: report.id,
@@ -67,5 +82,6 @@ export const reviewReport = async ({id, analysis}, sessionId) => {
     const report = await Report.query().findById(id).where(raw('deletedAt IS NULL'));
     if(!report) throw new AuthError(errors.NOT_FOUND,errors.message.REPORT_NOT_FOUND);
     const reportReviewed = await ReportReview.query().insert({userId: sessionId, reportId: id, analysis});
+    await Report.query().findById(id).update({'reviewedAt': new Date()});
     return {reportReviewed: _.pick(reportReviewed, ['reportId','userId','analysis'])};
 }

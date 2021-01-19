@@ -2,11 +2,12 @@ import request from 'supertest';
 import { app, server} from '../../index';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import knex from "../../database/knex";
-import { wipeOutDatabase, insertBusinessData, createReport, createUser, createSession, createReportReview } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createReport, createUser, createSession, createReportReview, createReviewedReport } from '../../test/setup';
 import { admin, moderator, newReport, users } from '../../test/seed';
 import { endpoints } from '../../utils/constants/endpoints';
 import { errors } from '../../utils/constants/errors';
 import { genUUID } from '../../utils/utils';
+import { Report } from '../../database/models/Report';
 
 const token = 'Bearer b337e27e-bcf0-4154-8a77-96daa873c9e5';
 const normalToken = 'Bearer b339e27e-bcf0-4154-8a77-96daa873c9e5';
@@ -191,9 +192,8 @@ describe('GET ' + endpoints.report.GET_REPORTS, () => {
         await createSession({token: adminToken.split(" ")[1],userId: admin[0].id});
         await createSession({token: normalToken.split(" ")[1],userId: users[0].id});
         await insertBusinessData();
-        await createReport({...newReport[0],userId: users[0].id});
+        await createReviewedReport({...newReport[0],userId: users[0].id});
         await createReport({...newReport[0],userId: users[0].id, title: "test 2", description: "testing 2", id: genUUID()});
-        await createReportReview({reportId: newReport[0].id, userId: moderator[0].id, analysis: "this is indeed a trash business"});
     })
 
     const report = {
@@ -205,21 +205,9 @@ describe('GET ' + endpoints.report.GET_REPORTS, () => {
         createdAt: expect.any(String)
     }
 
-    it('moderator should get all reports except reviewed ones', done => {
+    it('moderator should get pending reports', done => {
         request(app)
-            .get(endpoints.report.GET_REPORTS)
-            .set('authorization', moderatorToken)
-            .expect(httpCodes.OK)
-            .expect(res => {
-                expect(res.body.length).toBeGreaterThan(0);
-                expect(res.body[0]).toEqual(report)
-            })
-            .end(done)
-    });
-
-    it('admin should get all reports except reviewed ones (1 in this case)', done => {
-        request(app)
-            .get(endpoints.report.GET_REPORTS)
+            .get(endpoints.report.GET_REPORTS + '?type=Pending')
             .set('authorization', moderatorToken)
             .expect(httpCodes.OK)
             .expect(res => {
@@ -229,9 +217,69 @@ describe('GET ' + endpoints.report.GET_REPORTS, () => {
             .end(done)
     });
 
+    it('moderator should get reviewed reports', done => {
+        request(app)
+            .get(endpoints.report.GET_REPORTS + '?type=Reviewed')
+            .set('authorization', moderatorToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(1);
+                expect(res.body[0]).toEqual(report)
+            })
+            .end(done)
+    });
+
+    it('moderator should get all reports', done => {
+        request(app)
+            .get(endpoints.report.GET_REPORTS + '?type=All')
+            .set('authorization', moderatorToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(2);
+                expect(res.body[0]).toEqual(report)
+            })
+            .end(done)
+    });
+
+    it('admin should get pending reports', done => {
+        request(app)
+            .get(endpoints.report.GET_REPORTS + '?type=Pending')
+            .set('authorization', moderatorToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(1);
+                expect(res.body[0]).toEqual(report)
+            })
+            .end(done)
+    });
+
+    it('admin should get reviewed reports', done => {
+        request(app)
+            .get(endpoints.report.GET_REPORTS + '?type=Reviewed')
+            .set('authorization', adminToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(1);
+                expect(res.body[0]).toEqual(report)
+            })
+            .end(done)
+    });
+
+    it('admin should get all reports', done => {
+        request(app)
+            .get(endpoints.report.GET_REPORTS + '?type=All')
+            .set('authorization', adminToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(2);
+                expect(res.body[0]).toEqual(report)
+            })
+            .end(done)
+    });
+
     it('user should not get reports', done => {
         request(app)
-            .get(endpoints.report.GET_REPORTS)
+            .get(endpoints.report.GET_REPORTS + '?type=Pending')
             .set('authorization', normalToken)
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
@@ -242,7 +290,7 @@ describe('GET ' + endpoints.report.GET_REPORTS, () => {
 
     it('should not get reports without authorization', done => {
         request(app)
-            .get(endpoints.report.GET_REPORTS)
+            .get(endpoints.report.GET_REPORTS + '?type=Pending')
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toEqual(errors.FORBIDDEN)
