@@ -100,6 +100,9 @@ router.post(endpoints.businessReview.CREATE_BUSINESS_REVIEW, authenticate, busin
     res.json({ ...review });
 }));
 
+/**
+ * Update Business Review
+ */
 router.put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW, authenticate, businessReviewValidationRules, validate, handleErrorAsync(async (req, res) => {
     const businessReview = req.body;
     const { review } = await editReviewBusiness({...businessReview, userId: req.userId});
