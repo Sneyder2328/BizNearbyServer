@@ -72,6 +72,17 @@ export const getReport = async (userId: string, type: string) => {
     return reports;
 }
 
+export const deleteReport = async (userId: string, reportId: string) => {
+    const sessionUser = await User.query().findById(userId).where(raw('deletedAt IS NULL'));
+    if(!sessionUser) throw new AuthError(errors.NOT_FOUND,errors.message.USER_NOT_FOUND);
+    if(sessionUser.typeUser == "normal") throw new AuthError(errors.FORBIDDEN,errors.message.PERMISSION_NOT_GRANTED);
+
+    const reportDeleted = await Report.query().delete().where("id",reportId);
+    if(reportDeleted == 0) throw new AuthError(errors.NOT_FOUND, errors.message.REPORT_NOT_FOUND);
+    
+    return reportDeleted != 0;
+}
+
 export const reviewReport = async ({id, analysis}, sessionId) => {
     const sessionUser = await User.query().findById(sessionId).where(raw('deletedAt IS NULL'));
     if(!sessionUser) throw new AuthError(errors.NOT_FOUND,errors.message.USER_NOT_FOUND);

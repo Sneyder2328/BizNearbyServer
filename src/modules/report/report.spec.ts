@@ -299,6 +299,66 @@ describe('GET ' + endpoints.report.GET_REPORTS, () => {
     });
 })
 
+describe('DELETE ' + endpoints.report.DELETE_REPORT, () => {
+    const reportId = genUUID();
+    beforeEach(async ()=>{
+        await wipeOutDatabase();
+        await createUser({...moderator[0]});
+        await createUser({...admin[0]});
+        await createUser({...users[0]});
+        await createSession({token: moderatorToken.split(" ")[1],userId: moderator[0].id});
+        await createSession({token: adminToken.split(" ")[1],userId: admin[0].id});
+        await createSession({token: normalToken.split(" ")[1],userId: users[0].id});
+        await insertBusinessData();
+        await createReviewedReport({...newReport[0],userId: users[0].id});
+        await createReport({...newReport[0],userId: users[0].id, title: "test 2", description: "testing 2", id: reportId});
+    })
+
+    it('moderator should delete report not reviewed', done => {
+        request(app)
+            .delete(endpoints.report.DELETE_REPORT.replace(':reportId',reportId))
+            .set('authorization', moderatorToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('admin should delete report not reviewed', done => {
+        request(app)
+            .delete(endpoints.report.DELETE_REPORT.replace(':reportId',reportId))
+            .set('authorization', adminToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('moderator should delete reviewed report', done => {
+        request(app)
+            .delete(endpoints.report.DELETE_REPORT.replace(':reportId',newReport[0].id))
+            .set('authorization', moderatorToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('admin should delete reviewed report', done => {
+        request(app)
+            .delete(endpoints.report.DELETE_REPORT.replace(':reportId',newReport[0].id))
+            .set('authorization', adminToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+})
+
 afterAll(()=>{
     knex.destroy();
     server.close();

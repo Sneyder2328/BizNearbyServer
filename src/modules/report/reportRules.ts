@@ -10,6 +10,10 @@ export const reportRules = [
     body('description').customSanitizer(trimInside()).escape().isString().isLength({ min: 1, max: 500 }).withMessage('Description must be at least 1 character long').exists()
 ];
 
+export const deleteReportRules = [
+    param('reportId').trim().matches(config.regex.uuidV4).withMessage('Invalid id').exists(),
+]
+
 export const reviewReportRules = [
     body('analysis').customSanitizer(trimInside()).escape().isString().isLength({ min: 1, max: 250 }).withMessage('Analysis must be at least 1 character long').exists()
 ]

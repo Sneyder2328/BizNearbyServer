@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { getReportRules, reportRules, reviewReportRules } from './reportRules';
+import { deleteReportRules, getReportRules, reportRules, reviewReportRules } from './reportRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { getReport, newReport, reviewReport } from './reportService';
+import { deleteReport, getReport, newReport, reviewReport } from './reportService';
 import { authenticate } from '../../middlewares/authenticate';
 import { endpoints } from '../../utils/constants/endpoints';
 const router = Router();
@@ -33,6 +33,13 @@ router.post(endpoints.report.REVIEW_REPORT, authenticate, reviewReportRules, val
     const id = req.params.reportId;
     const { reportReviewed } = await reviewReport({id, analysis}, req.userId);
     res.json({...reportReviewed});
+}))
+
+router.delete(endpoints.report.DELETE_REPORT, authenticate, deleteReportRules, validate, handleErrorAsync(async (req, res) => {
+    const userId = req.userId;
+    const {reportId} = req.params;
+    const deleted = await deleteReport(userId, reportId);
+    res.json({deleted});
 }))
 
 export {router as reportRouter}
