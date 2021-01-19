@@ -38,6 +38,12 @@ const router = Router();
  */
 router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
+    user.googleAuth = {
+        token: user?.['googleAuth.token'],
+        userId: user?.['googleAuth.userId'],
+    }
+    console.log("user=", user);
+
 
     // if there's an image(file) uploaded, then take url(path)
     if (req.file?.path) {
@@ -86,9 +92,9 @@ router.put(endpoints.users.UPDATE_PROFILE, editValidationRules, validate, authen
  */
 router.get(endpoints.users.GET_PROFILE, authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
     const userId = req.params.userId;
-    if(userId != req.userId) throw new AuthError();
-    const {profile} = await getProfile(userId);
-    res.json({...profile});
+    if (userId != req.userId) throw new AuthError();
+    const { profile } = await getProfile(userId);
+    res.json({ ...profile });
 }))
 
 /**
@@ -104,19 +110,19 @@ router.delete(endpoints.auth.LOG_OUT, authenticate, handleErrorAsync(async (req,
  * Delete user
  */
 router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteUserValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const user = {password: req.body?.password, id: req.params.userId};
+    const user = { password: req.body?.password, id: req.params.userId };
     const deleted = await deleteUser(user, req.userId);
-    res.json({deleted});
+    res.json({ deleted });
 }))
 
 /**
  * Delete multiple users
  */
 
- router.delete(endpoints.DELETE_USERS, authenticate, deleteUsersValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const user = {password: req.body?.password, ids: req.body.userIds};
+router.delete(endpoints.DELETE_USERS, authenticate, deleteUsersValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const user = { password: req.body?.password, ids: req.body.userIds };
     const usersDeleted = await deleteMultipleUsers(user, req.userId);
-    res.json({usersDeleted});
+    res.json({ usersDeleted });
 }))
 
 export { router as userRouter }
