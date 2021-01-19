@@ -12,12 +12,11 @@ import { cloudinary } from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import multer from "multer";
 import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
-import { httpCodes } from '../../utils/constants/httpResponseCodes';
 
 const storage = cloudinaryStorage({
     cloudinary,
     params: {
-        folder: 'usersImages',
+        folder: 'ProfileImages',
         format: () => ("jpeg"),
         public_id: () => {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
