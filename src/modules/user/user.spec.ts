@@ -621,6 +621,7 @@ describe('DELETE' + endpoints.DELETE_USERS, ()=>{
             .send({password: moderator[0].password, userIds: [users[0].id, users[1].id]})
             .expect(httpCodes.OK)
             .expect(res => {
+                console.log(res.body);
                 expect(res.body.usersDeleted).toEqual(([{updated: true}, {updated: true}]))
             })
             .end(done)
