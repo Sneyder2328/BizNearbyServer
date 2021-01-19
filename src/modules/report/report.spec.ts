@@ -7,7 +7,6 @@ import { admin, moderator, newReport, users } from '../../test/seed';
 import { endpoints } from '../../utils/constants/endpoints';
 import { errors } from '../../utils/constants/errors';
 import { genUUID } from '../../utils/utils';
-import { Report } from '../../database/models/Report';
 
 const token = 'Bearer b337e27e-bcf0-4154-8a77-96daa873c9e5';
 const normalToken = 'Bearer b339e27e-bcf0-4154-8a77-96daa873c9e5';
@@ -314,7 +313,7 @@ describe('DELETE ' + endpoints.report.DELETE_REPORT, () => {
         await createReport({...newReport[0],userId: users[0].id, title: "test 2", description: "testing 2", id: reportId});
     })
 
-    it('moderator should delete report not reviewed', done => {
+    it('moderator should delete pending report', done => {
         request(app)
             .delete(endpoints.report.DELETE_REPORT.replace(':reportId',reportId))
             .set('authorization', moderatorToken)
@@ -325,7 +324,7 @@ describe('DELETE ' + endpoints.report.DELETE_REPORT, () => {
             .end(done)
     })
 
-    it('admin should delete report not reviewed', done => {
+    it('admin should delete pending report', done => {
         request(app)
             .delete(endpoints.report.DELETE_REPORT.replace(':reportId',reportId))
             .set('authorization', adminToken)
@@ -354,6 +353,49 @@ describe('DELETE ' + endpoints.report.DELETE_REPORT, () => {
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('user should not delete pending report', done => {
+        request(app)
+            .delete(endpoints.report.DELETE_REPORT.replace(':reportId',reportId))
+            .set('authorization', normalToken)
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+
+    it('user should not delete reviewed report', done => {
+        request(app)
+            .delete(endpoints.report.DELETE_REPORT.replace(':reportId',newReport[0].id))
+            .set('authorization', normalToken)
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+
+    it('should not delete report without authorization', done => {
+        request(app)
+            .delete(endpoints.report.DELETE_REPORT.replace(':reportId',newReport[0].id))
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+
+    it('should not delete report with wrong reportId', done => {
+        request(app)
+            .delete(endpoints.report.DELETE_REPORT.replace(':reportId',newReport[0].id + "123"))
+            .set('authorization', moderatorToken)
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBeGreaterThan(0);
             })
             .end(done)
     })

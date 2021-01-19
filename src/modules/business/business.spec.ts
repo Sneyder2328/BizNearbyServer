@@ -8,6 +8,7 @@ import { genUUID } from "../../utils/utils";
 import { endpoints } from '../../utils/constants/endpoints';
 import { errors } from "../../utils/constants/errors";
 import config from "../../config/config";
+import { Category } from "../../database/models/Category";
 
 
 const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
@@ -907,6 +908,102 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
             .end(done);
     });
 });
+
+describe('POST ' + endpoints.ADD_CATEGORY, () => {
+    beforeAll(async ()=>{
+        await wipeOutDatabase();
+        await createUser({...users[0]});
+        await createUser({...moderator[0]});
+        await createUser({...admin[0]});
+        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
+        await Category.query().delete().findOne("category","test category");
+    })
+
+    it('admin should add a category', done => {
+        request(app)
+            .post(endpoints.ADD_CATEGORY)
+            .set('authorization', adminToken)
+            .send({category: "test category"})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.category).toBe("test category");
+            })
+            .end(done)
+    })
+
+    it('moderator should not add a category', done => {
+        request(app)
+            .post(endpoints.ADD_CATEGORY)
+            .set('authorization', moderatorToken)
+            .send({category: "test category2"})
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+
+    it('user should not add a category', done => {
+        request(app)
+            .post(endpoints.ADD_CATEGORY)
+            .set('authorization', normalToken)
+            .send({category: "test category2"})
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+
+    it('should not add a category without authorization', done => {
+        request(app)
+            .post(endpoints.ADD_CATEGORY)
+            .send({category: "test category"})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+
+    it('admin should not add a duplicated category', done => {
+        request(app)
+            .post(endpoints.ADD_CATEGORY)
+            .set('authorization', adminToken)
+            .send({category: "test category"})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.CATEGORY);
+            })
+            .end(done)
+    })
+
+    it('admin should not add a null category', done => {
+        request(app)
+            .post(endpoints.ADD_CATEGORY)
+            .set('authorization', adminToken)
+            .send({category: null})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBeGreaterThan(0);
+            })
+            .end(done)
+    })
+    
+    it('admin should not add a null category', done => {
+        request(app)
+            .post(endpoints.ADD_CATEGORY)
+            .set('authorization', adminToken)
+            .send({category: ""})
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBeGreaterThan(0);
+            })
+            .end(done)
+    })
+})
 
 afterAll(()=>{
     knex.destroy();

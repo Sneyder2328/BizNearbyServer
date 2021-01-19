@@ -5,6 +5,7 @@ export const errors = {
     DEFAULT_ERROR: 'Error',
     RECORD_DUPLICATED_ERROR: 'Record duplicated error',
     PASSWORD: 'password',
+    CATEGORY: 'category',
     USER_NOT_FOUND_ERROR: 'User',
     AUTH_ERROR: "Session is invalid",
     CREDENTIAL: "Credential",
@@ -26,6 +27,7 @@ export const errors = {
         UNDEFINED_ROUTE: "Route not found on the server",
         INCORRECT_CREDENTIALS: "Incorrect credentials",
         USERNAME_TAKEN: "Username already exists",
-        EMAIL_TAKEN: "Email already exists"
+        EMAIL_TAKEN: "Email already exists",
+        CATEGORY_FOUND: "Category already exists"
     }
 };
