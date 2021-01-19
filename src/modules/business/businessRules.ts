@@ -6,14 +6,14 @@ const trimInside = () => (str?: String) => str?.replace(/\s\s/g, ' ');
 const timeRegex = /^[0|1|2]\d:\d{2}$/;
 
 const businessValidationRules = [
-    body('addressId').trim().matches(config.regex.uuidV4).withMessage('Invalid addressId').exists(),
+    body('address.id').trim().matches(config.regex.uuidV4).withMessage('Invalid addressId').exists(),
     body('name').customSanitizer(trimInside()).escape().isString().isLength({ min: 1, max: 250 }).withMessage('Name must be at least 1 character long').exists(),
     body('description').customSanitizer(trimInside()).escape().isString().optional({ nullable: true }).isLength({ min: 1, max: 500 }).withMessage('Description must be at least 1 character long'),
-    body('address').customSanitizer(trimInside()).escape().isString().optional({ nullable: true }).isLength({ min: 1, max: 250 }).withMessage('Addres mus be at least 1 character long'),
-    body('bannerUrl').trim().isString().escape().optional({ nullable: true }),
-    body('latitude').isNumeric().exists(),
-    body('longitude').isNumeric().exists(),
-    body('cityCode').isNumeric().optional({ nullable: true }),
+    body('address.addres').customSanitizer(trimInside()).escape().isString().optional({ nullable: true }).isLength({ min: 1, max: 250 }).withMessage('Addres mus be at least 1 character long'),
+    body('bannerUrl').trim().isString().optional({ nullable: true }),
+    body('address.latitude').isNumeric().exists(),
+    body('address.longitude').isNumeric().exists(),
+    body('address.cityCode').isNumeric().optional({ nullable: true }),
     body('hours').exists().custom(arr => {
         if(arr.length === 0){
             return false;
