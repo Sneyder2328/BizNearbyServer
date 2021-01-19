@@ -13,6 +13,7 @@ import { User } from '../../database/models/User';
 import { Category } from '../../database/models/Category';
 import { raw } from 'objection';
 import { BusinessReview } from '../../database/models/BusinessReview';
+import { AuthError } from '../../utils/errors/AuthError';
 
 /**
  * Verify if the user exist in the database
@@ -25,7 +26,7 @@ const verifyUser = async (userId: string) => {
 };
 
 
-export const addNewBusiness = async ({ userId, businessId, addressId, name, description, address, latitude, longitude, cityCode, bannerUrl, hours, phoneNumbers, categories, images }) => {
+export const addNewBusiness = async ({ userId, businessId, name, description, address, bannerUrl, hours, phoneNumbers, categories, images }) => {
 
     await verifyUser(userId);
 
@@ -33,24 +34,28 @@ export const addNewBusiness = async ({ userId, businessId, addressId, name, desc
 
     await UserBusiness.query().insert({ userId, businessId });
 
-    const businessAddress = await BusinessAddress.query().insert({ id: addressId, businessId, address, cityCode, latitude, longitude });
+    const {id, cityCode, latitude, longitude} = address
+    const businessAddress = await BusinessAddress.query().insert({ id, businessId, address: address.address, cityCode, latitude, longitude });
 
     const businessCategories = categories.map(async (categoryCode) => {
-        return await BusinessCategory.query().insert({ businessId, categoryCode });
+        const cat = await BusinessCategory.query().insert({ businessId, categoryCode });
+        return cat.categoryCode
     });
     const categoriesAdded = await Promise.all(businessCategories);
 
     const businessHours = hours.map(async ({ day, openTime, closeTime }) => {
         const openTimeInt = parseInt(openTime.replace(':', ''), 10);
         const closeTimeInt = parseInt(closeTime.replace(':', ''), 10);
-        return await BusinessHours.query().insert({ businessId, day, openTime: openTimeInt, closeTime: closeTimeInt });
+        const value = await BusinessHours.query().insert({ businessId, day, openTime: openTimeInt, closeTime: closeTimeInt });
+        return _.pick(value, ["day", "openTime", "closeTime"])
     });
     const businessHoursAdded = await Promise.all(businessHours);
 
     let phoneNumbersAdded;
     if (phoneNumbers) {
         const businessPhoneNumber = phoneNumbers.map(async (phoneNumber) => {
-            return await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
+            const phone = await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
+            return phone.phoneNumber
         });
         phoneNumbersAdded = await Promise.all(businessPhoneNumber);
     }
@@ -58,13 +63,14 @@ export const addNewBusiness = async ({ userId, businessId, addressId, name, desc
     let imagesAdded;
     if(images){
         const businessImage = images.map(async (image) => {
-            return await BusinessImage.query().insert({businessId, imageUrl: image});
+            const img = await BusinessImage.query().insert({businessId, imageUrl: image});
+            return img.imageUrl
         });
         imagesAdded = await Promise.all(businessImage);
     }
     return {
         ...business,
-        businessAddress,
+        address: businessAddress,
         hours: businessHoursAdded,
         phoneNumbers: phoneNumbersAdded,
         categories: categoriesAdded,
@@ -143,7 +149,8 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
     let businessCategoriesAdded
     if (categories) {
         const businessCategories = categories.map(async (categoryCode) => {
-            return await BusinessCategory.query().insert({ businessId, categoryCode });
+            const cat = await BusinessCategory.query().insert({ businessId, categoryCode });
+            return cat.categoryCode
         });
         businessCategoriesAdded = await Promise.all(businessCategories);
     }
@@ -163,7 +170,8 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
     let businessPhoneNumbersAdded;
     if (phoneNumbers) {
         const businessPhoneNumbers = phoneNumbers.map(async (phoneNumber) => {
-            return await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
+            const phone = await BusinessPhoneNumber.query().insert({ businessId, phoneNumber });
+            return phone.phoneNumber
         });
         businessPhoneNumbersAdded = await Promise.all(businessPhoneNumbers);
     }
@@ -179,7 +187,7 @@ export const updateBusiness = async ({ userId, businessId, addressId, emailNewUs
 
     return {
         ..._.pick(businessUpdated, ['id', 'name', 'description', 'bannerUrl']),
-        businessAddress: businessAddressUpdated,
+        address: businessAddressUpdated,
         categories: businessCategoriesAdded,
         hours: businessHoursAdded,
         phoneNumbers: businessPhoneNumbersAdded,
@@ -276,3 +284,11 @@ export const editReviewBusiness = async ({businessId, userId, rating, descriptio
 
     return {review: _.pick(businessReviewUpdated, ["businessId", "userId", "rating", "description", "createdAt"])};
 };
+
+export const addCategory = async (category: string) => {
+    const categoryExists = await Category.query().findOne("category", category);
+    if(categoryExists) throw new AuthError(errors.CATEGORY, errors.message.CATEGORY_FOUND);
+
+    const categoryInserted = await Category.query().insert({category});
+    return {categoryInserted: _.pick(categoryInserted, ["category"])}
+}

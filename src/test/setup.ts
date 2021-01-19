@@ -64,6 +64,10 @@ export async function createReport({id, businessId, userId, title, description}:
     await Report.query().insert({id, businessId, userId, title, description});
 }
 
+export async function createReviewedReport({id, businessId, userId, title, description}:{id: string; businessId: string; userId: string; title: string|null; description: string|null;}){
+    await Report.query().insert({id, businessId, userId, title, description, reviewedAt: new Date()});
+}
+
 export async function createReportReview({reportId, userId, analysis}:{reportId: string, userId: string, analysis: string|null}){
     await ReportReview.query().insert({userId, reportId, analysis});
 }

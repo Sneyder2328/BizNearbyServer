@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { signUpValidationRules, logInValidationRules, editValidationRules, deleteUserValidationRules, deleteUsersValidationRules, deleteValidationRules } from './userRules';
+import { signUpValidationRules, logInValidationRules, editValidationRules, deleteUserValidationRules, deleteUsersValidationRules, deleteValidationRules, getProfileValidationRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { signUpUser, logInUser, logoutUser, editUser, deleteUser, getProfile, deleteMultipleUsers } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
@@ -12,12 +12,11 @@ import { cloudinary } from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import multer from "multer";
 import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
-import { httpCodes } from '../../utils/constants/httpResponseCodes';
 
 const storage = cloudinaryStorage({
     cloudinary,
     params: {
-        folder: 'usersImages',
+        folder: 'ProfileImages',
         format: () => ("jpeg"),
         public_id: () => {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
@@ -39,6 +38,12 @@ const router = Router();
  */
 router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
+    user.googleAuth = {
+        token: user?.['googleAuth.token'],
+        userId: user?.['googleAuth.userId'],
+    }
+    console.log("user=", user);
+
 
     // if there's an image(file) uploaded, then take url(path)
     if (req.file?.path) {
@@ -85,11 +90,11 @@ router.put(endpoints.users.UPDATE_PROFILE, editValidationRules, validate, authen
 /**
  * Get user profile
  */
-router.get(endpoints.users.GET_PROFILE, authenticate, handleErrorAsync(async (req, res) => {
+router.get(endpoints.users.GET_PROFILE, authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
     const userId = req.params.userId;
-    if(userId != req.userId) throw new AuthError();
-    const {profile} = await getProfile(userId);
-    res.json({...profile});
+    if (userId != req.userId) throw new AuthError();
+    const { profile } = await getProfile(userId);
+    res.json({ ...profile });
 }))
 
 /**
@@ -101,24 +106,23 @@ router.delete(endpoints.auth.LOG_OUT, authenticate, handleErrorAsync(async (req,
     res.send({ logOut });
 }));
 
-
 /**
  * Delete user
  */
 router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteUserValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const user = {password: req.body?.password, id: req.params.userId};
+    const user = { password: req.body?.password, id: req.params.userId };
     const deleted = await deleteUser(user, req.userId);
-    res.json({deleted});
+    res.json({ deleted });
 }))
 
 /**
  * Delete multiple users
  */
 
- router.delete(endpoints.DELETE_USERS, authenticate, deleteUsersValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const user = {password: req.body?.password, ids: req.body.userIds};
+router.delete(endpoints.DELETE_USERS, authenticate, deleteUsersValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const user = { password: req.body?.password, ids: req.body.userIds };
     const usersDeleted = await deleteMultipleUsers(user, req.userId);
-    res.json({usersDeleted});
+    res.json({ usersDeleted });
 }))
 
 export { router as userRouter }

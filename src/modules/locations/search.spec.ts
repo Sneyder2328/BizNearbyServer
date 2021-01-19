@@ -30,7 +30,7 @@ describe('GET ' + endpoints.LOCATION_AUTOCOMPLETE, () => {
         await createSession({token: token.split(' ')[1], userId: users[0].id});
     })
 
-    it('should return every city with "El Tocuyo" in it', done => {
+    it('should return every city or state with "El Tocuyo" in it', done => {
         request(app)
             .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=El Tocuyo")
             .set('authorization', token)
@@ -42,7 +42,7 @@ describe('GET ' + endpoints.LOCATION_AUTOCOMPLETE, () => {
             .end(done)
     })
 
-    it('should return every city with "El Tocuyo" in it (query with too much whitespace)', done => {
+    it('should return every city or state with "El Tocuyo" in it (query with too much whitespace)', done => {
         request(app)
             .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=    El         Tocuyo    ")
             .set('authorization', token)
@@ -54,7 +54,7 @@ describe('GET ' + endpoints.LOCATION_AUTOCOMPLETE, () => {
             .end(done)
     })
 
-    it('should return 10 cities with "a" in it', done => {
+    it('should return 10 cities or states with "a" in it', done => {
         request(app)
             .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=a&limit=10")
             .set('authorization', token)
@@ -66,13 +66,25 @@ describe('GET ' + endpoints.LOCATION_AUTOCOMPLETE, () => {
             .end(done)
     })
 
-    it('should return every city with "  toc  " in it', done => {
+    it('should return every city or state with "  toc  " in it', done => {
         request(app)
             .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=  toc  ")
             .set('authorization', token)
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBeGreaterThan(0);
+                expect(res.body[0]).toEqual(city('toc'));
+            })
+            .end(done)
+    })
+
+    it('should return 20 cities or states with "toc" in it', done => {
+        request(app)
+            .get(endpoints.LOCATION_AUTOCOMPLETE + "?query=toc&limit=20")
+            .set('authorization', token)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBeLessThanOrEqual(20);
                 expect(res.body[0]).toEqual(city('toc'));
             })
             .end(done)

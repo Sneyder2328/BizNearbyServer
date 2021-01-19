@@ -17,7 +17,7 @@ export const signUpValidationRules = [
     body('phoneNumber').trim().isString().escape()
         .optional({ nullable: true })
         .isLength({ max: 50 }).withMessage('phoneNumber too long'),
-    body('thumbnailUrl').trim().isString().escape()
+    body('thumbnailUrl').trim().isString()
         .optional({ nullable: true })
         .isLength({ max: 500 }).withMessage('thumbnailUrl too long'),
     body('password').trim().isString().escape()
@@ -77,6 +77,10 @@ export const deleteValidationRules = [
     body('password').escape().optional({nullable: true})
 ]
 
+export const getProfileValidationRules = [
+    param('userId').exists().matches(config.regex.uuidV4)
+]
+
 export const deleteUserValidationRules = [
     ...deleteValidationRules,
     param('userId').exists().matches(config.regex.uuidV4)
@@ -84,9 +88,5 @@ export const deleteUserValidationRules = [
 
 export const deleteUsersValidationRules = [
     ...deleteValidationRules,
-    body('userIds').exists().isArray().custom(val => {
-        const matches = val.map(userId => config.regex.uuidV4.test(userId));
-        console.log(matches.some(val => val));
-        return true
-    })
+    body('userIds').exists().isArray()
 ]
