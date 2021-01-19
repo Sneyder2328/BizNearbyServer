@@ -17,7 +17,7 @@ export const signUpValidationRules = [
     body('phoneNumber').trim().isString().escape()
         .optional({ nullable: true })
         .isLength({ max: 50 }).withMessage('phoneNumber too long'),
-    body('thumbnailUrl').trim().isString().escape()
+    body('thumbnailUrl').trim().isString()
         .optional({ nullable: true })
         .isLength({ max: 500 }).withMessage('thumbnailUrl too long'),
     body('password').trim().isString().escape()
