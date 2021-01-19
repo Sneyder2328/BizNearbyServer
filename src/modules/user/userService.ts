@@ -145,6 +145,5 @@ export const deleteMultipleUsers = async ({password, ids}, sessionId:string) => 
     await Session.query().delete().where(raw(whereQuery));
     const usersDeleted = await User.query().select("id").findByIds(ids).where(raw('deletedAt IS NOT NULL'));
     const usersIdDeleted = usersDeleted.map( user => user.id);
-    console.log(usersDeleted);
     return ids.map(id => {return {updated: usersIdDeleted.includes(id)}});
 }

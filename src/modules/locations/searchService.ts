@@ -11,7 +11,13 @@ export const searchLocations =async  (pattern: string, sessionId: string,limit: 
                                 .select("City.code", "City.name", "State.name as stateName", "Country.name as countryName")
                                 .join(raw('State ON  City.stateCode = State.code'))
                                 .join(raw('Country ON State.countryCode = Country.code'))
-                                .where(raw('City.name LIKE "%'+ pattern +'%" ' + limit));
+                                .where(raw('City.name LIKE "%'+ pattern +'%" '))
+                                .orWhere(raw('State.name LIKE "%'+ pattern +'%" '))
+                                .orderByRaw('(CASE WHEN city.name LIKE "%'+ pattern +'%" THEN 1 '
+                                            + 'WHEN state.name LIKE "%'+ pattern +'%" THEN 2 '
+                                            + 'ELSE 3 '
+                                            + 'END)'
+                                            + limit)
     const searchResult = cities.map(city => {
         return {
             city: {
