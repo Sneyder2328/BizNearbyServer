@@ -13,7 +13,7 @@ export const searchLocations =async  (pattern: string, sessionId: string,limit: 
                                 .join(raw('Country ON State.countryCode = Country.code'))
                                 .where(raw('City.name LIKE "%'+ pattern +'%" '))
                                 .orWhere(raw('State.name LIKE "%'+ pattern +'%" '))
-                                .orderByRaw('(CASE WHEN city.name LIKE "%'+ pattern +'%" THEN 1 '
+                                .orderByRaw('(CASE WHEN City.name LIKE "%'+ pattern +'%" THEN 1 '
                                             + 'WHEN state.name LIKE "%'+ pattern +'%" THEN 2 '
                                             + 'ELSE 3 '
                                             + 'END)'
