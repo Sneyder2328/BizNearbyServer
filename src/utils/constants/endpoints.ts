@@ -18,8 +18,8 @@ export const endpoints = {
         },
     },
     moderator:{
-        CREATE_MODERATOR: '/moderators/:moderatorId',
-        REMOVE_MODERATOR: '/moderators/:moderatorId',
+        CREATE_MODERATOR: '/moderators/:userEmail',
+        REMOVE_MODERATOR: '/moderators/:userEmail',
         GET_ALL_REPORTS: '/businesses/getReports',
         GET_MODERATOR: '/moderators'
     },

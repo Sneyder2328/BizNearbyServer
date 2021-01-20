@@ -14,17 +14,15 @@ const adminToken = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5"
 describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();
-        //@ts-ignore
-        await createUser({...admin});
+        await createUser({...admin[0]});
         await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
-        //@ts-ignore
         await createUser({...users[0]});
         await createSession({token: token.split(' ')[1], userId})
     })
 
     it('should give the role moderator to user', done => {
         request(app)
-            .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .post(endpoints.moderator.CREATE_MODERATOR.replace(':userEmail',users[0].email))
             .set('authorization', adminToken)
             .expect(httpCodes.OK)
             .expect(res => {
@@ -35,7 +33,7 @@ describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
 
     it('should not give the role moderator to user without authorization', done => {
         request(app)
-            .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .post(endpoints.moderator.CREATE_MODERATOR.replace(':userEmail',users[0].email))
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
@@ -45,7 +43,7 @@ describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
 
     it('should not give the role moderator to user with an user session', done => {
         request(app)
-            .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .post(endpoints.moderator.CREATE_MODERATOR.replace(':userEmail',users[0].email))
             .set('authorization', token)
             .expect(httpCodes.FORBIDDEN)
             .expect(res => {
@@ -56,7 +54,7 @@ describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
 
     it('should not give the role moderator to admin', done => {
         request(app)
-            .post(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',admin[0].id))
+            .post(endpoints.moderator.CREATE_MODERATOR.replace(':userEmail',admin[0].email))
             .set('authorization', adminToken)
             .expect(httpCodes.FORBIDDEN)
             .expect(res => {
@@ -70,17 +68,15 @@ describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
 describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
     beforeEach(async ()=>{
         await wipeOutDatabase();
-        //@ts-ignore
-        await createUser({...admin});
+        await createUser({...admin[0]});
         await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
-        //@ts-ignore
         await createUser({...users[0]});
         await createSession({token: token.split(' ')[1], userId})
     })
 
     it('should remove the role moderator of user', done => {
         request(app)
-            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .delete(endpoints.moderator.REMOVE_MODERATOR.replace(':userEmail',users[0].email))
             .set('authorization', adminToken)
             .expect(httpCodes.OK)
             .expect(res => {
@@ -91,7 +87,7 @@ describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
 
     it('should not remove the role moderator of user without authorization', done => {
         request(app)
-            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .delete(endpoints.moderator.REMOVE_MODERATOR.replace(':userEmail',users[0].email))
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
@@ -101,7 +97,7 @@ describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
 
     it('should not remove the role moderator of user with user session', done => {
         request(app)
-            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',userId))
+            .delete(endpoints.moderator.REMOVE_MODERATOR.replace(':userEmail',users[0].email))
             .set('authorization', token)
             .expect(httpCodes.FORBIDDEN)
             .expect(res => {
@@ -112,7 +108,7 @@ describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
 
     it('should not try to remove the role moderator of admin', done => {
         request(app)
-            .delete(endpoints.moderator.CREATE_MODERATOR.replace(':moderatorId',admin[0].id))
+            .delete(endpoints.moderator.REMOVE_MODERATOR.replace(':userEmail',admin[0].email))
             .set('authorization', token)
             .expect(httpCodes.FORBIDDEN)
             .expect(res => {
