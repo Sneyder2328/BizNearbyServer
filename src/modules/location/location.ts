@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { endpoints } from '../../utils/constants/endpoints';
 import { authenticate } from '../../middlewares/authenticate';
-import { searchLocations } from './searchService';
+import { searchLocations } from './locationService';
 import { AppError } from '../../utils/errors/AppError';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 const router = Router();
