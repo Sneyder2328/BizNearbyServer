@@ -3,7 +3,6 @@ import { Session, SessionObject } from '../../database/models/Session';
 import { User, UserObject } from '../../database/models/User';
 import axios from 'axios';
 import { raw } from 'objection';
-import { debug } from 'console';
 
 export const findSession = async (accessToken: string): Promise<SessionObject> => {
     return await Session.query().findById(accessToken)

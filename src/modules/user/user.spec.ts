@@ -508,7 +508,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
 
     it('should delete user by admin', done => {
         request(app)
-            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',moderator[0].id))
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', admin2Token)
             .send({'password': admin[1].password})
             .expect(httpCodes.OK)
@@ -626,17 +626,21 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
 })
 
 describe('DELETE' + endpoints.DELETE_USERS, ()=>{
-    beforeEach(async ()=>{
+    beforeAll(async ()=>{
         await wipeOutDatabase();
-        await createUser({...users[0]});
-        await createUser({...users[1]});
         await createUser({...admin[0]});
         await createUser({...admin[1]});
-        await createUser({...moderator[0]});
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id });
+    })
+
+    beforeEach(async ()=>{
+        await wipeOutUsers([users[0].id, users[1].id, moderator[1].id, moderator[0].id]);
+        await createUser({...users[0]});
+        await createUser({...users[1]});
         await createUser({...moderator[1]});
         await createSession({token: token.split(' ')[1], userId });
+        await createUser({...moderator[0]});
         await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
-        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id });
     })
 
     it('should delete 2 normal users by moderator', done => {
@@ -667,7 +671,7 @@ describe('DELETE' + endpoints.DELETE_USERS, ()=>{
         request(app)
             .delete(endpoints.DELETE_USERS)
             .set('authorization', adminToken)
-            .send({password: admin[0].password, userIds: [moderator[0].id]})
+            .send({password: admin[0].password, userIds: [moderator[1].id]})
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.usersDeleted).toEqual([{updated: true}])
@@ -679,7 +683,7 @@ describe('DELETE' + endpoints.DELETE_USERS, ()=>{
         request(app)
             .delete(endpoints.DELETE_USERS)
             .set('authorization', adminToken)
-            .send({password: admin[0].password, userIds: [users[0].id,moderator[0].id]})
+            .send({password: admin[0].password, userIds: [users[0].id,moderator[1].id]})
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.usersDeleted).toEqual([{updated: true}, {updated: true}])

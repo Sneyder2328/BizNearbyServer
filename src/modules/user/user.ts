@@ -58,7 +58,6 @@ router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validat
         .json({ ...profile });
 }));
 
-
 /**
  * Log in
  */

@@ -9,7 +9,7 @@ import { Business } from '../../database/models/Business';
 import { Session } from '../../database/models/Session';
 import { genUUID } from '../../utils/utils';
 import { verifyPassword } from '../../utils/utils';
-import { verifyFBToken, verifyGoogleToken } from './authService';
+import { findUserById, verifyFBToken, verifyGoogleToken } from './authService';
 import { raw } from 'objection';
 
 const findUser = async (id: string, idContent: string) => User.query().findOne(id, idContent).where(raw('deletedAt IS NULL'));
@@ -55,7 +55,7 @@ export const logInUser = async ({ email, password, typeLogin, facebookAuth, goog
 }
 
 export const editUser = async ({ id, fullname, password, email, phoneNumber, thumbnailUrl }) => {
-    const userExists = await findUser('id',id);
+    const userExists = await findUserById(id);
     if (!userExists) throw new UserNotFoundError();
     if(userExists.typeUser != 'normal' && (email != userExists.email || password != null) ) throw new AuthError();
     const emailConflict = await findUser('email', email);
@@ -67,7 +67,7 @@ export const editUser = async ({ id, fullname, password, email, phoneNumber, thu
 }
 
 export const getProfile = async (userId) => {
-    const user = await findUser('id',userId);
+    const user = await findUserById(userId);
     if(!user) throw new UserNotFoundError();
     return { profile: _.pick(user, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser'])}
 }
@@ -78,9 +78,9 @@ export const logoutUser = async (accessToken: string): Promise<boolean> => {
 }
 
 export const deleteUser = async ({password, id}, sessionId: string) => {
-    const user = await findUser('id',id);
+    const user = await findUserById(id);
     if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
-    const sessionUser = await findUser('id',sessionId);
+    const sessionUser = await findUserById(sessionId);
     if(sessionId != user.id){
         switch(sessionUser.typeUser){
             case 'admin':
