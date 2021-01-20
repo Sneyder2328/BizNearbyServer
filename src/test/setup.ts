@@ -28,6 +28,10 @@ export async function wipeOutUser(id:string){
     await User.query().delete().where({id});
 }
 
+export async function wipeOutUsers(ids){
+    await User.query().delete().findByIds(ids);
+}
+
 export async function wipeOutBusiness(){
     await Business.query().delete();
 }

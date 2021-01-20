@@ -42,8 +42,6 @@ router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validat
         token: user?.['googleAuth.token'],
         userId: user?.['googleAuth.userId'],
     }
-    console.log("user=", user);
-
 
     // if there's an image(file) uploaded, then take url(path)
     if (req.file?.path) {
