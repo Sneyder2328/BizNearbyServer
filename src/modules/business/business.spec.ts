@@ -28,40 +28,24 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             name: businesses[nro].name,
             description: businesses[nro].description,
             bannerUrl: businesses[nro].bannerUrl,
-            businessAddress: {
-                id: businesses[nro].addressId,
+            address: {
+                id: businesses[nro].address.id,
                 businessId: businesses[nro].businessId,
-                address: businesses[nro].address,
-                latitude: businesses[nro].latitude,
-                longitude: businesses[nro].longitude,
-                cityCode: businesses[nro].cityCode,
+                address: businesses[nro].address.address,
+                latitude: businesses[nro].address.latitude,
+                longitude: businesses[nro].address.longitude,
+                cityCode: businesses[nro].address.cityCode,
             },
             hours: businesses[nro].hours.map(hours => {
                 return {
-                    businessId: businesses[nro].businessId,
                     day: hours.day,
                     openTime: parseInt(hours.openTime.replace(':', ''), 10),
                     closeTime: parseInt(hours.closeTime.replace(':', ''), 10)
                 }
             }),
-            phoneNumbers: businesses[nro].phoneNumbers.map(phoneNumber => {
-                return {
-                    businessId: businesses[nro].businessId,
-                    phoneNumber: phoneNumber
-                }
-            }),
-            categories: businesses[nro].categories.map(category => {
-                return {
-                    businessId: businesses[nro].businessId,
-                    categoryCode: category
-                }
-            }),
-            images : businesses[nro].images?.map(image => {
-                return {
-                    businessId: businesses[nro].businessId,
-                    imageUrl: image
-                }
-            })
+            phoneNumbers: businesses[nro].phoneNumbers,
+            categories: businesses[nro].categories,
+            images : businesses[nro].images
         }
     };
     beforeEach(async () => {
@@ -102,6 +86,18 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body).toEqual({...business(2)});
+            })
+            .end(done);
+    });
+
+    it('should create a new business without images', (done) => {
+        request(app)
+            .post(endpoints.users.owner.BUSINESS_REGISTER)
+            .set('authorization', token)
+            .send(businesses[12])
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toEqual({...business(12)});
             })
             .end(done);
     });
@@ -221,40 +217,24 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             name: updateBusiness[nro].name,
             description: updateBusiness[nro].description,
             bannerUrl: updateBusiness[nro].bannerUrl,
-            businessAddress: {
-                id: updateBusiness[nro].addressId,
+            address: {
+                id: updateBusiness[nro].address.id,
                 businessId: businessId,
-                address: updateBusiness[nro].address,
-                latitude: updateBusiness[nro].latitude,
-                longitude: updateBusiness[nro].longitude,
-                cityCode: updateBusiness[nro].cityCode,
+                address: updateBusiness[nro].address.address,
+                latitude: updateBusiness[nro].address.latitude,
+                longitude: updateBusiness[nro].address.longitude,
+                cityCode: updateBusiness[nro].address.cityCode,
             },
             hours: updateBusiness[nro].hours.map(hours => {
                 return {
-                    businessId: businessId,
                     day: hours.day,
                     openTime: parseInt(hours.openTime.replace(':', ''), 10),
                     closeTime: parseInt(hours.closeTime.replace(':', ''), 10)
                 }
             }),
-            phoneNumbers: updateBusiness[nro].phoneNumbers.map(phoneNumber => {
-                return {
-                    businessId: businessId,
-                    phoneNumber: phoneNumber
-                }
-            }),
-            categories: updateBusiness[nro].categories.map(category => {
-                return {
-                    businessId: businessId,
-                    categoryCode: category
-                }
-            }),
-            images : updateBusiness[nro].images?.map(image => {
-                return {
-                    businessId: businessId,
-                    imageUrl: image
-                }
-            })
+            phoneNumbers: updateBusiness[nro].phoneNumbers,
+            categories: updateBusiness[nro].categories,
+            images : updateBusiness[nro].images
         }
     };
     beforeEach(async () => {

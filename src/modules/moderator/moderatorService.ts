@@ -15,3 +15,10 @@ export const changeModerator =async (id: string, typeUser: 'normal'|'moderator')
     const updatedRows = await User.query().update({typeUser}).where('id', id);
     return updatedRows != 0;
 }
+
+export const allModerators = async () => {
+
+    const moderators = await User.query().select().where('typeUser', 'moderator').andWhere(raw('deletedAt IS NULL'));
+
+    return _.pick(moderators, ['id', 'fullname', 'email', 'thumbnailUrl, typeUser']);
+};

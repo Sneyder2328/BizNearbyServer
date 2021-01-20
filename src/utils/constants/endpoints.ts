@@ -21,6 +21,7 @@ export const endpoints = {
         CREATE_MODERATOR: '/moderators/:moderatorId',
         REMOVE_MODERATOR: '/moderators/:moderatorId',
         GET_ALL_REPORTS: '/businesses/getReports',
+        GET_MODERATOR: '/moderators'
     },
     report: {
         CREATE_REPORT: `/reports/`,
