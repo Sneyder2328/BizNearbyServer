@@ -48,7 +48,7 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             images : businesses[nro].images
         }
     };
-    beforeEach(async () => {
+    beforeAll(async () => {
         await wipeOutDatabase();
         await createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
         await createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
@@ -237,7 +237,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             images : updateBusiness[nro].images
         }
     };
-    beforeEach(async () => {
+    beforeAll(async () => {
         await wipeOutDatabase();
         await insertBusinessData();
     });
@@ -377,7 +377,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
     it('should not update without authorization', (done) => {
         request(app)
             .put(endpoints.users.owner.BUSINESS_UPDATE.replace(':businessId', businessId))
-            .set('authorization', 'Bearer b337e27e-bcf0-4154-8a77-96daa873c9e5')
+            .set('authorization', 'Bearer ' + genUUID())
             .send(updateBusiness[0])
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
@@ -500,7 +500,7 @@ describe('DELETE' + endpoints.users.owner.BUSINESS_DELETE, () => {
 });
 
 describe('GET' + endpoints.users.owner.GET_ALL_BUSINESSES, () => {
-    beforeEach(async () => {
+    beforeAll(async () => {
         await wipeOutDatabase();
         await insertBusinessData();
     });
@@ -540,7 +540,7 @@ describe('GET' + endpoints.users.owner.GET_ALL_BUSINESSES, () => {
 });
 
 describe('GET' + endpoints.GET_BUSINESS, () => {
-    beforeEach(async () => {
+    beforeAll(async () => {
         await wipeOutDatabase();
         await insertBusinessData();
     });
@@ -569,7 +569,7 @@ describe('GET' + endpoints.GET_BUSINESS, () => {
 });
 
 describe('GET' + endpoints.users.owner.GET_ALL_CATEGORIES, () => {
-    beforeEach(async () => {
+    beforeAll(async () => {
         await wipeOutDatabase();
         await createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
         await createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
