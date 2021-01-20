@@ -1,6 +1,6 @@
 import request from "supertest";
 import {app, server} from "../../index";
-import {wipeOutDatabase, createUser, createSession} from "../../test/setup";
+import {wipeOutDatabase, createUser, createSession, wipeOutUsers} from "../../test/setup";
 import {endpoints} from "../../utils/constants/endpoints";
 import {httpCodes} from "../../utils/constants/httpResponseCodes";
 import {admin, users, moderator} from "../../test/seed";
@@ -414,20 +414,24 @@ describe('GET ' + endpoints.users.GET_PROFILE, () => {
 })
 
 describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
-    beforeEach(async ()=>{
+    beforeAll(async ()=>{
         await wipeOutDatabase();
+        await createUser({...admin[1]});
+        await createUser({...moderator[1]});
+        await createSession({token: moderator2Token.split(' ')[1], userId: moderator[1].id });
+        await createSession({token: admin2Token.split(' ')[1], userId: admin[1].id });
+    })
+
+    beforeEach(async ()=>{
+        await wipeOutUsers([users[0].id, users[1].id, admin[0].id, moderator[0].id]);
         await createUser({...users[0]});
         await createUser({...users[1]});
         await createUser({...admin[0]});
-        await createUser({...admin[1]});
         await createUser({...moderator[0]});
-        await createUser({...moderator[1]});
         await createSession({token: token.split(' ')[1], userId });
         await createSession({token: token2.split(' ')[1], userId: userId2 });
-        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
-        await createSession({token: moderator2Token.split(' ')[1], userId: moderator[1].id });
         await createSession({token: adminToken.split(' ')[1], userId: admin[0].id });
-        await createSession({token: admin2Token.split(' ')[1], userId: admin[1].id });
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
     })
 
     it('should delete user by the user itself (email)', done => {
@@ -454,11 +458,35 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
             .end(done)
     });
 
+    it('moderator should delete itself', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',moderator[0].id))
+            .set('authorization', moderatorToken)
+            .send({'password': moderator[0].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    });
+
+    it('admin should delete itself', done => {
+        request(app)
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',admin[0].id))
+            .set('authorization', adminToken)
+            .send({'password': admin[0].password})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    });
+
     it('should delete user by moderator', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
-            .set('authorization', moderatorToken)
-            .send({'password': moderator[0].password})
+            .set('authorization', moderator2Token)
+            .send({'password': moderator[1].password})
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
@@ -469,8 +497,8 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
     it('should delete user by admin', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
-            .set('authorization', adminToken)
-            .send({'password': admin[0].password})
+            .set('authorization', admin2Token)
+            .send({'password': admin[1].password})
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
@@ -481,8 +509,8 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
     it('should delete user by admin', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',moderator[0].id))
-            .set('authorization', adminToken)
-            .send({'password': admin[0].password})
+            .set('authorization', admin2Token)
+            .send({'password': admin[1].password})
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
@@ -492,8 +520,8 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
 
     it('should not delete user without authorization', done => {
         request(app)
-            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
-            .send({'password': users[0].password})
+            .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[1].id))
+            .send({'password': users[1].password})
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.errors);
@@ -516,8 +544,8 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
     it("admin should not delete user while using user's password", done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
-            .set('authorization', adminToken)
-            .send({'password': users[0].password})
+            .set('authorization', admin2Token)
+            .send({'password': users[1].password})
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.CREDENTIAL);
@@ -528,7 +556,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
     it('should not delete user due to the abcense of password', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
-            .set('authorization', token)
+            .set('authorization', token2)
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body);
@@ -552,7 +580,7 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',users[0].id))
             .set('authorization', token2)
-            .send({'password': users[0].password})
+            .send({'password': users[1].password})
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body);
@@ -575,8 +603,8 @@ describe('DELETE ' + endpoints.users.DELETE_ACCOUNT, () => {
     it('moderator should not delete admin', done => {
         request(app)
             .delete(endpoints.users.DELETE_ACCOUNT.replace(':userId',admin[0].id))
-            .set('authorization', moderatorToken)
-            .send({'password': moderator[0].password})
+            .set('authorization', moderator2Token)
+            .send({'password': moderator[1].password})
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
@@ -607,11 +635,8 @@ describe('DELETE' + endpoints.DELETE_USERS, ()=>{
         await createUser({...moderator[0]});
         await createUser({...moderator[1]});
         await createSession({token: token.split(' ')[1], userId });
-        await createSession({token: token2.split(' ')[1], userId: userId2 });
         await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id });
-        await createSession({token: moderator2Token.split(' ')[1], userId: moderator[1].id });
         await createSession({token: adminToken.split(' ')[1], userId: admin[0].id });
-        await createSession({token: admin2Token.split(' ')[1], userId: admin[1].id });
     })
 
     it('should delete 2 normal users by moderator', done => {
@@ -621,7 +646,6 @@ describe('DELETE' + endpoints.DELETE_USERS, ()=>{
             .send({password: moderator[0].password, userIds: [users[0].id, users[1].id]})
             .expect(httpCodes.OK)
             .expect(res => {
-                console.log(res.body);
                 expect(res.body.usersDeleted).toEqual(([{updated: true}, {updated: true}]))
             })
             .end(done)

@@ -8,8 +8,8 @@ import { User } from '../../database/models/User';
 import { raw } from 'objection';
 
 export const changeModerator =async (email: string, typeUser: 'normal'|'moderator') => {
-    const user = await User.query().findOne({email}).andWhere(raw('deletedAt is null'));
-    if(!user) throw new AuthError(errors.NOT_FOUND, errors.USER_NOT_FOUND_ERROR);
+    const user = await User.query().findOne({email}).where(raw('deletedAt is null'));
+    if(!user) throw new UserNotFoundError();
     if(user.typeUser == 'admin') throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
 
     const updatedRows = await User.query().update({typeUser}).where('id', user.id);

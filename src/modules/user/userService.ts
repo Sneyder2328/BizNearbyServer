@@ -81,7 +81,6 @@ export const deleteUser = async ({password, id}, sessionId: string) => {
     const user = await findUser('id',id);
     if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
     const sessionUser = await findUser('id',sessionId);
-    if(!sessionUser) throw new AuthError();
     if(sessionId != user.id){
         switch(sessionUser.typeUser){
             case 'admin':

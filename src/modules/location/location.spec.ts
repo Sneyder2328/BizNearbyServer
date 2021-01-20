@@ -6,8 +6,9 @@ import {httpCodes} from "../../utils/constants/httpResponseCodes";
 import {admin, users, moderator} from "../../test/seed";
 import {errors} from "../../utils/constants/errors";
 import knex from "../../database/knex";
+import { genUUID } from "../../utils/utils";
 
-const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
+const token = "Bearer " + genUUID();
 
 describe('GET ' + endpoints.LOCATION_AUTOCOMPLETE, () => {
     const city = (query: string) => {return {

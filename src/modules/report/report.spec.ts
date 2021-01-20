@@ -2,28 +2,63 @@ import request from 'supertest';
 import { app, server} from '../../index';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import knex from "../../database/knex";
-import { wipeOutDatabase, insertBusinessData, createReport, createUser, createSession, createReportReview, createReviewedReport } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createReport, createUser, createSession, createReportReview, createReviewedReport, setupBusiness, wipeOutBusiness, wipeOutReports } from '../../test/setup';
 import { admin, moderator, newReport, users } from '../../test/seed';
 import { endpoints } from '../../utils/constants/endpoints';
 import { errors } from '../../utils/constants/errors';
 import { genUUID } from '../../utils/utils';
 
-const token = 'Bearer b337e27e-bcf0-4154-8a77-96daa873c9e5';
-const normalToken = 'Bearer b339e27e-bcf0-4154-8a77-96daa873c9e5';
-const moderatorToken = "Bearer fcd84d1f-ee5b-4636-9f61-78dc349f23e5";
-const adminToken = "Bearer fcd84d1f-ee3b-4636-9f61-78dc349f23e5";
+const normalToken = 'Bearer ' + genUUID();
+const moderatorToken = "Bearer " + genUUID();
+const adminToken = "Bearer " + genUUID();
+const businessId = genUUID();
+const businessAddressId = genUUID();
 
 describe('POST' + endpoints.report.CREATE_REPORT, () => {
-    beforeEach(async () => {
+    beforeAll(async () => {
         await wipeOutDatabase();
-        await insertBusinessData();
+        await createUser({...users[0]});
+        await createUser({...moderator[0]});
+        await createUser({...admin[0]});
+        await createSession({token: normalToken.split(' ')[1],userId: users[0].id});
+        await createSession({token: adminToken.split(' ')[1],userId: admin[0].id});
+        await createSession({token: moderatorToken.split(' ')[1],userId: moderator[0].id});
+        await setupBusiness(users[0].id, businessId, businessAddressId);
+    })
+
+    beforeEach(async () => {
+        await wipeOutReports();
     });
 
-    it('should create a new report', (done) => {
+    it('user should create a new report', (done) => {
         request(app)
             .post('/reports')
-            .set('authorization', token)
-            .send(newReport[0])
+            .set('authorization', normalToken)
+            .send({...newReport[0], businessId})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body);
+            })
+            .end(done);
+    });
+
+    it('moderator should create a new report', (done) => {
+        request(app)
+            .post('/reports')
+            .set('authorization', moderatorToken)
+            .send({...newReport[0], businessId})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body);
+            })
+            .end(done);
+    });
+
+    it('admin should create a new report', (done) => {
+        request(app)
+            .post('/reports')
+            .set('authorization', adminToken)
+            .send({...newReport[0], businessId})
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body);
@@ -34,8 +69,8 @@ describe('POST' + endpoints.report.CREATE_REPORT, () => {
     it('should not create a new report without authorization', (done) => {
         request(app)
             .post('/reports')
-            .set('authorization', 'a8bcd05e-4606-4a55-a5dd-002f8516493e')
-            .send(newReport[0])
+            .set('authorization', genUUID())
+            .send({...newReport[0], businessId})
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body['errors']);
@@ -46,8 +81,8 @@ describe('POST' + endpoints.report.CREATE_REPORT, () => {
     it('should not create a new report if businessId does not exist', (done) => {
         request(app)
             .post('/reports')
-            .set('authorization', token)
-            .send(newReport[1])
+            .set('authorization', normalToken)
+            .send({...newReport[1]})
             .expect(httpCodes.NOT_FOUND)
             .expect(res => {
                 expect(res.body['errors']);
@@ -58,8 +93,8 @@ describe('POST' + endpoints.report.CREATE_REPORT, () => {
     it('should not create a new report without title', (done) => {
         request(app)
             .post('/reports')
-            .set('authorization', token)
-            .send(newReport[2])
+            .set('authorization', normalToken)
+            .send({...newReport[2], businessId})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body['errors']);
@@ -70,8 +105,8 @@ describe('POST' + endpoints.report.CREATE_REPORT, () => {
     it('should not create a new report with a very long title', (done) => {
         request(app)
             .post('/reports')
-            .set('authorization', token)
-            .send(newReport[3])
+            .set('authorization', normalToken)
+            .send({...newReport[3], businessId})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body['errors']);
@@ -82,8 +117,8 @@ describe('POST' + endpoints.report.CREATE_REPORT, () => {
     it('should not create a new report without description', (done) => {
         request(app)
             .post('/reports')
-            .set('authorization', token)
-            .send(newReport[4])
+            .set('authorization', normalToken)
+            .send({...newReport[4], businessId})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body['errors']);
@@ -94,8 +129,8 @@ describe('POST' + endpoints.report.CREATE_REPORT, () => {
     it('should not create a new report with a very long description', (done) => {
         request(app)
             .post('/reports')
-            .set('authorization', token)
-            .send(newReport[5])
+            .set('authorization', normalToken)
+            .send({...newReport[5], businessId})
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body['errors']);
@@ -105,7 +140,7 @@ describe('POST' + endpoints.report.CREATE_REPORT, () => {
 });
 
 describe('POST' + endpoints.report.REVIEW_REPORT, () => {
-    beforeEach(async ()=>{
+    beforeAll(async () => {
         await wipeOutDatabase();
         await createUser({...moderator[0]});
         await createUser({...admin[0]});
@@ -113,8 +148,12 @@ describe('POST' + endpoints.report.REVIEW_REPORT, () => {
         await createSession({token: moderatorToken.split(" ")[1],userId: moderator[0].id});
         await createSession({token: adminToken.split(" ")[1],userId: admin[0].id});
         await createSession({token: normalToken.split(" ")[1],userId: users[0].id});
-        await insertBusinessData();
-        await createReport({...newReport[0], userId: users[0].id});
+        await setupBusiness(users[0].id, businessId, businessAddressId);
+    })
+
+    beforeEach(async ()=>{
+        await wipeOutReports();
+        await createReport({...newReport[0], userId: users[0].id, businessId});
     })
 
     const expectedRes = (userId: string, reportId: string, analysis: string)=>{
@@ -300,7 +339,7 @@ describe('GET ' + endpoints.report.GET_REPORTS, () => {
 
 describe('DELETE ' + endpoints.report.DELETE_REPORT, () => {
     const reportId = genUUID();
-    beforeEach(async ()=>{
+    beforeAll(async ()=>{
         await wipeOutDatabase();
         await createUser({...moderator[0]});
         await createUser({...admin[0]});
@@ -308,9 +347,13 @@ describe('DELETE ' + endpoints.report.DELETE_REPORT, () => {
         await createSession({token: moderatorToken.split(" ")[1],userId: moderator[0].id});
         await createSession({token: adminToken.split(" ")[1],userId: admin[0].id});
         await createSession({token: normalToken.split(" ")[1],userId: users[0].id});
-        await insertBusinessData();
-        await createReviewedReport({...newReport[0],userId: users[0].id});
-        await createReport({...newReport[0],userId: users[0].id, title: "test 2", description: "testing 2", id: reportId});
+        await setupBusiness(users[0].id, businessId, businessAddressId);
+    })
+
+    beforeEach(async ()=>{
+        await wipeOutReports();
+        await createReviewedReport({...newReport[0],userId: users[0].id, businessId});
+        await createReport({businessId,userId: users[0].id, title: "test 2", description: "testing 2", id: reportId});
     })
 
     it('moderator should delete pending report', done => {
