@@ -3,7 +3,7 @@ import cloudinaryStorage from "multer-storage-cloudinary";
 import multer from "multer";
 import { cloudinary } from "../../config/cloudinaryConfig";
 import { validate } from '../../middlewares/validate';
-import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules, addCategoryRules, deleteBusinessReviewRules } from './businessRules';
+import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules, addCategoryRules, deleteBusinessReviewRules, getNearbyBusinessesRules } from './businessRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness, addCategory, deleteCategory, deleteReviewBusiness } from './businessService';
 import { authenticate } from '../../middlewares/authenticate';
@@ -141,7 +141,7 @@ router.delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW, authenticate, del
 /**
  * Get Businesses
  */
-router.get(endpoints.GET_NEARBY_BUSINESSES, handleErrorAsync(async (req, res) => {
+router.get(endpoints.GET_NEARBY_BUSINESSES, getNearbyBusinessesRules, validate, handleErrorAsync(async (req, res) => {
     const {longitude, latitude, radius} = req.query;
     if(req.query?.categoryCode){
 
@@ -149,7 +149,7 @@ router.get(endpoints.GET_NEARBY_BUSINESSES, handleErrorAsync(async (req, res) =>
     else if(req.query?.query){
 
     }
-    
+
 }))
 
 export { router as businessRouter }
