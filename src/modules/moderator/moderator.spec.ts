@@ -8,8 +8,6 @@ import {errors} from "../../utils/constants/errors";
 import knex from "../../database/knex";
 import { genUUID } from "../../utils/utils";
 
-const userId = users[0].id;
-const token = "Bearer " + genUUID();
 const normalToken = "Bearer " + genUUID();
 const moderatorToken = "Bearer " + genUUID();
 const adminToken = "Bearer " + genUUID()
@@ -128,6 +126,17 @@ describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
     it('admin should remove the role moderator of user', done => {
         request(app)
             .delete(endpoints.moderator.REMOVE_MODERATOR.replace(':userEmail',users[0].email))
+            .set('authorization', adminToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body).toBe(true);
+            })
+            .end(done)
+    });
+
+    it('admin should remove the role moderator of user and delete him', done => {
+        request(app)
+            .delete(endpoints.moderator.REMOVE_MODERATOR.replace(':userEmail',users[0].email +"?ban=true"))
             .set('authorization', adminToken)
             .expect(httpCodes.OK)
             .expect(res => {
