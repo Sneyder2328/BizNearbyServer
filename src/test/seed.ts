@@ -1022,28 +1022,28 @@ export const newReport: {id: string, businessId: string, title: string|null, des
         id: genUUID(),
         businessId: 'a8bcd05e-4606-4a55-a5dd-002f8516493e',
         title: 'A report for example',
-        description: 'This report it is only for example'
+        description: 'This report is only for example'
     },
     {
         // BUSINESSID DOES NOT EXIST
         id: genUUID(),
         businessId: '588b98a4-f506-4ff8-84f7-cf41dab09f02',
         title: 'A report for example',
-        description: 'This report it is only for example'
+        description: 'This report is only for example'
     },
     {
         // NULL TITLE
         id: genUUID(),
         businessId: 'a8bcd05e-4606-4a55-a5dd-002f8516493e',
         title: null,
-        description: 'This report it is only for example'
+        description: 'This report is only for example'
     },
     {
         // VERY LONG TITLE
         id: genUUID(),
         businessId: 'a8bcd05e-4606-4a55-a5dd-002f8516493e',
-        title: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        description: 'This report it is only for example'
+        title: genText(260),
+        description: 'This report is only for example'
     },
     {
         // NULL DESCRIPTION

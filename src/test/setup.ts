@@ -28,6 +28,14 @@ export async function wipeOutUser(id:string){
     await User.query().delete().where({id});
 }
 
+export async function wipeOutBusiness(){
+    await Business.query().delete();
+}
+
+export async function wipeOutReports(){
+    await Report.query().delete();
+}
+
 export async function wipeOutBusinessReview(){
     await BusinessReview.query().delete();
 }
@@ -63,9 +71,9 @@ export async function createBusinessCategory({businessId, categoryCode}:{busines
     await BusinessCategory.query().insert({businessId, categoryCode});
 }
 
-export async function createBusinessHours(businessHours){
+export async function createBusinessHours(businessId: string, businessHours){
     const hours = businessHours.map(async ({day, openTime, closeTime}) => {
-        await BusinessHours.query().insert({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", day, openTime, closeTime});
+        await BusinessHours.query().insert({businessId, day, openTime, closeTime});
     });
 }
 
@@ -102,7 +110,7 @@ export async function insertBusinessData(){
     await createUserBusiness({userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e"});
     await createBusinessAddress({id: "eee15b20-917f-4d69-a055-e306d938d196", businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", address: "Calle 50 entre carreras 14 y 15", cityCode: 212, latitude: 10.059972, longitude: -69.340570});
     await createBusinessCategory({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", categoryCode: 1});
-    await createBusinessHours([{
+    await createBusinessHours("a8bcd05e-4606-4a55-a5dd-002f8516493e",[{
         day: 1,
         openTime: 600,
         closeTime: 1200
@@ -114,4 +122,24 @@ export async function insertBusinessData(){
     }]);
     await createBusinessPhoneNumber({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", phoneNumber: "04125568177"})
     await createBusinessImage({businessId: "a8bcd05e-4606-4a55-a5dd-002f8516493e", imageUrl: "UrlForExample"})
+}
+
+export async function setupBusiness(userId: string, businessId: string, businessAddressId: string){
+    await createBusiness({id: businessId, name: "Bodega Mi encanto", description: "My business is pretty chill and calm", bannerUrl: "AnURL"});
+    await createUserBusiness({userId, businessId});
+    await createBusinessAddress({id: businessAddressId, businessId, address: "Calle 50 entre carreras 14 y 15", cityCode: 212, latitude: 10.059972, longitude: -69.340570});
+    await createBusinessCategory({businessId, categoryCode: 1});
+    await createBusinessHours(businessId,[{
+        day: 1,
+        openTime: 600,
+        closeTime: 1200
+    },
+    {
+        day: 1,
+        openTime: 1300,
+        closeTime: 1830
+    }]);
+    await createBusinessPhoneNumber({businessId, phoneNumber: "04125568177"})
+    await createBusinessImage({businessId, imageUrl: "UrlForExample"})
+
 }
