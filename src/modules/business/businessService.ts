@@ -311,11 +311,22 @@ export const deleteReviewBusiness = async (businessId: string, userId: string, s
 
     const deleted = await BusinessReview.query().delete().where({businessId, userId});
     return deleted != 0;
-}
+};
 
 export const addCategory = async (category: string) => {
     const categoryExists = await Category.query().findOne("category", category);
     if(categoryExists) throw new AuthError(errors.CATEGORY, errors.message.CATEGORY_FOUND);
     const categoryInserted = await Category.query().insert({category});
     return {categoryInserted: _.pick(categoryInserted, ["category"])}
+};
+
+export const deleteCategory = async (code) => {
+    const category = await Category.query().findById(code);
+    if(!category) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.CATEGORY_NOT_FOUND);
+
+    const categoryDeleted = await Category.query().delete().where("code", code);
+
+    const isCategoryDeleted = categoryDeleted > 0;
+    
+    return isCategoryDeleted;
 }

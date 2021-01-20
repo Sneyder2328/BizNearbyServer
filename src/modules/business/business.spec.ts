@@ -1158,6 +1158,75 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
     })
 });
 
+describe('DELETE ' + endpoints.DELETE_CATEGORY, () => {
+    beforeAll(async ()=>{
+        await wipeOutDatabase();
+        await createUser({...users[0]});
+        await createUser({...moderator[0]});
+        await createUser({...admin[0]});
+        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
+        //await Category.query().delete();
+        await Category.query().insert({category: "Category test"});
+    });
+
+    it('admin should delete a category', done => {
+        request(app)
+            .delete(endpoints.DELETE_CATEGORY.replace(':code', '2'))
+            .set('authorization', adminToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.isCategoryDeleted).toBe(true);
+            })
+            .end(done);
+    });
+
+    it('moderator should not delete a category', done => {
+        request(app)
+            .delete(endpoints.DELETE_CATEGORY.replace(':code', '1'))
+            .set('authorization', moderatorToken)
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    });
+
+    it('user should not delete a category', done => {
+        request(app)
+            .delete(endpoints.DELETE_CATEGORY.replace(':code', '1'))
+            .set('authorization', normalToken)
+            .expect(httpCodes.FORBIDDEN)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    });
+
+    it('should not delete a category without authorization', done => {
+        request(app)
+        .delete(endpoints.DELETE_CATEGORY.replace(':code', '1'))
+        .expect(httpCodes.UNAUTHORIZED)
+        .expect(res => {
+            expect(res.body.error).toBe(errors.FORBIDDEN);
+        })
+        .end(done)
+    });
+
+    it('should not delete a category that does not exist', done => {
+        request(app)
+        .delete(endpoints.DELETE_CATEGORY.replace(':code', '56'))
+        .set('authorization', adminToken)
+        .expect(httpCodes.NOT_FOUND)
+        .expect(res => {
+            expect(res.body.error).toBe(errors.NOT_FOUND);
+        })
+        .end(done);
+    });
+
+
+});
 afterAll(()=>{
     knex.destroy();
     server.close();

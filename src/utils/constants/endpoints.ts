@@ -38,5 +38,6 @@ export const endpoints = {
     NEARBY_BUSINESS_GET: `/businesses/get`,
     GET_BUSINESS: '/businesses/:businessId',
     DELETE_USERS: `/users`,
-    ADD_CATEGORY: `/categories`
+    ADD_CATEGORY: `/categories`,
+    DELETE_CATEGORY: `/categories/:code`
 }

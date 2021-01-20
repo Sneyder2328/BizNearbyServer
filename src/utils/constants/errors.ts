@@ -29,6 +29,7 @@ export const errors = {
         INCORRECT_CREDENTIALS: "Incorrect credentials",
         USERNAME_TAKEN: "Username already exists",
         EMAIL_TAKEN: "Email already exists",
-        CATEGORY_FOUND: "Category already exists"
+        CATEGORY_FOUND: "Category already exists",
+        CATEGORY_NOT_FOUND: "Category not found"
     }
 };
