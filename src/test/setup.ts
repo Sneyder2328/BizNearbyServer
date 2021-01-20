@@ -23,6 +23,11 @@ export async function wipeOutDatabase(){
     await Report.query().delete();
     await BusinessReview.query().delete();
 }    
+
+export async function wipeOutBusinessReview(){
+    await BusinessReview.query().delete();
+}
+
 export async function createUser({id, fullname, email, password, typeLogin, typeUser}:{id: string; fullname: string; email: string; password: string|null; typeLogin: "email" | "facebook" | "google"; typeUser: "moderator" | "normal" | "admin";}){
     //delete user?.googleAuth;
     // delete user?.facebookAuth;

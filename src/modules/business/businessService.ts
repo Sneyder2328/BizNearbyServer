@@ -285,6 +285,30 @@ export const editReviewBusiness = async ({businessId, userId, rating, descriptio
     return {review: _.pick(businessReviewUpdated, ["businessId", "userId", "rating", "description", "createdAt"])};
 };
 
+export const deleteReviewBusiness = async (businessId: string, userId: string, sessionId: string) => {
+    await verifyBusiness(businessId);
+    const user = await User.query().findById(userId);
+    if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    const sessionUser = await User.query().findById(sessionId);
+    const businessReview = await BusinessReview.query().findOne({businessId, userId});
+    if(!businessReview) throw new AuthError(errors.NOT_FOUND, errors.message.BUSINESS_REVIEW_NOT_FOUND)
+    if(sessionId != userId){
+        switch(sessionUser.typeUser){
+            case 'admin':
+                if(user.typeUser == 'admin') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+                break;
+            case 'moderator':
+                if(user.typeUser != 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+                break;
+            default:
+                throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+        }
+    }
+
+    const deleted = await BusinessReview.query().delete().where({businessId, userId});
+    return deleted != 0;
+}
+
 export const addCategory = async (category: string) => {
     const categoryExists = await Category.query().findOne("category", category);
     if(categoryExists) throw new AuthError(errors.CATEGORY, errors.message.CATEGORY_FOUND);

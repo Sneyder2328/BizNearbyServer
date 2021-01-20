@@ -76,6 +76,10 @@ export const businessReviewValidationRules = [
     body('description').isString().isLength({min: 1, max: 200}).withMessage('Invalid description').exists()
 ]
 
+export const deleteBusinessReviewRules = [
+    body('businessId').trim().matches(config.regex.uuidV4).withMessage('Invalid businessId').exists(),
+]
+
 export const addCategoryRules = [
     body('category').isString().isLength({min: 1}).withMessage("Invalid Category")
 ]

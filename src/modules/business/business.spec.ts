@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app, server } from '../../index';
-import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusinessReview } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusinessReview, wipeOutBusinessReview } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { admin, businesses, genText, moderator, updateBusiness, users, businessReview } from '../../test/seed';
 import knex from "../../database/knex";
@@ -13,8 +13,11 @@ import { Category } from "../../database/models/Category";
 
 const token = "Bearer fcd84d1f-ee1b-4636-9f61-78dc349f23e5";
 const normalToken = "Bearer " + genUUID();
+const normalToken2 = "Bearer " + genUUID();
 const adminToken = "Bearer " + genUUID();
+const adminToken2 = "Bearer " + genUUID();
 const moderatorToken = "Bearer " + genUUID();
+const moderatorToken2 = "Bearer " + genUUID();
 const businessId = "a8bcd05e-4606-4a55-a5dd-002f8516493e"
 const userId = 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f';
 
@@ -909,6 +912,176 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
     });
 });
 
+describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
+    beforeAll(async ()=>{
+        await wipeOutDatabase();
+        await createUser({...users[0]});
+        await createUser({...users[1]});
+        await createUser({...moderator[0]});
+        await createUser({...moderator[1]});
+        await createUser({...admin[0]});
+        await createUser({...admin[1]});
+        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
+        await createSession({token: normalToken2.split(' ')[1], userId: users[1].id});
+        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
+        await createSession({token: moderatorToken2.split(' ')[1], userId: moderator[1].id});
+        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
+        await createSession({token: adminToken2.split(' ')[1], userId: admin[1].id});
+        await insertBusinessData();
+    })
+
+    beforeEach(async ()=>{
+        await wipeOutBusinessReview();
+        await createBusinessReview({businessId, userId: users[0].id, rating: 4, description: 'Description for example'});
+        await createBusinessReview({businessId, userId: moderator[0].id, rating: 4, description: 'Description for example'});
+        await createBusinessReview({businessId, userId: admin[0].id, rating: 4, description: 'Description for example'});
+    });
+
+    it('user should delete its own business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",users[0].id))
+            .set('authorization', normalToken)
+            .send({businessId})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('moderator should delete its own business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",moderator[0].id))
+            .set('authorization', moderatorToken)
+            .send({businessId})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+    
+    it('admin should delete its own business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",admin[0].id))
+            .set('authorization', adminToken)
+            .send({businessId})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('moderator should delete user business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",users[0].id))
+            .set('authorization', moderatorToken)
+            .send({businessId})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('admin should delete user business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",users[0].id))
+            .set('authorization', adminToken)
+            .send({businessId})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('admin should delete moderator business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",moderator[0].id))
+            .set('authorization', adminToken)
+            .send({businessId})
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.deleted).toBe(true);
+            })
+            .end(done)
+    })
+
+    it('user should not delete another user business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",users[0].id))
+            .set('authorization', normalToken2)
+            .send({businessId})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+
+    it('user should not delete moderator business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",moderator[0].id))
+            .set('authorization', normalToken2)
+            .send({businessId})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+    
+    it('user should not delete admin business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",admin[0].id))
+            .set('authorization', normalToken2)
+            .send({businessId})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+    
+    it('moderator should not delete another moderator business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",moderator[0].id))
+            .set('authorization', moderatorToken2)
+            .send({businessId})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+    
+    it('moderator should not delete admin business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",admin[0].id))
+            .set('authorization', moderatorToken2)
+            .send({businessId})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+    
+    it('admin should not delete another admin business review', done => {
+        request(app)
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",admin[0].id))
+            .set('authorization', adminToken2)
+            .send({businessId})
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
+    })
+});
+
 describe('POST ' + endpoints.ADD_CATEGORY, () => {
     beforeAll(async ()=>{
         await wipeOutDatabase();
@@ -1003,7 +1176,7 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
             })
             .end(done)
     })
-})
+});
 
 afterAll(()=>{
     knex.destroy();

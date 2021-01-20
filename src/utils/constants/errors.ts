@@ -21,6 +21,7 @@ export const errors = {
         BUSINESS_NOT_FOUND: "Business not found",
         SESSION_NOT_FOUND: "Session not found",
         REPORT_NOT_FOUND: "Report not found",
+        BUSINESS_REVIEW_NOT_FOUND: "Review not found",
         ACCESS_TOKEN_EXPIRED: "Access token expired",
         ACCESS_TOKEN_INVALID: "Access token not valid",
         DEFAULT_ERROR: "Something went wrong. Please try again.",
