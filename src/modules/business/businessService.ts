@@ -311,7 +311,7 @@ export const deleteReviewBusiness = async (businessId: string, userId: string, s
 
     const deleted = await BusinessReview.query().delete().where({businessId, userId});
     return deleted != 0;
-}
+};
 
 export const addCategory = async (category: string) => {
     const categoryExists = await Category.query().findOne("category", category);
@@ -319,4 +319,13 @@ export const addCategory = async (category: string) => {
 
     const categoryInserted = await Category.query().insert({category});
     return {categoryInserted: _.pick(categoryInserted, ["category"])}
+};
+
+export const deleteCategory = async (code: number) => {
+    const category = await Category.query().findById(code);
+    if(!category) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.CATEGORY_NOT_FOUND);
+
+    const categoryDeleted = await Category.query().delete().where("code", code);
+
+    return categoryDeleted > 0;
 }

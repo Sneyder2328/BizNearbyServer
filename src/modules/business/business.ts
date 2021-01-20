@@ -5,7 +5,7 @@ import { cloudinary } from "../../config/cloudinaryConfig";
 import { validate } from '../../middlewares/validate';
 import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules, addCategoryRules, deleteBusinessReviewRules } from './businessRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness, addCategory, deleteReviewBusiness } from './businessService';
+import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness, addCategory, deleteCategory, deleteReviewBusiness } from './businessService';
 import { authenticate } from '../../middlewares/authenticate';
 import { endpoints } from '../../utils/constants/endpoints';
 import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
@@ -98,7 +98,15 @@ router.post(endpoints.ADD_CATEGORY, authenticate, verifyUserType('admin'), addCa
     const { category } = req.body;
     const {categoryInserted} = await addCategory(category);
     res.json({...categoryInserted});
-}))
+}));
+
+/**
+ * Delete Category
+ */
+router.delete(endpoints.DELETE_CATEGORY, authenticate, verifyUserType('admin'), validate, handleErrorAsync(async (req,res) => {
+    const isCategoryDeleted = await deleteCategory(req.body);
+    res.json(isCategoryDeleted);
+}));
 
 /**
  * Create Business Review
