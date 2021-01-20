@@ -7,18 +7,16 @@ import { UserNotFoundError } from '../../utils/errors/UserNotFoundError';
 import { User } from '../../database/models/User';
 import { raw } from 'objection';
 
-export const changeModerator =async (id: string, typeUser: 'normal'|'moderator') => {
+export const changeModerator = async (id: string, typeUser: 'normal' | 'moderator') => {
     const user = await User.query().findById(id).andWhere(raw('deletedAt is null'));
-    if(!user) throw new AuthError(errors.NOT_FOUND, errors.USER_NOT_FOUND_ERROR);
-    if(user.typeUser == 'admin') throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+    if (!user) throw new AuthError(errors.NOT_FOUND, errors.USER_NOT_FOUND_ERROR);
+    if (user.typeUser == 'admin') throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
 
-    const updatedRows = await User.query().update({typeUser}).where('id', id);
+    const updatedRows = await User.query().update({ typeUser }).where('id', id);
     return updatedRows != 0;
 }
 
 export const allModerators = async () => {
-
     const moderators = await User.query().select().where('typeUser', 'moderator').andWhere(raw('deletedAt IS NULL'));
-
-    return _.pick(moderators, ['id', 'fullname', 'email', 'thumbnailUrl, typeUser']);
+    return moderators.map((moderator) => _.pick(moderator, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser']));
 };
