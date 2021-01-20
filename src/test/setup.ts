@@ -24,6 +24,10 @@ export async function wipeOutDatabase(){
     await BusinessReview.query().delete();
 }    
 
+export async function wipeOutUser(id:string){
+    await User.query().delete().where({id});
+}
+
 export async function wipeOutBusinessReview(){
     await BusinessReview.query().delete();
 }
@@ -33,6 +37,10 @@ export async function createUser({id, fullname, email, password, typeLogin, type
     // delete user?.facebookAuth;
     
     await User.query().insert({id, fullname, email, password, typeLogin, typeUser});
+}
+
+export async function modifyUserType(id: string, typeUser: "normal"|"admin"|"moderator"){
+    await User.query().update({typeUser}).where({id});
 }
 
 export async function createBusiness({id, name, description, bannerUrl}:{id: string; name: string; description: string; bannerUrl: string;}){
