@@ -39,5 +39,5 @@ export const endpoints = {
     GET_BUSINESS: '/businesses/:businessId',
     DELETE_USERS: `/users`,
     ADD_CATEGORY: `/categories`,
-    DELETE_CATEGORY: `/categories`
+    DELETE_CATEGORY: `/categories/:code`
 }

@@ -321,11 +321,13 @@ export const addCategory = async (category: string) => {
     return {categoryInserted: _.pick(categoryInserted, ["category"])}
 };
 
-export const deleteCategory = async (code: number) => {
+export const deleteCategory = async (code) => {
     const category = await Category.query().findById(code);
     if(!category) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.CATEGORY_NOT_FOUND);
 
     const categoryDeleted = await Category.query().delete().where("code", code);
 
-    return categoryDeleted > 0;
+    const isCategoryDeleted = categoryDeleted > 0;
+    
+    return isCategoryDeleted;
 }

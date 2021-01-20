@@ -104,8 +104,8 @@ router.post(endpoints.ADD_CATEGORY, authenticate, verifyUserType('admin'), addCa
  * Delete Category
  */
 router.delete(endpoints.DELETE_CATEGORY, authenticate, verifyUserType('admin'), validate, handleErrorAsync(async (req,res) => {
-    const isCategoryDeleted = await deleteCategory(req.body);
-    res.json(isCategoryDeleted);
+    const isCategoryDeleted = await deleteCategory(req.params.code);
+    res.json({isCategoryDeleted});
 }));
 
 /**
