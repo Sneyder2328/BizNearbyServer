@@ -17,8 +17,6 @@ export const changeModerator =async (email: string, typeUser: 'normal'|'moderato
 }
 
 export const allModerators = async () => {
-
     const moderators = await User.query().select().where('typeUser', 'moderator').andWhere(raw('deletedAt IS NULL'));
-
-    return _.pick(moderators, ['id', 'fullname', 'email', 'thumbnailUrl, typeUser']);
+    return moderators.map((moderator) => _.pick(moderator, ['id', 'fullname', 'email', 'thumbnailUrl', 'typeUser']));
 };
