@@ -138,4 +138,18 @@ router.delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW, authenticate, del
     res.json({deleted});
 }));
 
+/**
+ * Get Businesses
+ */
+router.get(endpoints.GET_NEARBY_BUSINESSES, handleErrorAsync(async (req, res) => {
+    const {longitude, latitude, radius} = req.query;
+    if(req.query?.categoryCode){
+
+    }
+    else if(req.query?.query){
+
+    }
+    
+}))
+
 export { router as businessRouter }

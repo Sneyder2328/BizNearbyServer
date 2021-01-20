@@ -35,7 +35,7 @@ export const endpoints = {
         DELETE_BUSINESS_REVIEW: `/businessReview/:userId`
     },
     LOCATION_AUTOCOMPLETE: `/locations/`,
-    NEARBY_BUSINESS_GET: `/businesses/get`,
+    GET_NEARBY_BUSINESSES: `/businesses`,
     GET_BUSINESS: '/businesses/:businessId',
     DELETE_USERS: `/users`,
     ADD_CATEGORY: `/categories`,
