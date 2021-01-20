@@ -19,7 +19,7 @@ router.post(endpoints.moderator.CREATE_MODERATOR, authenticate, verifyUserType('
  * Remove moderator role of an user
  */
 router.delete(endpoints.moderator.REMOVE_MODERATOR, authenticate, verifyUserType('admin'), handleErrorAsync(async (req, res) => {
-    const updated = await changeModerator(req.params.moderatorId, 'normal');
+    const updated = await changeModerator(req.params.userEmail, 'normal');
     res.json({ updated });
 }))
 
