@@ -36,7 +36,8 @@ describe('POST ' + endpoints.moderator.CREATE_MODERATOR, () => {
             .set('authorization', adminToken)
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body.updated).toBe(true);
+                console.log(res.body);
+                expect(res.body).toBe(true);
             })
             .end(done)
     })
@@ -130,7 +131,7 @@ describe('DELETE ' + endpoints.moderator.REMOVE_MODERATOR, () => {
             .set('authorization', adminToken)
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body.updated).toBe(true);
+                expect(res.body).toBe(true);
             })
             .end(done)
     });

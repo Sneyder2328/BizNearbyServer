@@ -20,7 +20,7 @@ router.post(endpoints.moderator.CREATE_MODERATOR, authenticate, verifyUserType('
  */
 router.delete(endpoints.moderator.REMOVE_MODERATOR, authenticate, verifyUserType('admin'), handleErrorAsync(async (req, res) => {
     const updated = await changeModerator(req.params.userEmail, 'normal');
-    res.json({ updated });
+    res.json(updated);
 }))
 
 /**
