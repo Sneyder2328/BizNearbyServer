@@ -31,7 +31,8 @@ export const endpoints = {
     },
     businessReview: {
         CREATE_BUSINESS_REVIEW: `/businessReview/`,
-        UPDATE_BUSINESS_REVIEW: `/businessReview/`
+        UPDATE_BUSINESS_REVIEW: `/businessReview/`,
+        DELETE_BUSINESS_REVIEW: `/businessReview/:userId`
     },
     LOCATION_AUTOCOMPLETE: `/locations/`,
     NEARBY_BUSINESS_GET: `/businesses/get`,

@@ -3,9 +3,9 @@ import cloudinaryStorage from "multer-storage-cloudinary";
 import multer from "multer";
 import { cloudinary } from "../../config/cloudinaryConfig";
 import { validate } from '../../middlewares/validate';
-import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules, addCategoryRules } from './businessRules';
+import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules, addCategoryRules, deleteBusinessReviewRules } from './businessRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness, addCategory } from './businessService';
+import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness, addCategory, deleteReviewBusiness } from './businessService';
 import { authenticate } from '../../middlewares/authenticate';
 import { endpoints } from '../../utils/constants/endpoints';
 import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
@@ -117,6 +117,17 @@ router.put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW, authenticate, busine
     const businessReview = req.body;
     const { review } = await editReviewBusiness({...businessReview, userId: req.userId});
     res.json({...review});
+}));
+
+/**
+ * Delete Business Review
+ */
+router.delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW, authenticate, deleteBusinessReviewRules, validate, handleErrorAsync(async (req, res) => {
+    const {businessId} = req.body;
+    const sessionId = req.userId;
+    const userId = req.params.userId;
+    const deleted = await deleteReviewBusiness(businessId, userId, sessionId);
+    res.json({deleted});
 }));
 
 export { router as businessRouter }
