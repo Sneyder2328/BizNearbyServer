@@ -12,7 +12,7 @@ const router = Router();
  */
 router.post(endpoints.moderator.CREATE_MODERATOR, authenticate, verifyUserType('admin'), handleErrorAsync(async (req, res) => {
     const updated = await changeModerator(req.params.moderatorId, 'moderator');
-    res.json({ updated })
+    res.json(updated)
 }))
 
 /**
