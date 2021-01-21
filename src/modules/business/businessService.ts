@@ -267,8 +267,8 @@ export const getBusinessesBySearch = async (latitude: string, longitude: string,
                                 .where(raw('(b.name LIKE "%'+ pattern +'%" '
                                           +'OR c.category LIKE "%'+ pattern +'%" '
                                           +'OR p.name LIKE "%'+ pattern +'%") '))
-                                .andWhere(raw('Distance('+ latitude +', '+ longitude +', ba.latitude, ba.longitude) <= '+ radius))
-                                .orderByRaw('Distance('+ latitude +', '+ longitude +', ba.latitude, ba.longitude) asc');
+                                .andWhere(raw('BusinessDistance('+ latitude +', '+ longitude +', ba.latitude, ba.longitude) <= '+ radius))
+                                .orderByRaw('BusinessDistance('+ latitude +', '+ longitude +', ba.latitude, ba.longitude) asc');
 
     const nearbyBusinesses = search.map(business => {
         return {
@@ -365,26 +365,29 @@ export const deleteCategory = async (code) => {
 export const getBusinessByCategory = async (category: string, latitude: number, longitude: number, radius: number) => {
 
     const businesses = await Business.query()
-                                        .select(raw("Business.id, Business.name, Business.description, Business.bannerUrl, BusinessAddress.id, BusinessAddress.address, BusinessAddress.latitude, BusinessAddress.longitude, BusinessAddress.cityCode"))
+                                        .select(raw("Business.id, Business.name, Business.description, Business.bannerUrl, BusinessAddress.id as addressId, BusinessAddress.address, BusinessAddress.latitude, BusinessAddress.longitude, BusinessAddress.cityCode"))
                                         .join(raw("BusinessAddress ON Business.id = BusinessAddress.businessId"))
                                         .join(raw("BusinessCategory ON Business.id = BusinessCategory.businessId"))
                                         .join(raw("Category ON BusinessCategory.categoryCode = Category.code"))
-                                        .where(raw('Business.name LIKE "%' + category + '%" '))
-                                        .andWhere(raw('Distance('+ latitude + ', '+ longitude + ', BusinessAddress.latitude, BusinessAddress.longitude) <= '+ radius));
-    
+                                        .where(raw('Category.category LIKE "%' + category + '%" '))
+                                        .andWhere(raw('BusinessDistance('+ latitude + ', '+ longitude + ', BusinessAddress.latitude, BusinessAddress.longitude) <= '+ radius))
+                                        .orderByRaw('BusinessDistance('+ latitude +', '+ longitude +', BusinessAddress.latitude, BusinessAddress.longitude) ASC');
+    console.log(businesses);
     const searchResult = businesses.map(business => {
         return {
-            id: business['Business.id'],
-            name: business['Business.name'],
-            description: business['Business.description'],
-            bannerUrl: business['Business.bannerUrl'],
+            id: business.id,
+            name: business.name,
+            description: business.description,
+            bannerUrl: business.bannerUrl,
             address: {
-                id: business['BusinessAddress.id'],
-                address: business['BusinessAddress.address'],
-                latitude: business['BusinessAddress.latitude'],
-                longitude: business['BusinessAddress.longitude'],
-                cityCode: business['BusinessAddress.cityCode']
+                id: business['addressId'],
+                address: business['address'],
+                latitude: business['latitude'],
+                longitude: business['longitude'],
+                cityCode: business['cityCode']
             }
         }
-    });                                   
+    });
+    
+    return searchResult;
 };
