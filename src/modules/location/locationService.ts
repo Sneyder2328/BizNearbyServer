@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _ from 'lodash';
 import { AuthError } from '../../utils/errors/AuthError';
 import { User } from '../../database/models/User';
 import { City } from '../../database/models/City';

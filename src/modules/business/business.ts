@@ -144,7 +144,7 @@ router.delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW, authenticate, del
 router.get(endpoints.GET_NEARBY_BUSINESSES, getNearbyBusinessesRules, validate, handleErrorAsync(async (req, res) => {
     const {latitude, longitude, radius} = req.query;
     if(req.query?.categoryCode){
-        const businessByCategory = await getBusinessByCategory(req.query['query'], latitude, longitude, radius);
+        const businessByCategory = await getBusinessByCategory(req.query.categoryCode, latitude, longitude, radius);
     }
     else if(req.query?.query){
 
