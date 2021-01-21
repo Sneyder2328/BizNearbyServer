@@ -14,6 +14,7 @@ import { Category } from '../../database/models/Category';
 import { raw } from 'objection';
 import { BusinessReview } from '../../database/models/BusinessReview';
 import { AuthError } from '../../utils/errors/AuthError';
+import { Product } from '../../database/models/Product';
 
 /**
  * Verify if the user exist in the database
@@ -34,7 +35,7 @@ export const addNewBusiness = async ({ userId, businessId, name, description, ad
 
     await UserBusiness.query().insert({ userId, businessId });
 
-    const {id, cityCode, latitude, longitude} = address
+    const { id, cityCode, latitude, longitude } = address
     const businessAddress = await BusinessAddress.query().insert({ id, businessId, address: address.address, cityCode, latitude, longitude });
 
     const businessCategories = categories.map(async (categoryCode) => {
@@ -61,9 +62,9 @@ export const addNewBusiness = async ({ userId, businessId, name, description, ad
     }
 
     let imagesAdded;
-    if(images){
+    if (images) {
         const businessImage = images.map(async (image) => {
-            const img = await BusinessImage.query().insert({businessId, imageUrl: image});
+            const img = await BusinessImage.query().insert({ businessId, imageUrl: image });
             return img.imageUrl
         });
         imagesAdded = await Promise.all(businessImage);
@@ -116,14 +117,14 @@ const verifyBusinessAddress = async (addressId: string, businessId: string) => {
 
 export const updateBusiness = async ({ userId, businessId, emailNewUser, name, description, bannerUrl, address, hours, phoneNumbers, categories, images }) => {
 
-    
+
     await verifyUser(userId);
 
     await verifyBusiness(businessId);
 
     await verifyUserHasAccessToBusiness(userId, businessId);
 
-    const {id: addressId, cityCode, latitude, longitude} = address;
+    const { id: addressId, cityCode, latitude, longitude } = address;
 
     await verifyBusinessAddress(addressId, businessId);
     const businessUpdated = await Business.query().patchAndFetchById(businessId, {
@@ -181,9 +182,9 @@ export const updateBusiness = async ({ userId, businessId, emailNewUser, name, d
 
     await BusinessImage.query().delete().where('businessId', businessId);
     let businessImagesAdded;
-    if(images) {
+    if (images) {
         const businessImages = images.map(async (image) => {
-            const img = await BusinessImage.query().insert({ businessId, imageUrl: image});
+            const img = await BusinessImage.query().insert({ businessId, imageUrl: image });
             return img.imageUrl;
         });
         businessImagesAdded = await Promise.all(businessImages);
@@ -216,20 +217,20 @@ export const deleteBusiness = async (userId, businessId) => {
 export const businessesByUser = async (userId, reqUserId) => {
     await verifyUser(userId);
     const reqUserType = await User.query().findById(reqUserId);
-    if(userId === reqUserId || reqUserType.typeUser === 'admin' || reqUserType.typeUser === 'moderator'){
+    if (userId === reqUserId || reqUserType.typeUser === 'admin' || reqUserType.typeUser === 'moderator') {
         const businesses = await UserBusiness.query().where('userId', userId);
         const result = await Promise.all(businesses.map(async ({ businessId }) => {
             return {
                 ..._.pick((await Business.query().where({ id: businessId }))?.[0], ['id', 'name', 'description', 'bannerUrl']),
                 address: (await BusinessAddress.query().where({ businessId: businessId }))?.[0],
-                hours: await BusinessHours.query().where({ businessId: businessId}),
+                hours: await BusinessHours.query().where({ businessId: businessId }),
                 categories: await BusinessCategory.query().where({ businessId: businessId }),
                 phoneNumbers: await BusinessPhoneNumber.query().where({ businessId: businessId }),
                 images: await BusinessImage.query().where({ businessId: businessId })
             };
         }));
         return result;
-    } else{
+    } else {
         throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
     }
 };
@@ -238,37 +239,39 @@ export const businessById = async (businessId) => {
     await verifyBusiness(businessId);
 
     const business = await Business.query().findById(businessId);
-    const businessAddress = (await BusinessAddress.query().where({ businessId: businessId}))[0];
+    const businessAddress = (await BusinessAddress.query().where({ businessId: businessId }))[0];
 
     const businessArrays = await Promise.all(
-        [await BusinessHours.query().where({businessId: businessId}), 
-        await BusinessCategory.query().where({businessId: businessId}),
-        await BusinessPhoneNumber.query().where({businessId: businessId}),
-        await BusinessImage.query().where({ businessId: businessId})
-    ]);
+        [await BusinessHours.query().where({ businessId: businessId }),
+        await BusinessCategory.query().where({ businessId: businessId }),
+        await BusinessPhoneNumber.query().where({ businessId: businessId }),
+        await BusinessImage.query().where({ businessId: businessId })
+        ]);
 
-    const result = {..._.pick(business, ['id', 'name', 'description', 'bannerUrl']),
-                    address: businessAddress,
-                    hours: businessArrays[0],
-                    categories: businessArrays[1],
-                    phoneNumbers: businessArrays[2],
-                    images: businessArrays[3]};
+    const result = {
+        ..._.pick(business, ['id', 'name', 'description', 'bannerUrl']),
+        address: businessAddress,
+        hours: businessArrays[0],
+        categories: businessArrays[1],
+        phoneNumbers: businessArrays[2],
+        images: businessArrays[3]
+    };
 
     return result;
 };
 
 export const getBusinessesBySearch = async (latitude: string, longitude: string, radius: string, pattern: string) => {
-    const search =  await Business.query().alias('b')
-                                .select(raw("DISTINCT b.id, b.name, b.description, b.bannerUrl, ba.latitude, ba.longitude, ba.cityCode, ba.id as addressId, ba.address, ba.cityCode"))
-                                .join(raw('BusinessAddress AS ba ON b.id = ba.businessId'))
-                                .join(raw('BusinessCategory AS bizcat ON b.id = bizcat.businessId'))
-                                .join(raw('Category AS c ON bizcat.categoryCode = c.code'))
-                                .join(raw('Product AS p ON c.code = p.categoryCode'))
-                                .where(raw('(b.name LIKE "%'+ pattern +'%" '
-                                          +'OR c.category LIKE "%'+ pattern +'%" '
-                                          +'OR p.name LIKE "%'+ pattern +'%") '))
-                                .andWhere(raw('BusinessDistance('+ latitude +', '+ longitude +', ba.latitude, ba.longitude) <= '+ radius))
-                                .orderByRaw('BusinessDistance('+ latitude +', '+ longitude +', ba.latitude, ba.longitude) asc');
+    const search = await Business.query().alias('b')
+        .select(raw("DISTINCT b.id, b.name, b.description, b.bannerUrl, ba.latitude, ba.longitude, ba.cityCode, ba.id as addressId, ba.address, ba.cityCode"))
+        .join(raw('BusinessAddress AS ba ON b.id = ba.businessId'))
+        .join(raw('BusinessCategory AS bizcat ON b.id = bizcat.businessId'))
+        .join(raw('Category AS c ON bizcat.categoryCode = c.code'))
+        .join(raw('Product AS p ON c.code = p.categoryCode'))
+        .where(raw('(b.name LIKE "%' + pattern + '%" '
+            + 'OR c.category LIKE "%' + pattern + '%" '
+            + 'OR p.name LIKE "%' + pattern + '%") '))
+        .andWhere(raw('BusinessDistance(' + latitude + ', ' + longitude + ', ba.latitude, ba.longitude) <= ' + radius))
+        .orderByRaw('BusinessDistance(' + latitude + ', ' + longitude + ', ba.latitude, ba.longitude) asc');
 
     const nearbyBusinesses = search.map(business => {
         return {
@@ -295,83 +298,82 @@ export const allCategories = async () => {
     return categories;
 };
 
-export const reviewBusiness = async ({businessId, userId, rating, description}:{businessId: string, userId: string, rating: number, description: string}) => {
+export const reviewBusiness = async ({ businessId, userId, rating, description }: { businessId: string, userId: string, rating: number, description: string }) => {
     // const business = await Business.query().findById(businessId);
     // if(!business) throw new AuthError(errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
 
     await verifyBusiness(businessId);
 
-    await BusinessReview.query().insert({businessId, userId, rating, description});
+    await BusinessReview.query().insert({ businessId, userId, rating, description });
     const businessReview = await BusinessReview.query().findOne(raw('businessId = "' + businessId + '" and userId = "' + userId + '"'));
 
-    return {review: _.pick(businessReview, ["businessId","userId","rating","description","createdAt"])}
+    return { review: _.pick(businessReview, ["businessId", "userId", "rating", "description", "createdAt"]) }
 }
 
-export const editReviewBusiness = async ({businessId, userId, rating, description}:{businessId: string, userId: string, rating: number, description: string}) => {
+export const editReviewBusiness = async ({ businessId, userId, rating, description }: { businessId: string, userId: string, rating: number, description: string }) => {
     await verifyBusiness(businessId);
 
     /*if(businessReview.userId !== reqUserId){
         throw new AppError(httpCodes.UNAUTHORIZED, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
     }*/
 
-    await BusinessReview.query().patch({description, rating}).findOne({businessId, userId});
-    const businessReviewUpdated = await BusinessReview.query().findOne({businessId, userId});
+    await BusinessReview.query().patch({ description, rating }).findOne({ businessId, userId });
+    const businessReviewUpdated = await BusinessReview.query().findOne({ businessId, userId });
 
-    return {review: _.pick(businessReviewUpdated, ["businessId", "userId", "rating", "description", "createdAt"])};
+    return { review: _.pick(businessReviewUpdated, ["businessId", "userId", "rating", "description", "createdAt"]) };
 };
 
 export const deleteReviewBusiness = async (businessId: string, userId: string, sessionId: string) => {
     await verifyBusiness(businessId);
     const user = await User.query().findById(userId);
-    if(!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    if (!user) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
     const sessionUser = await User.query().findById(sessionId);
-    const businessReview = await BusinessReview.query().findOne({businessId, userId});
-    if(!businessReview) throw new AuthError(errors.NOT_FOUND, errors.message.BUSINESS_REVIEW_NOT_FOUND)
-    if(sessionId != userId){
-        switch(sessionUser.typeUser){
+    const businessReview = await BusinessReview.query().findOne({ businessId, userId });
+    if (!businessReview) throw new AuthError(errors.NOT_FOUND, errors.message.BUSINESS_REVIEW_NOT_FOUND)
+    if (sessionId != userId) {
+        switch (sessionUser.typeUser) {
             case 'admin':
-                if(user.typeUser == 'admin') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+                if (user.typeUser == 'admin') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
                 break;
             case 'moderator':
-                if(user.typeUser != 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+                if (user.typeUser != 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
                 break;
             default:
                 throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
         }
     }
 
-    const deleted = await BusinessReview.query().delete().where({businessId, userId});
+    const deleted = await BusinessReview.query().delete().where({ businessId, userId });
     return deleted != 0;
 };
 
 export const addCategory = async (category: string) => {
     const categoryExists = await Category.query().findOne("category", category);
-    if(categoryExists) throw new AppError(httpCodes.CONFLICT, errors.CATEGORY, errors.message.CATEGORY_FOUND);
-    const categoryInserted = await Category.query().insert({category});
-    return {categoryInserted: _.pick(categoryInserted, ["category"])}
+    if (categoryExists) throw new AppError(httpCodes.CONFLICT, errors.CATEGORY, errors.message.CATEGORY_FOUND);
+    const categoryInserted = await Category.query().insert({ category });
+    return { categoryInserted: _.pick(categoryInserted, ["category"]) }
 };
 
 export const deleteCategory = async (code) => {
     const category = await Category.query().findById(code);
-    if(!category) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.CATEGORY_NOT_FOUND);
+    if (!category) throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.CATEGORY_NOT_FOUND);
 
     const categoryDeleted = await Category.query().delete().where("code", code);
-
     const isCategoryDeleted = categoryDeleted > 0;
-    
+
     return isCategoryDeleted;
 };
 
 export const getBusinessByCategory = async (category: string, latitude: number, longitude: number, radius: number) => {
 
     const businesses = await Business.query()
-                                        .select(raw("Business.id, Business.name, Business.description, Business.bannerUrl, BusinessAddress.id as addressId, BusinessAddress.address, BusinessAddress.latitude, BusinessAddress.longitude, BusinessAddress.cityCode"))
-                                        .join(raw("BusinessAddress ON Business.id = BusinessAddress.businessId"))
-                                        .join(raw("BusinessCategory ON Business.id = BusinessCategory.businessId"))
-                                        .join(raw("Category ON BusinessCategory.categoryCode = Category.code"))
-                                        .where(raw('Category.category LIKE "%' + category + '%" '))
-                                        .andWhere(raw('BusinessDistance('+ latitude + ', '+ longitude + ', BusinessAddress.latitude, BusinessAddress.longitude) <= '+ radius))
-                                        .orderByRaw('BusinessDistance('+ latitude +', '+ longitude +', BusinessAddress.latitude, BusinessAddress.longitude) ASC');
+        .select(raw("Business.id, Business.name, Business.description, Business.bannerUrl, BusinessAddress.id as addressId, BusinessAddress.address, BusinessAddress.latitude, BusinessAddress.longitude, BusinessAddress.cityCode"))
+        .join(raw("BusinessAddress ON Business.id = BusinessAddress.businessId"))
+        .join(raw("BusinessCategory ON Business.id = BusinessCategory.businessId"))
+        .join(raw("Category ON BusinessCategory.categoryCode = Category.code"))
+        .where(raw('Category.category LIKE "%' + category + '%" '))
+        .andWhere(raw('BusinessDistance(' + latitude + ', ' + longitude + ', BusinessAddress.latitude, BusinessAddress.longitude) <= ' + radius))
+        .orderByRaw('BusinessDistance(' + latitude + ', ' + longitude + ', BusinessAddress.latitude, BusinessAddress.longitude) ASC');
 
     const searchResult = businesses.map(business => {
         return {
@@ -388,6 +390,6 @@ export const getBusinessByCategory = async (category: string, latitude: number, 
             }
         }
     });
-    
+
     return searchResult;
 };

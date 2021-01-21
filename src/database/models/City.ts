@@ -1,12 +1,12 @@
-import {Model, ModelObject} from 'objection';
+import { Model, ModelObject } from 'objection';
 
 export class City extends Model {
     code!: number;
     stateCode!: number;
     name!: string;
 
-    static tableName= "City";
-    static idColumn="code";
+    static tableName = "City";
+    static idColumn = "code";
 }
 
-export type SessionObject = ModelObject<City>
+export type CityObject = ModelObject<City>

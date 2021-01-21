@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app, server } from '../../index';
-import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusinessReview, wipeOutBusinessReview, createNearbyBusiness, setupBusiness } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusinessReview, wipeOutBusinessReview, createNearbyBusiness, setupBusiness, setupFixedTable } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { admin, businesses, genText, moderator, updateBusiness, users, businessReview } from '../../test/seed';
 import knex from "../../database/knex";
@@ -21,9 +21,9 @@ const moderatorToken2 = "Bearer " + genUUID();
 const businessId = "a8bcd05e-4606-4a55-a5dd-002f8516493e"
 const userId = 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f';
 
-/*
+
 describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
-    const business = nro =>  {
+    const business = nro => {
         return {
             id: businesses[nro].businessId,
             name: businesses[nro].name,
@@ -46,13 +46,14 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             }),
             phoneNumbers: businesses[nro].phoneNumbers,
             categories: businesses[nro].categories,
-            images : businesses[nro].images
+            images: businesses[nro].images
         }
     };
     beforeAll(async () => {
         await wipeOutDatabase();
-        await createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
-        await createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
+        await setupFixedTable();
+        await createUser({ id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal' });
+        await createSession({ token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f' });
     });
 
     it('should create new business', (done) => {
@@ -62,7 +63,7 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             .send(businesses[0])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(0)});
+                expect(res.body).toEqual({ ...business(0) });
             })
             .end(done);
     });
@@ -74,7 +75,7 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             .send(businesses[1])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(1)});
+                expect(res.body).toEqual({ ...business(1) });
             })
             .end(done);
     });
@@ -86,7 +87,7 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             .send(businesses[2])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(2)});
+                expect(res.body).toEqual({ ...business(2) });
             })
             .end(done);
     });
@@ -98,7 +99,7 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
             .send(businesses[12])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(12)});
+                expect(res.body).toEqual({ ...business(12) });
             })
             .end(done);
     });
@@ -212,7 +213,7 @@ describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
 });
 
 describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
-    const business = (nro, businessId) =>  {
+    const business = (nro, businessId) => {
         return {
             id: businessId,
             name: updateBusiness[nro].name,
@@ -235,11 +236,12 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             }),
             phoneNumbers: updateBusiness[nro].phoneNumbers,
             categories: updateBusiness[nro].categories,
-            images : updateBusiness[nro].images
+            images: updateBusiness[nro].images
         }
     };
     beforeAll(async () => {
         await wipeOutDatabase();
+        await setupFixedTable();
         await insertBusinessData();
     });
 
@@ -250,7 +252,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[0])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(0, businessId)})
+                expect(res.body).toEqual({ ...business(0, businessId) })
             })
             .end(done);
     });
@@ -262,7 +264,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[1])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(1, businessId)})
+                expect(res.body).toEqual({ ...business(1, businessId) })
             })
             .end(done);
     });
@@ -274,7 +276,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[2])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(2, businessId)})
+                expect(res.body).toEqual({ ...business(2, businessId) })
             })
             .end(done);
     });
@@ -286,7 +288,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[3])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(3, businessId)})
+                expect(res.body).toEqual({ ...business(3, businessId) })
             })
             .end(done);
     });
@@ -298,7 +300,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[4])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(4, businessId)})
+                expect(res.body).toEqual({ ...business(4, businessId) })
             })
             .end(done);
     });
@@ -310,7 +312,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[5])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(5, businessId)})
+                expect(res.body).toEqual({ ...business(5, businessId) })
             })
             .end(done);
     });
@@ -322,7 +324,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[6])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(6, businessId)})
+                expect(res.body).toEqual({ ...business(6, businessId) })
             })
             .end(done);
     });
@@ -334,7 +336,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[7])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(7, businessId)})
+                expect(res.body).toEqual({ ...business(7, businessId) })
             })
             .end(done);
     });
@@ -346,7 +348,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[8])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(8, businessId)})
+                expect(res.body).toEqual({ ...business(8, businessId) })
             })
             .end(done);
     });
@@ -358,7 +360,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             .send(updateBusiness[9])
             .expect(httpCodes.OK)
             .expect(res => {
-                expect(res.body).toEqual({...business(9, businessId)})
+                expect(res.body).toEqual({ ...business(9, businessId) })
             })
             .end(done);
     });
@@ -386,7 +388,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
             })
             .end(done);
     });
-    
+
     it('should not update with an addressId that does not exist', (done) => {
         request(app)
             .put(endpoints.users.owner.BUSINESS_UPDATE.replace(':businessId', businessId))
@@ -463,6 +465,7 @@ describe('PUT' + endpoints.users.owner.BUSINESS_UPDATE, () => {
 describe('DELETE' + endpoints.users.owner.BUSINESS_DELETE, () => {
     beforeEach(async () => {
         await wipeOutDatabase();
+        await setupFixedTable();
         await insertBusinessData();
     });
 
@@ -503,6 +506,7 @@ describe('DELETE' + endpoints.users.owner.BUSINESS_DELETE, () => {
 describe('GET' + endpoints.users.owner.GET_ALL_BUSINESSES, () => {
     beforeAll(async () => {
         await wipeOutDatabase();
+        await setupFixedTable();
         await insertBusinessData();
     });
 
@@ -543,6 +547,7 @@ describe('GET' + endpoints.users.owner.GET_ALL_BUSINESSES, () => {
 describe('GET' + endpoints.GET_BUSINESS, () => {
     beforeAll(async () => {
         await wipeOutDatabase();
+        await setupFixedTable();
         await insertBusinessData();
     });
 
@@ -572,8 +577,9 @@ describe('GET' + endpoints.GET_BUSINESS, () => {
 describe('GET' + endpoints.users.owner.GET_ALL_CATEGORIES, () => {
     beforeAll(async () => {
         await wipeOutDatabase();
-        await createUser({id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal'});
-        await createSession({token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f'});
+        await setupFixedTable();
+        await createUser({ id: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f', fullname: 'Kevin Cheng', email: 'kevin@gmail.com', password: '12345678', typeLogin: 'email', typeUser: 'normal' });
+        await createSession({ token: 'fcd84d1f-ee1b-4636-9f61-78dc349f23e5', userId: 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f' });
     });
 
     it('should return all categories', (done) => {
@@ -600,15 +606,16 @@ describe('GET' + endpoints.users.owner.GET_ALL_CATEGORIES, () => {
 });
 
 describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
-    beforeAll(async ()=>{
+    beforeAll(async () => {
         await wipeOutDatabase();
+        await setupFixedTable();
         await insertBusinessData();
-        await createUser({...users[0]});
-        await createUser({...moderator[0]});
-        await createUser({...admin[0]});
-        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
-        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
-        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
+        await createUser({ ...users[0] });
+        await createUser({ ...moderator[0] });
+        await createUser({ ...admin[0] });
+        await createSession({ token: normalToken.split(' ')[1], userId: users[0].id });
+        await createSession({ token: moderatorToken.split(' ')[1], userId: moderator[0].id });
+        await createSession({ token: adminToken.split(' ')[1], userId: admin[0].id });
     });
 
     const businessReview = {
@@ -623,7 +630,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: 4, description: "this is a test"})
+            .send({ businessId, rating: 4, description: "this is a test" })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body).toEqual(businessReview)
@@ -635,7 +642,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', moderatorToken)
-            .send({businessId, rating: 5, description: "this is good"})
+            .send({ businessId, rating: 5, description: "this is good" })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body).toEqual(businessReview)
@@ -647,7 +654,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', adminToken)
-            .send({businessId, rating: 3, description: "this is bad"})
+            .send({ businessId, rating: 3, description: "this is bad" })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body).toEqual(businessReview)
@@ -659,7 +666,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: 6, description: "this is a test"})
+            .send({ businessId, rating: 6, description: "this is a test" })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBe(1)
@@ -671,7 +678,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: 0, description: "this is a test"})
+            .send({ businessId, rating: 0, description: "this is a test" })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBe(1)
@@ -683,7 +690,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: 3, description: genText(201)})
+            .send({ businessId, rating: 3, description: genText(201) })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBe(1);
@@ -694,7 +701,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
     it('should not create business review without authorization', done => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
-            .send({businessId, rating: 4, description: "this is a test"})
+            .send({ businessId, rating: 4, description: "this is a test" })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN)
@@ -706,7 +713,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken + "1234")
-            .send({businessId, rating: 4, description: "this is a test"})
+            .send({ businessId, rating: 4, description: "this is a test" })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe('accessToken')
@@ -718,7 +725,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId: "12345", rating: 4, description: "this is a test"})
+            .send({ businessId: "12345", rating: 4, description: "this is a test" })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBeGreaterThan(0)
@@ -730,7 +737,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId: genUUID(), rating: 4, description: "this is a test"})
+            .send({ businessId: genUUID(), rating: 4, description: "this is a test" })
             .expect(httpCodes.NOT_FOUND)
             .expect(res => {
                 expect(res.body.error).toBe(errors.NOT_FOUND)
@@ -742,7 +749,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: null, description: "this is a test"})
+            .send({ businessId, rating: null, description: "this is a test" })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBeGreaterThan(0);
@@ -754,7 +761,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: 2, description: null})
+            .send({ businessId, rating: 2, description: null })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBeGreaterThan(0);
@@ -766,7 +773,7 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
         request(app)
             .post(endpoints.businessReview.CREATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId: null, rating: 2, description: "este negocio es el pedo"})
+            .send({ businessId: null, rating: 2, description: "este negocio es el pedo" })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBeGreaterThan(0);
@@ -787,18 +794,19 @@ describe('POST ' + endpoints.businessReview.CREATE_BUSINESS_REVIEW, () => {
 });
 
 describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
-    beforeAll(async ()=>{
+    beforeAll(async () => {
         await wipeOutDatabase();
+        await setupFixedTable();
         await insertBusinessData();
-        await createUser({...users[0]});
-        await createUser({...moderator[0]});
-        await createUser({...admin[0]});
-        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
-        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
-        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
-        await createBusinessReview({businessId, userId, rating: 4, description: 'Description for example'});
-        await createBusinessReview({businessId, userId: moderator[0].id, rating: 4, description: 'Description for example'});
-        await createBusinessReview({businessId, userId: admin[0].id, rating: 4, description: 'Description for example'});
+        await createUser({ ...users[0] });
+        await createUser({ ...moderator[0] });
+        await createUser({ ...admin[0] });
+        await createSession({ token: normalToken.split(' ')[1], userId: users[0].id });
+        await createSession({ token: moderatorToken.split(' ')[1], userId: moderator[0].id });
+        await createSession({ token: adminToken.split(' ')[1], userId: admin[0].id });
+        await createBusinessReview({ businessId, userId, rating: 4, description: 'Description for example' });
+        await createBusinessReview({ businessId, userId: moderator[0].id, rating: 4, description: 'Description for example' });
+        await createBusinessReview({ businessId, userId: admin[0].id, rating: 4, description: 'Description for example' });
     });
 
     const expectedBusinessReview = {
@@ -813,7 +821,7 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
         request(app)
             .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
             .set('authorization', token)
-            .send({...businessReview[0]})
+            .send({ ...businessReview[0] })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body).toEqual(expectedBusinessReview)
@@ -825,7 +833,7 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
         request(app)
             .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
             .set('authorization', moderatorToken)
-            .send({...businessReview[0]})
+            .send({ ...businessReview[0] })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body).toEqual(expectedBusinessReview)
@@ -849,7 +857,7 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
         request(app)
             .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: 6, description: "this is a test for update"})
+            .send({ businessId, rating: 6, description: "this is a test for update" })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBe(1)
@@ -861,7 +869,7 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
         request(app)
             .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: 0, description: "this is a test for update"})
+            .send({ businessId, rating: 0, description: "this is a test for update" })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBe(1)
@@ -873,7 +881,7 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
         request(app)
             .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
             .set('authorization', normalToken)
-            .send({businessId, rating: 4, description: genText(201)})
+            .send({ businessId, rating: 4, description: genText(201) })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBe(1)
@@ -884,7 +892,7 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
     it('should not update without authorization', (done) => {
         request(app)
             .put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW)
-            .send({businessId, rating: 4, description: "this is a test for update"})
+            .send({ businessId, rating: 4, description: "this is a test for update" })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN)
@@ -894,35 +902,36 @@ describe('PUT' + endpoints.businessReview.UPDATE_BUSINESS_REVIEW, () => {
 });
 
 describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
-    beforeAll(async ()=>{
+    beforeAll(async () => {
         await wipeOutDatabase();
-        await createUser({...users[0]});
-        await createUser({...users[1]});
-        await createUser({...moderator[0]});
-        await createUser({...moderator[1]});
-        await createUser({...admin[0]});
-        await createUser({...admin[1]});
-        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
-        await createSession({token: normalToken2.split(' ')[1], userId: users[1].id});
-        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
-        await createSession({token: moderatorToken2.split(' ')[1], userId: moderator[1].id});
-        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
-        await createSession({token: adminToken2.split(' ')[1], userId: admin[1].id});
+        await createUser({ ...users[0] });
+        await createUser({ ...users[1] });
+        await createUser({ ...moderator[0] });
+        await createUser({ ...moderator[1] });
+        await createUser({ ...admin[0] });
+        await createUser({ ...admin[1] });
+        await createSession({ token: normalToken.split(' ')[1], userId: users[0].id });
+        await createSession({ token: normalToken2.split(' ')[1], userId: users[1].id });
+        await createSession({ token: moderatorToken.split(' ')[1], userId: moderator[0].id });
+        await createSession({ token: moderatorToken2.split(' ')[1], userId: moderator[1].id });
+        await createSession({ token: adminToken.split(' ')[1], userId: admin[0].id });
+        await createSession({ token: adminToken2.split(' ')[1], userId: admin[1].id });
+        await setupFixedTable();
         await insertBusinessData();
     })
 
-    beforeEach(async ()=>{
+    beforeEach(async () => {
         await wipeOutBusinessReview();
-        await createBusinessReview({businessId, userId: users[0].id, rating: 4, description: 'Description for example'});
-        await createBusinessReview({businessId, userId: moderator[0].id, rating: 4, description: 'Description for example'});
-        await createBusinessReview({businessId, userId: admin[0].id, rating: 4, description: 'Description for example'});
+        await createBusinessReview({ businessId, userId: users[0].id, rating: 4, description: 'Description for example' });
+        await createBusinessReview({ businessId, userId: moderator[0].id, rating: 4, description: 'Description for example' });
+        await createBusinessReview({ businessId, userId: admin[0].id, rating: 4, description: 'Description for example' });
     });
 
     it('user should delete its own business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",users[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", users[0].id))
             .set('authorization', normalToken)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
@@ -932,21 +941,21 @@ describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
 
     it('moderator should delete its own business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",moderator[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", moderator[0].id))
             .set('authorization', moderatorToken)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
             })
             .end(done)
     })
-    
+
     it('admin should delete its own business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",admin[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", admin[0].id))
             .set('authorization', adminToken)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
@@ -956,9 +965,9 @@ describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
 
     it('moderator should delete user business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",users[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", users[0].id))
             .set('authorization', moderatorToken)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
@@ -968,9 +977,9 @@ describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
 
     it('admin should delete user business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",users[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", users[0].id))
             .set('authorization', adminToken)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
@@ -980,9 +989,9 @@ describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
 
     it('admin should delete moderator business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",moderator[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", moderator[0].id))
             .set('authorization', adminToken)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.deleted).toBe(true);
@@ -992,9 +1001,9 @@ describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
 
     it('user should not delete another user business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",users[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", users[0].id))
             .set('authorization', normalToken2)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
@@ -1004,57 +1013,57 @@ describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
 
     it('user should not delete moderator business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",moderator[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", moderator[0].id))
             .set('authorization', normalToken2)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
             })
             .end(done)
     })
-    
+
     it('user should not delete admin business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",admin[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", admin[0].id))
             .set('authorization', normalToken2)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
             })
             .end(done)
     })
-    
+
     it('moderator should not delete another moderator business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",moderator[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", moderator[0].id))
             .set('authorization', moderatorToken2)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
             })
             .end(done)
     })
-    
+
     it('moderator should not delete admin business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",admin[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", admin[0].id))
             .set('authorization', moderatorToken2)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
             })
             .end(done)
     })
-    
+
     it('admin should not delete another admin business review', done => {
         request(app)
-            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId",admin[0].id))
+            .delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW.replace(":userId", admin[0].id))
             .set('authorization', adminToken2)
-            .send({businessId})
+            .send({ businessId })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
@@ -1064,22 +1073,22 @@ describe('DELETE ' + endpoints.businessReview.DELETE_BUSINESS_REVIEW, () => {
 });
 
 describe('POST ' + endpoints.ADD_CATEGORY, () => {
-    beforeAll(async ()=>{
+    beforeAll(async () => {
         await wipeOutDatabase();
-        await createUser({...users[0]});
-        await createUser({...moderator[0]});
-        await createUser({...admin[0]});
-        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
-        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
-        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
-        await Category.query().delete().findOne("category","test category");
+        await createUser({ ...users[0] });
+        await createUser({ ...moderator[0] });
+        await createUser({ ...admin[0] });
+        await createSession({ token: normalToken.split(' ')[1], userId: users[0].id });
+        await createSession({ token: moderatorToken.split(' ')[1], userId: moderator[0].id });
+        await createSession({ token: adminToken.split(' ')[1], userId: admin[0].id });
+        await Category.query().delete().findOne("category", "test category");
     })
 
     it('admin should add a category', done => {
         request(app)
             .post(endpoints.ADD_CATEGORY)
             .set('authorization', adminToken)
-            .send({category: "test category"})
+            .send({ category: "test category" })
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.category).toBe("test category");
@@ -1091,7 +1100,7 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
         request(app)
             .post(endpoints.ADD_CATEGORY)
             .set('authorization', moderatorToken)
-            .send({category: "test category2"})
+            .send({ category: "test category2" })
             .expect(httpCodes.FORBIDDEN)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
@@ -1103,7 +1112,7 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
         request(app)
             .post(endpoints.ADD_CATEGORY)
             .set('authorization', normalToken)
-            .send({category: "test category2"})
+            .send({ category: "test category2" })
             .expect(httpCodes.FORBIDDEN)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
@@ -1114,7 +1123,7 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
     it('should not add a category without authorization', done => {
         request(app)
             .post(endpoints.ADD_CATEGORY)
-            .send({category: "test category"})
+            .send({ category: "test category" })
             .expect(httpCodes.UNAUTHORIZED)
             .expect(res => {
                 expect(res.body.error).toBe(errors.FORBIDDEN);
@@ -1126,7 +1135,7 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
         request(app)
             .post(endpoints.ADD_CATEGORY)
             .set('authorization', adminToken)
-            .send({category: "test category"})
+            .send({ category: "test category" })
             .expect(httpCodes.CONFLICT)
             .expect(res => {
                 expect(res.body.error).toBe(errors.CATEGORY);
@@ -1138,19 +1147,19 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
         request(app)
             .post(endpoints.ADD_CATEGORY)
             .set('authorization', adminToken)
-            .send({category: null})
+            .send({ category: null })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBeGreaterThan(0);
             })
             .end(done)
     })
-    
+
     it('admin should not add a null category', done => {
         request(app)
             .post(endpoints.ADD_CATEGORY)
             .set('authorization', adminToken)
-            .send({category: ""})
+            .send({ category: "" })
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBeGreaterThan(0);
@@ -1160,28 +1169,28 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
 });
 
 describe('DELETE ' + endpoints.DELETE_CATEGORY, () => {
-    beforeAll(async ()=>{
+    beforeAll(async () => {
         await wipeOutDatabase();
-        await createUser({...users[0]});
-        await createUser({...moderator[0]});
-        await createUser({...admin[0]});
-        await createSession({token: normalToken.split(' ')[1], userId: users[0].id});
-        await createSession({token: moderatorToken.split(' ')[1], userId: moderator[0].id});
-        await createSession({token: adminToken.split(' ')[1], userId: admin[0].id});
-        //await Category.query().delete();
-        await Category.query().insert({category: "Category test"});
+        await setupFixedTable();
+        await createUser({ ...users[0] });
+        await createUser({ ...moderator[0] });
+        await createUser({ ...admin[0] });
+        await createSession({ token: normalToken.split(' ')[1], userId: users[0].id });
+        await createSession({ token: moderatorToken.split(' ')[1], userId: moderator[0].id });
+        await createSession({ token: adminToken.split(' ')[1], userId: admin[0].id });
+        await Category.query().insert({ category: "Category test" });
     });
 
-    // it('admin should delete a category', done => {
-    //     request(app)
-    //         .delete(endpoints.DELETE_CATEGORY.replace(':code', '2'))
-    //         .set('authorization', adminToken)
-    //         .expect(httpCodes.OK)
-    //         .expect(res => {
-    //             expect(res.body.isCategoryDeleted).toBe(true);
-    //         })
-    //         .end(done);
-    // });
+    it('admin should delete a category', done => {
+        request(app)
+            .delete(endpoints.DELETE_CATEGORY.replace(':code', '2'))
+            .set('authorization', adminToken)
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.isCategoryDeleted).toBe(true);
+            })
+            .end(done);
+    });
 
     it('moderator should not delete a category', done => {
         request(app)
@@ -1207,36 +1216,37 @@ describe('DELETE ' + endpoints.DELETE_CATEGORY, () => {
 
     it('should not delete a category without authorization', done => {
         request(app)
-        .delete(endpoints.DELETE_CATEGORY.replace(':code', '1'))
-        .expect(httpCodes.UNAUTHORIZED)
-        .expect(res => {
-            expect(res.body.error).toBe(errors.FORBIDDEN);
-        })
-        .end(done)
+            .delete(endpoints.DELETE_CATEGORY.replace(':code', '1'))
+            .expect(httpCodes.UNAUTHORIZED)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.FORBIDDEN);
+            })
+            .end(done)
     });
 
     it('should not delete a category that does not exist', done => {
         request(app)
-        .delete(endpoints.DELETE_CATEGORY.replace(':code', '56'))
-        .set('authorization', adminToken)
-        .expect(httpCodes.NOT_FOUND)
-        .expect(res => {
-            expect(res.body.error).toBe(errors.NOT_FOUND);
-        })
-        .end(done);
+            .delete(endpoints.DELETE_CATEGORY.replace(':code', '56'))
+            .set('authorization', adminToken)
+            .expect(httpCodes.NOT_FOUND)
+            .expect(res => {
+                expect(res.body.error).toBe(errors.NOT_FOUND);
+            })
+            .end(done);
     });
 
 
 });
-*/
 
-describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
+
+describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, () => {
     beforeAll(async () => {
         await wipeOutDatabase();
-        await createUser({...users[0]});
-        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 1, 20, 60,"pepe");
-        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 2, 20, 60,"Pepperoni Pizza");
-        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 3, 20, 60,"Konami Games");
+        await setupFixedTable();
+        await createUser({ ...users[0] });
+        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 1, 20, 60, "pepe");
+        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 2, 20, 60, "Pepperoni Pizza");
+        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 3, 20, 60, "Konami Games");
     })
 
     it('should get 2  businesses inside a radius of 2500m', done => {
@@ -1321,9 +1331,9 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
 
     // SEARCH BY CATEGORY
 
-    it('should get 1 business inside a radius of 2500m and category equal to Charcuteria', done => {
+    it('should get 1 business inside a radius of 2500m and category equal to Market', done => {
         request(app)
-            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Charcuteria&latitude=20.1&longitude=60.1&radius=2500")
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Market&latitude=20.1&longitude=60.1&radius=2500")
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBe(1);
@@ -1331,9 +1341,9 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
             .end(done)
     });
 
-    it('should get 1 business inside a radius of 2000m and category equal to Panaderia', done => {
+    it('should get 1 business inside a radius of 2000m and category equal to Market', done => {
         request(app)
-            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Panaderia&latitude=20.1&longitude=60.1&radius=2000")
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Market&latitude=20.1&longitude=60.1&radius=2000")
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBe(1);
@@ -1341,9 +1351,9 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
             .end(done)
     });
 
-    it('should get 1 business inside a radius of 1000m and category equal to Super', done => {
+    it('should get 1 business inside a radius of 1000m and category equal to Market', done => {
         request(app)
-            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Super&latitude=20.1&longitude=60.1&radius=1000")
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Market&latitude=20.1&longitude=60.1&radius=1000")
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBe(1);
@@ -1351,9 +1361,9 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
             .end(done)
     });
 
-    it('should get 2 business inside a radius of 1000m and category equal to eria', done => {
+    it('should get 2 business inside a radius of 1000m and category equal to et', done => {
         request(app)
-            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=eria&latitude=20.1&longitude=60.1&radius=1000")
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=et&latitude=20.1&longitude=60.1&radius=1000")
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBe(2);
@@ -1361,9 +1371,9 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
             .end(done)
     });
 
-    it('should get 1 business inside a radius of 1000m and category equal to super', done => {
+    it('should get 1 business inside a radius of 1000m and category equal to comet', done => {
         request(app)
-            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=super&latitude=20.1&longitude=60.1&radius=1000")
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=comet&latitude=20.1&longitude=60.1&radius=1000")
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBe(1);
@@ -1371,9 +1381,9 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
             .end(done)
     });
 
-    it('should get 1 business inside a radius of 1000m and category equal to charcu', done => {
+    it('should get 1 business inside a radius of 1000m and category equal to mar', done => {
         request(app)
-            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=charcu&latitude=20.1&longitude=60.1&radius=1000")
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=mar&latitude=20.1&longitude=60.1&radius=1000")
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body.length).toBe(1);
@@ -1382,7 +1392,7 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
     });
 })
 
-afterAll(()=>{
+afterAll(() => {
     knex.destroy();
     server.close();
 })

@@ -1,5 +1,5 @@
 import faker from "faker";
-import {genUUID} from "../utils/utils";
+import { genUUID } from "../utils/utils";
 
 function genUser(id = genUUID()) {
     return {
@@ -10,9 +10,9 @@ function genUser(id = genUUID()) {
     };
 }
 
-export function genText(length: number){
+export function genText(length: number) {
     let text = "";
-    for(let i=0;i<length;i++) text += "a";
+    for (let i = 0; i < length; i++) text += "a";
     return text;
 }
 
@@ -24,120 +24,124 @@ function genBusiness(id = genUUID()) {
     };
 }
 
-export const users:{id: string, fullname: string, email: string, phoneNumber: string|null,
-                    googleAuth: {userId: string, token: string}|null,
-                    facebookAuth: {userId: string, token: string}|null
-                    thumbnailUrl: string|null, password: string|null, 
-                    typeLogin: 'email'|'facebook'|'google', 
-                    typeUser: 'normal'|'moderator'|'admin'}[] = [
-    {   //GOOD EMAIL USER
-        id: genUUID(),
-        fullname: 'Franklin Clinton',
-        email: 'thebilldot@gmail.com',
-        phoneNumber: '123456',
-        thumbnailUrl: 'myPic',
-        googleAuth: null,
-        facebookAuth: null,
-        password: '123456789user1',
-        typeLogin: 'email',
-        typeUser: 'normal'
-    },
-    {   //GOOD GOOGLE USER
-        id: genUUID(),
-        fullname: "Sneyder Angulo",
-        email: "sneyder2328@gmail.com",
-        phoneNumber: "45646",
-        thumbnailUrl: 'myPic',
-        googleAuth: {
-            userId: "107318059015310771201",
-            token: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjI1MmZjYjk3ZGY1YjZiNGY2ZDFhODg1ZjFlNjNkYzRhOWNkMjMwYzUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MzQ0Nzc1Mzg2OTgtZHI2YTl0aDM4b2ppY2lqcmYxdDhkMDU1bnZzdjkwZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MzQ0Nzc1Mzg2OTgtcW4xNmI4MTZlM2k0ZDdnbWVxY2hjMG9maDB1bmVlM24uYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDczMTgwNTkwMTUzMTA3NzEyMDEiLCJlbWFpbCI6InNuZXlkZXIyMzI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiU25leWRlciBBbmd1bG8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EtL0FPaDE0R2d0UXA0aDFCOFhFOXpkbWgta2ltWVA0ckl2RFJLQU00TVhsVzB1MkE9czk2LWMiLCJnaXZlbl9uYW1lIjoiU25leWRlciIsImZhbWlseV9uYW1lIjoiQW5ndWxvIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE2MTAzMjI2NzksImV4cCI6MTYxMDMyNjI3OX0.ZmylaXFHCpWGg1S2rWSUisRuInE-s0gaGKSt371S3zndAXaUnD0m1blXO3gsYVq1bgS0l89wnxSVo09sJni2_ITUW9hyW-CbR3--u3_c7-S-9ESnuSOPnnVQuiK1pwLIm01s1DYOYg_u7VY5pzF-S0H2Td-vUsO83oTS0Dw4sjFQRRzOtvu53IQ-zVTkfUCpo8OLcCusruU1yKhxMWlPhrnGHgvYX5tXWEvGUeNUl1Bl2572djvKLBaCyhZGYnEagUsxTLxm542yR5emvJQjImgA_lP-CD0y2E9ecsSMX_FHtHtjlmSJKGm3CXRx9Yf5Rssg86Bj_z1e7GSvvj57zA"
+export const users: {
+    id: string, fullname: string, email: string, phoneNumber: string | null,
+    googleAuth: { userId: string, token: string } | null,
+    facebookAuth: { userId: string, token: string } | null
+    thumbnailUrl: string | null, password: string | null,
+    typeLogin: 'email' | 'facebook' | 'google',
+    typeUser: 'normal' | 'moderator' | 'admin'
+}[] = [
+        {   //GOOD EMAIL USER
+            id: genUUID(),
+            fullname: 'Franklin Clinton',
+            email: 'thebilldot@gmail.com',
+            phoneNumber: '123456',
+            thumbnailUrl: 'myPic',
+            googleAuth: null,
+            facebookAuth: null,
+            password: '123456789user1',
+            typeLogin: 'email',
+            typeUser: 'normal'
         },
-        facebookAuth: null,
-        password: null,
-        typeLogin: "google",
-        typeUser: "normal"
-    },
-    {   //GOOD FACEBOOK USER
-        id: genUUID(),
-        fullname: "Timmy FB User",
-        email: "timmy_pbcbfpc_user@tfbnw.net",
-        phoneNumber: null,
-        thumbnailUrl: null,
-        password: null,
-        googleAuth: null,
-        facebookAuth: {
-            token: "EAAC4KPwhvtABAHtmxIjjdeJXt42wZBJesWKswzywQ8M4qusGbSJFSYSYyEgYlZCTBcYyI8Kaw5aBL6CnRSP60veh0uiKdXljMv69ymTNm2TtTJPwYEIKvX6k9q8EFbB5PdQ7KyqnIcM9sp71pvEHG6yjtSwSWDif3OuZCoUyJxgJa9mVSSzZBblDoXN2fGwHNZBLpgV37DM2mrnKnGP6d",
-            userId: "116167220374115"
+        {   //GOOD GOOGLE USER
+            id: genUUID(),
+            fullname: "Sneyder Angulo",
+            email: "sneyder2328@gmail.com",
+            phoneNumber: "45646",
+            thumbnailUrl: 'myPic',
+            googleAuth: {
+                userId: "107318059015310771201",
+                token: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjI1MmZjYjk3ZGY1YjZiNGY2ZDFhODg1ZjFlNjNkYzRhOWNkMjMwYzUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MzQ0Nzc1Mzg2OTgtZHI2YTl0aDM4b2ppY2lqcmYxdDhkMDU1bnZzdjkwZTYuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MzQ0Nzc1Mzg2OTgtcW4xNmI4MTZlM2k0ZDdnbWVxY2hjMG9maDB1bmVlM24uYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDczMTgwNTkwMTUzMTA3NzEyMDEiLCJlbWFpbCI6InNuZXlkZXIyMzI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiU25leWRlciBBbmd1bG8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EtL0FPaDE0R2d0UXA0aDFCOFhFOXpkbWgta2ltWVA0ckl2RFJLQU00TVhsVzB1MkE9czk2LWMiLCJnaXZlbl9uYW1lIjoiU25leWRlciIsImZhbWlseV9uYW1lIjoiQW5ndWxvIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE2MTAzMjI2NzksImV4cCI6MTYxMDMyNjI3OX0.ZmylaXFHCpWGg1S2rWSUisRuInE-s0gaGKSt371S3zndAXaUnD0m1blXO3gsYVq1bgS0l89wnxSVo09sJni2_ITUW9hyW-CbR3--u3_c7-S-9ESnuSOPnnVQuiK1pwLIm01s1DYOYg_u7VY5pzF-S0H2Td-vUsO83oTS0Dw4sjFQRRzOtvu53IQ-zVTkfUCpo8OLcCusruU1yKhxMWlPhrnGHgvYX5tXWEvGUeNUl1Bl2572djvKLBaCyhZGYnEagUsxTLxm542yR5emvJQjImgA_lP-CD0y2E9ecsSMX_FHtHtjlmSJKGm3CXRx9Yf5Rssg86Bj_z1e7GSvvj57zA"
+            },
+            facebookAuth: null,
+            password: null,
+            typeLogin: "google",
+            typeUser: "normal"
         },
-        typeLogin: "facebook",
-        typeUser: "normal"
-    },
-    {   //BAD USER (PASSWORD WITH EMPTY STRING "")
-        id: genUUID(),
-        fullname: "Kevin Cheng",
-        email: "chengkev2000@gmail.com",
-        phoneNumber: "",
-        thumbnailUrl: "",
-        password: "",
-        googleAuth: null,
-        facebookAuth: null,
-        typeLogin: "email",
-        typeUser: "normal"
-    },
-    {//BAD USER NAME TOO LONG
-        id: genUUID(),
-        fullname: genText(251),
-        email: "chengev2000@gmail.com",
-        phoneNumber: "",
-        thumbnailUrl: "",
-        password: "1234567890",
-        googleAuth: null,
-        facebookAuth: null,
-        typeLogin: "email",
-        typeUser: "normal"
-    },
-    {//BAD USER PHONE TOO LONG
-        id: genUUID(),
-        fullname: "Kevin Cheng",
-        email: "chingev2000@gmail.com",
-        phoneNumber: genText(51),
-        thumbnailUrl: "",
-        password: "1234567890",
-        googleAuth: null,
-        facebookAuth: null,
-        typeLogin: "email",
-        typeUser: "normal"
-    },
-    {//BAD USER password TOO LONG
-        id: genUUID(),
-        fullname: "Kevin Cheng",
-        email: "cngev2000@gmail.com",
-        phoneNumber: "",
-        thumbnailUrl: genText(501),
-        password: genText(151),
-        googleAuth: null,
-        facebookAuth: null,
-        typeLogin: "email",
-        typeUser: "normal"
-    },
-    {//Extreme User, maximum entry lenght capacity
-        id: genUUID(),
-        fullname: genText(69),
-        email: "cngev2000@gmail.com",
-        phoneNumber: genText(14),
-        thumbnailUrl: genText(499),
-        password: genText(254),
-        googleAuth: null,
-        facebookAuth: null,
-        typeLogin: "email",
-        typeUser: "normal"
-    }
-];
+        {   //GOOD FACEBOOK USER
+            id: genUUID(),
+            fullname: "Timmy FB User",
+            email: "timmy_pbcbfpc_user@tfbnw.net",
+            phoneNumber: null,
+            thumbnailUrl: null,
+            password: null,
+            googleAuth: null,
+            facebookAuth: {
+                token: "EAAC4KPwhvtABAHtmxIjjdeJXt42wZBJesWKswzywQ8M4qusGbSJFSYSYyEgYlZCTBcYyI8Kaw5aBL6CnRSP60veh0uiKdXljMv69ymTNm2TtTJPwYEIKvX6k9q8EFbB5PdQ7KyqnIcM9sp71pvEHG6yjtSwSWDif3OuZCoUyJxgJa9mVSSzZBblDoXN2fGwHNZBLpgV37DM2mrnKnGP6d",
+                userId: "116167220374115"
+            },
+            typeLogin: "facebook",
+            typeUser: "normal"
+        },
+        {   //BAD USER (PASSWORD WITH EMPTY STRING "")
+            id: genUUID(),
+            fullname: "Kevin Cheng",
+            email: "chengkev2000@gmail.com",
+            phoneNumber: "",
+            thumbnailUrl: "",
+            password: "",
+            googleAuth: null,
+            facebookAuth: null,
+            typeLogin: "email",
+            typeUser: "normal"
+        },
+        {//BAD USER NAME TOO LONG
+            id: genUUID(),
+            fullname: genText(251),
+            email: "chengev2000@gmail.com",
+            phoneNumber: "",
+            thumbnailUrl: "",
+            password: "1234567890",
+            googleAuth: null,
+            facebookAuth: null,
+            typeLogin: "email",
+            typeUser: "normal"
+        },
+        {//BAD USER PHONE TOO LONG
+            id: genUUID(),
+            fullname: "Kevin Cheng",
+            email: "chingev2000@gmail.com",
+            phoneNumber: genText(51),
+            thumbnailUrl: "",
+            password: "1234567890",
+            googleAuth: null,
+            facebookAuth: null,
+            typeLogin: "email",
+            typeUser: "normal"
+        },
+        {//BAD USER password TOO LONG
+            id: genUUID(),
+            fullname: "Kevin Cheng",
+            email: "cngev2000@gmail.com",
+            phoneNumber: "",
+            thumbnailUrl: genText(501),
+            password: genText(151),
+            googleAuth: null,
+            facebookAuth: null,
+            typeLogin: "email",
+            typeUser: "normal"
+        },
+        {//Extreme User, maximum entry lenght capacity
+            id: genUUID(),
+            fullname: genText(69),
+            email: "cngev2000@gmail.com",
+            phoneNumber: genText(14),
+            thumbnailUrl: genText(499),
+            password: genText(254),
+            googleAuth: null,
+            facebookAuth: null,
+            typeLogin: "email",
+            typeUser: "normal"
+        }
+    ];
 
-export const admin : {id: string, fullname: string, email: string, phoneNumber: string|null,
-                      thumbnailUrl: string|null, password: string|null, 
-                      typeLogin: 'email'|'facebook'|'google', 
-                      typeUser: 'normal'|'moderator'|'admin'}[]  = [{
+export const admin: {
+    id: string, fullname: string, email: string, phoneNumber: string | null,
+    thumbnailUrl: string | null, password: string | null,
+    typeLogin: 'email' | 'facebook' | 'google',
+    typeUser: 'normal' | 'moderator' | 'admin'
+}[] = [{
     id: genUUID(),
     fullname: 'Douglas Matias',
     email: 'douglas@gmail.com',
@@ -157,12 +161,14 @@ export const admin : {id: string, fullname: string, email: string, phoneNumber: 
     typeLogin: 'email',
     typeUser: 'admin'
 }
-]
+    ]
 
-export const moderator : {id: string, fullname: string, email: string, phoneNumber: string|null,
-                          thumbnailUrl: string|null, password: string|null, 
-                          typeLogin: 'email'|'facebook'|'google', 
-                          typeUser: 'normal'|'moderator'|'admin'}[] = [{
+export const moderator: {
+    id: string, fullname: string, email: string, phoneNumber: string | null,
+    thumbnailUrl: string | null, password: string | null,
+    typeLogin: 'email' | 'facebook' | 'google',
+    typeUser: 'normal' | 'moderator' | 'admin'
+}[] = [{
     id: genUUID(),
     fullname: 'Abel moderator',
     email: 'Abel@gmail.com',
@@ -182,7 +188,7 @@ export const moderator : {id: string, fullname: string, email: string, phoneNumb
     typeLogin: 'email',
     typeUser: 'moderator'
 }
-]
+    ]
 
 export const businesses = [
     {
@@ -195,7 +201,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -251,7 +257,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -278,7 +284,7 @@ export const businesses = [
         address: {
             id: genUUID(),
             address: "Calle 50 entre carreras 14 y 15",
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -308,7 +314,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -337,7 +343,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -367,7 +373,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         hours: [
             {
@@ -395,7 +401,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -424,7 +430,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -453,7 +459,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: null,
             longitude: null,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -482,7 +488,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [],
@@ -500,7 +506,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -529,7 +535,7 @@ export const businesses = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212,
+            cityCode: 1,
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -561,7 +567,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -590,7 +596,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -619,7 +625,7 @@ export const updateBusiness = [
             address: "Calle 48 entre carreras 13 y 14",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -648,7 +654,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059971,
             longitude: -69.340575,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -706,7 +712,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "NewBanner",
         hours: [
@@ -735,7 +741,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -774,7 +780,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -803,7 +809,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -819,7 +825,7 @@ export const updateBusiness = [
             }
         ],
         phoneNumbers: ["04120984532"],
-        categories: [1,2],
+        categories: [1, 2],
         images: ["UrlForExample"]
     },
     {
@@ -832,7 +838,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -861,7 +867,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -890,7 +896,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -919,7 +925,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -948,7 +954,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: null,
             longitude: null,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -977,7 +983,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [],
@@ -995,7 +1001,7 @@ export const updateBusiness = [
             address: "Calle 50 entre carreras 14 y 15",
             latitude: 10.059972,
             longitude: -69.340570,
-            cityCode: 212
+            cityCode: 1
         },
         bannerUrl: "SomeExampleOfAnUrl",
         hours: [
@@ -1016,7 +1022,7 @@ export const updateBusiness = [
     }
 ];
 
-export const newReport: {id: string, businessId: string, title: string|null, description: string|null}[] = [
+export const newReport: { id: string, businessId: string, title: string | null, description: string | null }[] = [
     {
         // GOOD REPORT
         id: genUUID(),
