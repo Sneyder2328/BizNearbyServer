@@ -372,7 +372,7 @@ export const getBusinessByCategory = async (category: string, latitude: number, 
                                         .where(raw('Category.category LIKE "%' + category + '%" '))
                                         .andWhere(raw('BusinessDistance('+ latitude + ', '+ longitude + ', BusinessAddress.latitude, BusinessAddress.longitude) <= '+ radius))
                                         .orderByRaw('BusinessDistance('+ latitude +', '+ longitude +', BusinessAddress.latitude, BusinessAddress.longitude) ASC');
-    console.log(businesses);
+
     const searchResult = businesses.map(business => {
         return {
             id: business.id,

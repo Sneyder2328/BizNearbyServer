@@ -21,6 +21,7 @@ const moderatorToken2 = "Bearer " + genUUID();
 const businessId = "a8bcd05e-4606-4a55-a5dd-002f8516493e"
 const userId = 'ebf9b67a-50a4-439b-9af6-25dd7ff4810f';
 
+/*
 describe('POST' + endpoints.users.owner.BUSINESS_REGISTER, () => {
     const business = nro =>  {
         return {
@@ -1227,6 +1228,7 @@ describe('DELETE ' + endpoints.DELETE_CATEGORY, () => {
 
 
 });
+*/
 
 describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
     beforeAll(async () => {
@@ -1313,6 +1315,68 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
             .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .expect(res => {
                 expect(res.body.errors.length).toBe(1);
+            })
+            .end(done)
+    });
+
+    // SEARCH BY CATEGORY
+
+    it('should get 1 business inside a radius of 2500m and category equal to Charcuteria', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Charcuteria&latitude=20.1&longitude=60.1&radius=2500")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(1);
+            })
+            .end(done)
+    });
+
+    it('should get 1 business inside a radius of 2000m and category equal to Panaderia', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Panaderia&latitude=20.1&longitude=60.1&radius=2000")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(1);
+            })
+            .end(done)
+    });
+
+    it('should get 1 business inside a radius of 1000m and category equal to Super', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=Super&latitude=20.1&longitude=60.1&radius=1000")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(1);
+            })
+            .end(done)
+    });
+
+    it('should get 2 business inside a radius of 1000m and category equal to eria', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=eria&latitude=20.1&longitude=60.1&radius=1000")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(2);
+            })
+            .end(done)
+    });
+
+    it('should get 1 business inside a radius of 1000m and category equal to super', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=super&latitude=20.1&longitude=60.1&radius=1000")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(1);
+            })
+            .end(done)
+    });
+
+    it('should get 1 business inside a radius of 1000m and category equal to charcu', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?category=charcu&latitude=20.1&longitude=60.1&radius=1000")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(1);
             })
             .end(done)
     });
