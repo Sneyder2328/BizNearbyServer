@@ -315,7 +315,7 @@ export const deleteReviewBusiness = async (businessId: string, userId: string, s
 
 export const addCategory = async (category: string) => {
     const categoryExists = await Category.query().findOne("category", category);
-    if(categoryExists) throw new AuthError(errors.CATEGORY, errors.message.CATEGORY_FOUND);
+    if(categoryExists) throw new AppError(httpCodes.CONFLICT, errors.CATEGORY, errors.message.CATEGORY_FOUND);
     const categoryInserted = await Category.query().insert({category});
     return {categoryInserted: _.pick(categoryInserted, ["category"])}
 };

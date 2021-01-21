@@ -1,5 +1,5 @@
 import config from '../../config/config';
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 const trimInside = () => (str?: String) => str?.replace(/\s\s/g, ' ');
 
@@ -82,4 +82,10 @@ export const deleteBusinessReviewRules = [
 
 export const addCategoryRules = [
     body('category').isString().isLength({min: 1}).withMessage("Invalid Category")
+]
+
+export const getNearbyBusinessesRules = [
+    query('latitude').exists().withMessage("Invalid query missing latitude"),
+    query('longitude').exists().withMessage("Invalid query missing longitude"),
+    query('radius').exists().withMessage("Invalid query missing radius"),
 ]
