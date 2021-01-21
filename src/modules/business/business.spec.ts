@@ -1257,6 +1257,16 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
             .end(done)
     });
 
+    it('should not get businesses inside a radius of 1m', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?query=pe&latitude=20.1&longitude=60.1&radius=1")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(0);
+            })
+            .end(done)
+    });
+
     it('should get 2  businesses inside a radius of 1000m', done => {
         request(app)
             .get(endpoints.GET_NEARBY_BUSINESSES + "?query=pe&latitude=20.1&longitude=60.1&radius=1000")
@@ -1267,6 +1277,45 @@ describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
             .end(done)
     });
 
+    it('should get error for missing longitude', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?query=pe&latitude=20.1&radius=1000")
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1);
+            })
+            .end(done)
+    });
+
+    it('should get error for missing latitude', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?query=pe&longitude=60.1&radius=1000")
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1);
+            })
+            .end(done)
+    });
+
+    it('should get error for missing radius', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?query=pe&latitude=20.1&longitude=60.1")
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1);
+            })
+            .end(done)
+    });
+
+    it('should get error for missing query or categoryCode', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?latitude=20.1&longitude=60.1&radius=1000")
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
+            .expect(res => {
+                expect(res.body.errors.length).toBe(1);
+            })
+            .end(done)
+    });
 })
 
 afterAll(()=>{

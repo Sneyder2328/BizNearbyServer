@@ -12,6 +12,7 @@ import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
 import { AppError } from '../../utils/errors/AppError';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { verifyUserType } from '../../middlewares/verifyUserType';
+import { AuthError } from '../../utils/errors/AuthError';
 
 const storage = cloudinaryStorage({
     cloudinary,
@@ -149,6 +150,9 @@ router.get(endpoints.GET_NEARBY_BUSINESSES, getNearbyBusinessesRules, validate, 
     }
     else if(req.query?.query){
         results = await getBusinessesBySearch(latitude, longitude, radius, req.query.query);
+    }
+    else{
+        res.status(httpCodes.UNPROCESSABLE_ENTITY).json({errors: [{"Error":"missing query or categoryCode"}]});
     }
     res.json(results);
 }))
