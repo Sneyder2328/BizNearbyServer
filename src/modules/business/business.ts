@@ -145,14 +145,14 @@ router.delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW, authenticate, del
 router.get(endpoints.GET_NEARBY_BUSINESSES, getNearbyBusinessesRules, validate, handleErrorAsync(async (req, res) => {
     const {longitude, latitude, radius} = req.query;
     let results;
-    if(req.query?.categoryCode){
-        results = await getBusinessByCategory(req.query.categoryCode, latitude, longitude, radius);
+    if(req.query?.category){
+        results = await getBusinessByCategory(req.query.category, latitude, longitude, radius);
     }
     else if(req.query?.query){
         results = await getBusinessesBySearch(latitude, longitude, radius, req.query.query);
     }
     else{
-        res.status(httpCodes.UNPROCESSABLE_ENTITY).json({errors: [{"Error":"missing query or categoryCode"}]});
+        res.status(httpCodes.UNPROCESSABLE_ENTITY).json({errors: [{"Error":"missing query or category"}]});
     }
     res.json(results);
 }))
