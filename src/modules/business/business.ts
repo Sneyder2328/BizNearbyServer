@@ -5,7 +5,7 @@ import { cloudinary } from "../../config/cloudinaryConfig";
 import { validate } from '../../middlewares/validate';
 import { newBusinessValidationRules, updateBusinessValidationRules, paramBusinessIdValidationRules, businessReviewValidationRules, addCategoryRules, deleteBusinessReviewRules, getNearbyBusinessesRules } from './businessRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness, addCategory, deleteCategory, deleteReviewBusiness, getBusinessesBySearch } from './businessService';
+import { addNewBusiness, updateBusiness, deleteBusiness, businessesByUser, businessById, allCategories, reviewBusiness, editReviewBusiness, addCategory, deleteCategory, deleteReviewBusiness, getBusinessesBySearch, getBusinessByCategory } from './businessService';
 import { authenticate } from '../../middlewares/authenticate';
 import { endpoints } from '../../utils/constants/endpoints';
 import { MAX_IMG_FILE_SIZE } from '../../utils/constants';
@@ -145,7 +145,7 @@ router.get(endpoints.GET_NEARBY_BUSINESSES, getNearbyBusinessesRules, validate, 
     const {longitude, latitude, radius} = req.query;
     let results;
     if(req.query?.categoryCode){
-
+        results = await getBusinessByCategory(req.query.categoryCode, latitude, longitude, radius);
     }
     else if(req.query?.query){
         results = await getBusinessesBySearch(latitude, longitude, radius, req.query.query);
