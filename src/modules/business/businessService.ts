@@ -329,4 +329,29 @@ export const deleteCategory = async (code) => {
     const isCategoryDeleted = categoryDeleted > 0;
     
     return isCategoryDeleted;
-}
+};
+
+export const getBusinessByCategory = async (category: string, latitude: number, longitude: number, radius: number) => {
+
+    const businesses = await Business.query()
+                                        .select("Business.id, Business.name", "Business.description", "Business.bannerUrl", "BusinessAddress.id", "BusinessAddress.address", "BusinessAddress.latitude", "BusinessAddress.longitude", "BusinessAddress.cityCode")
+                                        .join(raw("BusinessAddress ON Business.id = BusinessAddress.businessId"))
+                                        .where(raw('Business.name LIKE "%' + category + '%" '))
+                                        .having(raw('Distance('+ latitude + ', '+ longitude + ', BusinessAddres.latitude, BusinessAddress.longitude) <= '+ radius));
+    
+    const searchResult = businesses.map(business => {
+        return {
+            id: business['Business.id'],
+            name: business['Business.name'],
+            description: business['Business.description'],
+            bannerUrl: business['Business.bannerUrl'],
+            address: {
+                id: business['BusinessAddress.id'],
+                address: business['BusinessAddress.address'],
+                latitude: business['BusinessAddress.latitude'],
+                longitude: business['BusinessAddress.longitude'],
+                cityCode: business['BusinessAddress.cityCode']
+            }
+        }
+    });                                   
+};
