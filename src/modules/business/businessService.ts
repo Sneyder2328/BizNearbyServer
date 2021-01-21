@@ -257,6 +257,37 @@ export const businessById = async (businessId) => {
     return result;
 };
 
+export const getBusinessesBySearch = async (latitude: string, longitude: string, radius: string, pattern: string) => {
+    const search =  await Business.query().alias('b')
+                                .select(raw("DISTINCT b.id, b.name, b.description, b.bannerUrl, ba.latitude, ba.longitude, ba.cityCode, ba.id as addressId, ba.address, ba.cityCode"))
+                                .join(raw('BusinessAddress AS ba ON b.id = ba.businessId'))
+                                .join(raw('BusinessCategory AS bizcat ON b.id = bizcat.businessId'))
+                                .join(raw('Category AS c ON bizcat.categoryCode = c.code'))
+                                .join(raw('Product AS p ON c.code = p.categoryCode'))
+                                .where(raw('(b.name LIKE "%'+ pattern +'%" '
+                                          +'OR c.category LIKE "%'+ pattern +'%" '
+                                          +'OR p.name LIKE "%'+ pattern +'%") '))
+                                .andWhere(raw('Distance('+ latitude +', '+ longitude +', ba.latitude, ba.longitude) <= '+ radius))
+                                .orderByRaw('Distance('+ latitude +', '+ longitude +', ba.latitude, ba.longitude) asc');
+
+    const nearbyBusinesses = search.map(business => {
+        return {
+            id: business.id,
+            address: {
+                id: business['addressId'],
+                address: business['address'],
+                latitude: business['latitude'],
+                longitude: business['longitude'],
+                cityCode: business['cityCode']
+            },
+            name: business.name,
+            description: business.description,
+            bannerUrl: business.bannerUrl
+        }
+    });
+    return nearbyBusinesses;
+}
+
 export const allCategories = async () => {
 
     const categories = await Category.query().select();

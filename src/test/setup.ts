@@ -10,6 +10,7 @@ import { UserBusiness } from '../database/models/UserBusiness';
 import { Session } from '../database/models/Session';
 import { Report } from '../database/models/Report';
 import { ReportReview } from '../database/models/ReportReview';
+import { genText } from './seed';
 
 export async function wipeOutDatabase(){
     await User.query().delete();
@@ -146,4 +147,27 @@ export async function setupBusiness(userId: string, businessId: string, business
     await createBusinessPhoneNumber({businessId, phoneNumber: "04125568177"})
     await createBusinessImage({businessId, imageUrl: "UrlForExample"})
 
+}
+
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+export async function createNearbyBusiness(userId: string, businessId: string, businessAddressId: string, categoryCode: number, latitude: number, longitude: number, bizName: string){
+    await createBusiness({id: businessId, name: bizName, description: 'THIS IS A GOOD PLACE', bannerUrl: "AnURL"});
+    await createUserBusiness({userId, businessId});
+    await createBusinessAddress({id: businessAddressId, businessId, address: "Calle 50 entre carreras 14 y 15", cityCode: 212, latitude: getRandomArbitrary(latitude + 0.1000, latitude + 0.1008), longitude: getRandomArbitrary(longitude + 0.1000, longitude + 0.1008)});
+    await createBusinessCategory({businessId, categoryCode});
+    await createBusinessHours(businessId,[{
+        day: 1,
+        openTime: 600,
+        closeTime: 1200
+    },
+    {
+        day: 1,
+        openTime: 1300,
+        closeTime: 1830
+    }]);
+    await createBusinessPhoneNumber({businessId, phoneNumber: "04125568177"})
+    await createBusinessImage({businessId, imageUrl: "UrlForExample"})
 }

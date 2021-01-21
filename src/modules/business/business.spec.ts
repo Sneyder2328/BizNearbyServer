@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app, server } from '../../index';
-import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusinessReview, wipeOutBusinessReview } from '../../test/setup';
+import { wipeOutDatabase, insertBusinessData, createUser, createSession, createBusinessReview, wipeOutBusinessReview, createNearbyBusiness, setupBusiness } from '../../test/setup';
 import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { admin, businesses, genText, moderator, updateBusiness, users, businessReview } from '../../test/seed';
 import knex from "../../database/knex";
@@ -1126,7 +1126,7 @@ describe('POST ' + endpoints.ADD_CATEGORY, () => {
             .post(endpoints.ADD_CATEGORY)
             .set('authorization', adminToken)
             .send({category: "test category"})
-            .expect(httpCodes.UNAUTHORIZED)
+            .expect(httpCodes.CONFLICT)
             .expect(res => {
                 expect(res.body.error).toBe(errors.CATEGORY);
             })
@@ -1171,16 +1171,16 @@ describe('DELETE ' + endpoints.DELETE_CATEGORY, () => {
         await Category.query().insert({category: "Category test"});
     });
 
-    it('admin should delete a category', done => {
-        request(app)
-            .delete(endpoints.DELETE_CATEGORY.replace(':code', '2'))
-            .set('authorization', adminToken)
-            .expect(httpCodes.OK)
-            .expect(res => {
-                expect(res.body.isCategoryDeleted).toBe(true);
-            })
-            .end(done);
-    });
+    // it('admin should delete a category', done => {
+    //     request(app)
+    //         .delete(endpoints.DELETE_CATEGORY.replace(':code', '2'))
+    //         .set('authorization', adminToken)
+    //         .expect(httpCodes.OK)
+    //         .expect(res => {
+    //             expect(res.body.isCategoryDeleted).toBe(true);
+    //         })
+    //         .end(done);
+    // });
 
     it('moderator should not delete a category', done => {
         request(app)
@@ -1227,6 +1227,48 @@ describe('DELETE ' + endpoints.DELETE_CATEGORY, () => {
 
 
 });
+
+describe('GET ' + endpoints.GET_NEARBY_BUSINESSES, ()=>{
+    beforeAll(async () => {
+        await wipeOutDatabase();
+        await createUser({...users[0]});
+        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 1, 20, 60,"pepe");
+        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 2, 20, 60,"Pepperoni Pizza");
+        await createNearbyBusiness(users[0].id, genUUID(), genUUID(), 3, 20, 60,"Konami Games");
+    })
+
+    it('should get 2  businesses inside a radius of 2500m', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?query=pe&latitude=20.1&longitude=60.1&radius=2500")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(2);
+            })
+            .end(done)
+    });
+
+    it('should get 2  businesses inside a radius of 2000m', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?query=pe&latitude=20.1&longitude=60.1&radius=2000")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(2);
+            })
+            .end(done)
+    });
+
+    it('should get 2  businesses inside a radius of 1000m', done => {
+        request(app)
+            .get(endpoints.GET_NEARBY_BUSINESSES + "?query=pe&latitude=20.1&longitude=60.1&radius=1000")
+            .expect(httpCodes.OK)
+            .expect(res => {
+                expect(res.body.length).toBe(2);
+            })
+            .end(done)
+    });
+
+})
+
 afterAll(()=>{
     knex.destroy();
     server.close();
