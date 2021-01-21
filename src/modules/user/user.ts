@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
-import { signUpValidationRules, logInValidationRules, editValidationRules, deleteUserValidationRules, deleteUsersValidationRules, deleteValidationRules, getProfileValidationRules } from './userRules';
+import { signUpRules, logInRules, editRules, deleteUserRules, deleteUsersRules, deleteRules, getProfileRules } from './userRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
 import { signUpUser, logInUser, logoutUser, editUser, deleteUser, getProfile, deleteMultipleUsers } from './userService';
 import { endpoints } from '../../utils/constants/endpoints';
@@ -36,7 +36,7 @@ const router = Router();
 /**
  * Sign up new user
  */
-router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.post(endpoints.users.SIGN_UP, imageUpload, signUpRules, validate, handleErrorAsync(async (req, res) => {
     const user = req.body;
     user.googleAuth = {
         token: user?.['googleAuth.token'],
@@ -61,7 +61,7 @@ router.post(endpoints.users.SIGN_UP, imageUpload, signUpValidationRules, validat
 /**
  * Log in
  */
-router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.post(endpoints.auth.LOG_IN, logInRules, validate, handleErrorAsync(async (req, res) => {
     const { accessToken, profile } = await logInUser(req.body);
     res.header(config.headers.accessToken, accessToken)
         .json({ ...profile });
@@ -71,7 +71,7 @@ router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAs
 /**
  * Update user profile
  */
-router.put(endpoints.users.UPDATE_PROFILE, editValidationRules, validate, authenticate, imageUpload, handleErrorAsync(async (req, res) => {
+router.put(endpoints.users.UPDATE_PROFILE, editRules, validate, authenticate, imageUpload, handleErrorAsync(async (req, res) => {
     const user = req.body;
     if (req.userId != req.params.userId) throw new AuthError();
     // if there's an image(file) uploaded, then take url(path)
@@ -87,7 +87,7 @@ router.put(endpoints.users.UPDATE_PROFILE, editValidationRules, validate, authen
 /**
  * Get user profile
  */
-router.get(endpoints.users.GET_PROFILE, authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.get(endpoints.users.GET_PROFILE, authenticate, getProfileRules, validate, handleErrorAsync(async (req, res) => {
     const userId = req.params.userId;
     if (userId != req.userId) throw new AuthError();
     const { profile } = await getProfile(userId);
@@ -106,7 +106,7 @@ router.delete(endpoints.auth.LOG_OUT, authenticate, handleErrorAsync(async (req,
 /**
  * Delete user
  */
-router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteUserValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteUserRules, validate, handleErrorAsync(async (req, res) => {
     const user = { password: req.body?.password, id: req.params.userId };
     const deleted = await deleteUser(user, req.userId);
     res.json({ deleted });
@@ -116,7 +116,7 @@ router.delete(endpoints.users.DELETE_ACCOUNT, authenticate, deleteUserValidation
  * Delete multiple users
  */
 
-router.delete(endpoints.DELETE_USERS, authenticate, deleteUsersValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.delete(endpoints.DELETE_USERS, authenticate, deleteUsersRules, validate, handleErrorAsync(async (req, res) => {
     const user = { password: req.body?.password, ids: req.body.userIds };
     const usersDeleted = await deleteMultipleUsers(user, req.userId);
     res.json({ usersDeleted });

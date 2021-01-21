@@ -3,11 +3,11 @@ import { body, header, param } from "express-validator";
 
 const trimInside = () => (str?: String) => str?.replace(/\s\s/g, ' ');
 
-export const paramUserIdValidationRules = [
+export const paramUserIdRules = [
     param('userId').trim().matches(config.regex.uuidV4)
 ];
 
-export const signUpValidationRules = [
+export const signUpRules = [
     body('id').trim().matches(config.regex.uuidV4).withMessage("Invalid Id"),
     body('fullname').customSanitizer(trimInside()).escape().isString()
         .isLength({ min: 4 }).withMessage('Full name must be at least 4 characters long')
@@ -36,7 +36,7 @@ export const signUpValidationRules = [
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
 ];
 
-export const logInValidationRules = [
+export const logInRules = [
     body('email').trim().escape(),
     body('password').escape()
         .optional({ nullable: true }),
@@ -53,7 +53,7 @@ export const logInValidationRules = [
 
 ];
 
-export const editValidationRules = [
+export const editRules = [
     param('userId').exists().matches(config.regex.uuidV4),
     body('fullname').customSanitizer(trimInside()).escape().isString()
         .isLength({ min: 4 }).withMessage('Full name must be at least 4 characters long')
@@ -72,21 +72,21 @@ export const editValidationRules = [
         .optional({ nullable: true })
 ];
 
-export const deleteValidationRules = [
+export const deleteRules = [
     header(config.headers.accessToken).matches(config.regex.authorization),
     body('password').escape().optional({nullable: true})
 ]
 
-export const getProfileValidationRules = [
+export const getProfileRules = [
     param('userId').exists().matches(config.regex.uuidV4)
 ]
 
-export const deleteUserValidationRules = [
-    ...deleteValidationRules,
+export const deleteUserRules = [
+    ...deleteRules,
     param('userId').exists().matches(config.regex.uuidV4)
 ]
 
-export const deleteUsersValidationRules = [
-    ...deleteValidationRules,
+export const deleteUsersRules = [
+    ...deleteRules,
     body('userIds').exists().isArray()
 ]
