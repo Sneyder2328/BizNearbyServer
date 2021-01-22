@@ -116,8 +116,6 @@ const verifyBusinessAddress = async (addressId: string, businessId: string) => {
 };
 
 export const updateBusiness = async ({ userId, businessId, emailNewUser, name, description, bannerUrl, address, hours, phoneNumbers, categories, images }) => {
-
-
     await verifyUser(userId);
 
     await verifyBusiness(businessId);

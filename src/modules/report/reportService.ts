@@ -13,9 +13,9 @@ import { ReportReview } from '../../database/models/ReportReview';
  * @param userId
  */
 const verifyUser = async (userId: string) => {
-    if (!await User.query().findById(userId)){
+    if (!await User.query().findById(userId)) {
         throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
-    } 
+    }
 };
 
 /**
@@ -23,43 +23,43 @@ const verifyUser = async (userId: string) => {
  * @param businessIdId
  */
 const verifyBusiness = async (businessId: string) => {
-    if (!await Business.query().findById(businessId)){
+    if (!await Business.query().findById(businessId)) {
         throw new AppError(httpCodes.NOT_FOUND, errors.NOT_FOUND, errors.message.BUSINESS_NOT_FOUND);
-    } 
+    }
 };
 
-export const newReport = async ({id, userId, businessId, title, description}) => {
+export const newReport = async ({ id, userId, businessId, title, description }) => {
     await verifyUser(userId);
 
     await verifyBusiness(businessId);
 
-    const report = await Report.query().insert({id, userId, businessId, title, description});
+    const report = await Report.query().insert({ id, userId, businessId, title, description });
 
     return report;
 };
 
 export const getReport = async (userId: string, type: string) => {
     const sessionUser = await User.query().findById(userId).where(raw('deletedAt IS NULL'));
-    if(!sessionUser) throw new AuthError();
-    if(sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN,errors.message.PERMISSION_NOT_GRANTED);
-    const join = raw('ReportReview ON ReportReview.reportId = id');
+    if (!sessionUser) throw new AuthError();
+    if (sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+
     let queryReports;
-    switch(type){
+    switch (type) {
         case 'Pending':
             queryReports = await Report.query().where(raw("reviewedAt IS NULL"))
-                                                .andWhere(raw("deletedAt IS NULL"))
-                                                .orderBy("updatedAt","desc");
+                .andWhere(raw("deletedAt IS NULL"))
+                .orderBy("updatedAt", "desc");
             break;
         case 'Reviewed':
             queryReports = await Report.query().where(raw("reviewedAt IS NOT NULL"))
-                                                .andWhere(raw("deletedAt IS NULL"))
-                                                .orderBy("updatedAt","desc");
+                .andWhere(raw("deletedAt IS NULL"))
+                .orderBy("updatedAt", "desc");
             break;
         case 'All':
             queryReports = await Report.query().where(raw("deletedAt IS NULL"))
-                                                .orderBy("updatedAt","desc");
+                .orderBy("updatedAt", "desc");
     }
-    const reports = queryReports.map( report => {
+    const reports = queryReports.map(report => {
         return {
             id: report.id,
             userId: report.userId,
@@ -74,25 +74,25 @@ export const getReport = async (userId: string, type: string) => {
 
 export const deleteReport = async (userId: string, reportId: string) => {
     const sessionUser = await User.query().findById(userId).where(raw('deletedAt IS NULL'));
-    if(!sessionUser) throw new AuthError(errors.NOT_FOUND,errors.message.USER_NOT_FOUND);
-    if(sessionUser.typeUser == "normal") throw new AuthError(errors.FORBIDDEN,errors.message.PERMISSION_NOT_GRANTED);
+    if (!sessionUser) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    if (sessionUser.typeUser == "normal") throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
 
-    const reportDeleted = await Report.query().delete().where("id",reportId);
-    if(reportDeleted == 0) throw new AuthError(errors.NOT_FOUND, errors.message.REPORT_NOT_FOUND);
-    
+    const reportDeleted = await Report.query().delete().where("id", reportId);
+    if (reportDeleted == 0) throw new AuthError(errors.NOT_FOUND, errors.message.REPORT_NOT_FOUND);
+
     return reportDeleted != 0;
 }
 
-export const reviewReport = async ({id, analysis}, sessionId) => {
+export const reviewReport = async ({ id, analysis }, sessionId) => {
     const sessionUser = await User.query().findById(sessionId).where(raw('deletedAt IS NULL'));
-    if(!sessionUser) throw new AuthError(errors.NOT_FOUND,errors.message.USER_NOT_FOUND);
-    if(sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+    if (!sessionUser) throw new AuthError(errors.NOT_FOUND, errors.message.USER_NOT_FOUND);
+    if (sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
     const alreadyReviewed = await ReportReview.query().findOne('reportId', id);
-    if(alreadyReviewed) throw new AuthError(errors.REPORT,errors.message.REPORT_REVIEWED);
+    if (alreadyReviewed) throw new AuthError(errors.REPORT, errors.message.REPORT_REVIEWED);
 
     const report = await Report.query().findById(id).where(raw('deletedAt IS NULL'));
-    if(!report) throw new AuthError(errors.NOT_FOUND,errors.message.REPORT_NOT_FOUND);
-    const reportReviewed = await ReportReview.query().insert({userId: sessionId, reportId: id, analysis});
-    await Report.query().findById(id).update({'reviewedAt': new Date()});
-    return {reportReviewed: _.pick(reportReviewed, ['reportId','userId','analysis'])};
+    if (!report) throw new AuthError(errors.NOT_FOUND, errors.message.REPORT_NOT_FOUND);
+    const reportReviewed = await ReportReview.query().insert({ userId: sessionId, reportId: id, analysis });
+    await Report.query().findById(id).update({ 'reviewedAt': new Date() });
+    return { reportReviewed: _.pick(reportReviewed, ['reportId', 'userId', 'analysis']) };
 }
