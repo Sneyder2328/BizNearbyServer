@@ -8,7 +8,8 @@ export const ADMIN = 'admin'
 export const MODERATOR = 'moderator'
 
 export const verifyUserType = (...type: Array<'admin' | 'moderator'>) => async (req, res, next) => {
-    const user = await findUserById(req.userId)
+    const user = await findUserById(req.userId);
+    console.log(user);
     //@ts-ignore
     if (!type.includes(user?.typeUser)) {
         return next(new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED), req, res, next);

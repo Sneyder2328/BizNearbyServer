@@ -18,9 +18,9 @@ export const findUserById = async (userId: string): Promise<UserObject> => {
     return await User.query().findById(userId).where(raw('deletedAt IS NULL'));
 }
 
-export const verifyGoogleToken = async (userId: string, token: string, email: string) => {    
+export const verifyGoogleToken = async (userId: string, token: string, email: string) => {
     console.log("verifyGoogleToken", userId, token, email);
-    
+
     const CLIENT_ID = "434477538698-qn16b816e3i4d7gmeqchc0ofh0unee3n.apps.googleusercontent.com";
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
@@ -32,7 +32,7 @@ export const verifyGoogleToken = async (userId: string, token: string, email: st
     return payload?.sub === userId && payload?.email === email
 }
 
-export const verifyFBToken = async (userId: string, accessToken: string ) => {
+export const verifyFBToken = async (userId: string, accessToken: string) => {
     const appAccessToken = "202486168272592|f596f78dd89bf75b14142e9c88ef7b3b";
     const appId = "202486168272592";
     const application = "BizNearby";

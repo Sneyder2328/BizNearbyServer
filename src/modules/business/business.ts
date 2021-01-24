@@ -14,6 +14,19 @@ import { httpCodes } from '../../utils/constants/httpResponseCodes';
 import { verifyUserType } from '../../middlewares/verifyUserType';
 import { AuthError } from '../../utils/errors/AuthError';
 
+/**
+ * @module BUSINESS_API
+ */
+
+/**
+ * @typedef {object} address
+ * @property {string} id
+ * @property {string} address
+ * @property {number} latitude
+ * @property {number} longitude
+ * @property {number} cityCode  
+ */
+
 const storage = cloudinaryStorage({
     cloudinary,
     params: {
@@ -43,7 +56,20 @@ router.post('/businesses/images', authenticate, imageUpload,
     }));
 
 /**
- * Register a Business
+ * Register a business route
+ * @name CREATE_BUSINESS
+ * @path {POST} /businesses
+ * @auth this path requires session token as authorization 
+ * @header {String} authorization is the identifier of the user's session
+ * @body {String} userId
+ * @body {String} businessId
+ * @response {Object} metadata
+ * @response {String} metadata.name
+ * @response {String} metadata.link
+ * @code {200} if the request is successful
+ * @code {422} if the request has bad entry data
+ * @code {401} if the data provided is not correct
+ * @code {404} if the user does not exist in the database
  */
 router.post(endpoints.users.owner.BUSINESS_REGISTER, authenticate, newBusinessValidationRules, validate, handleErrorAsync(async (req, res) => {
     const business = req.body;
@@ -54,7 +80,7 @@ router.post(endpoints.users.owner.BUSINESS_REGISTER, authenticate, newBusinessVa
 /**
  * Update a Business
  */
-router.put(endpoints.users.owner.BUSINESS_UPDATE, authenticate, updateBusinessValidationRules, validate, handleErrorAsync(async (req,res) => {
+router.put(endpoints.users.owner.BUSINESS_UPDATE, authenticate, updateBusinessValidationRules, validate, handleErrorAsync(async (req, res) => {
     const business = req.body;
     const businessUpdated = await updateBusiness({ ...business, userId: req.userId, businessId: req.params.businessId });
     res.json(businessUpdated);
@@ -71,7 +97,8 @@ router.delete(endpoints.users.owner.BUSINESS_DELETE, authenticate, paramBusiness
 /**
  * Get all Business of the owner
  */
-router.get(endpoints.users.owner.GET_ALL_BUSINESSES, authenticate, validate, handleErrorAsync(async (req,res) => {
+router.get(endpoints.users.owner.GET_ALL_BUSINESSES, authenticate, validate, handleErrorAsync(async (req, res) => {
+    console.log(req.userId);
     const businesses = await businessesByUser(req.params.userId, req.userId);
     res.json(businesses);
 }));
@@ -79,7 +106,7 @@ router.get(endpoints.users.owner.GET_ALL_BUSINESSES, authenticate, validate, han
 /**
  * Get business
  */
-router.get(endpoints.GET_BUSINESS, authenticate, paramBusinessIdValidationRules, validate, handleErrorAsync(async (req,res) => {
+router.get(endpoints.GET_BUSINESS, authenticate, paramBusinessIdValidationRules, validate, handleErrorAsync(async (req, res) => {
     const business = await businessById(req.params.businessId);
     res.json(business);
 }));
@@ -87,7 +114,7 @@ router.get(endpoints.GET_BUSINESS, authenticate, paramBusinessIdValidationRules,
 /**
  * Get all categories available
  */
-router.get(endpoints.users.owner.GET_ALL_CATEGORIES, authenticate, validate, handleErrorAsync(async (req,res) => {
+router.get(endpoints.users.owner.GET_ALL_CATEGORIES, authenticate, validate, handleErrorAsync(async (req, res) => {
     const categories = await allCategories();
     res.json(categories);
 }));
@@ -97,16 +124,16 @@ router.get(endpoints.users.owner.GET_ALL_CATEGORIES, authenticate, validate, han
  */
 router.post(endpoints.ADD_CATEGORY, authenticate, verifyUserType('admin'), addCategoryRules, validate, handleErrorAsync(async (req, res) => {
     const { category } = req.body;
-    const {categoryInserted} = await addCategory(category);
-    res.json({...categoryInserted});
+    const { categoryInserted } = await addCategory(category);
+    res.json({ ...categoryInserted });
 }));
 
 /**
  * Delete Category
  */
-router.delete(endpoints.DELETE_CATEGORY, authenticate, verifyUserType('admin'), validate, handleErrorAsync(async (req,res) => {
+router.delete(endpoints.DELETE_CATEGORY, authenticate, verifyUserType('admin'), validate, handleErrorAsync(async (req, res) => {
     const isCategoryDeleted = await deleteCategory(req.params.code);
-    res.json({isCategoryDeleted});
+    res.json({ isCategoryDeleted });
 }));
 
 /**
@@ -124,35 +151,35 @@ router.post(endpoints.businessReview.CREATE_BUSINESS_REVIEW, authenticate, busin
  */
 router.put(endpoints.businessReview.UPDATE_BUSINESS_REVIEW, authenticate, businessReviewValidationRules, validate, handleErrorAsync(async (req, res) => {
     const businessReview = req.body;
-    const { review } = await editReviewBusiness({...businessReview, userId: req.userId});
-    res.json({...review});
+    const { review } = await editReviewBusiness({ ...businessReview, userId: req.userId });
+    res.json({ ...review });
 }));
 
 /**
  * Delete Business Review
  */
 router.delete(endpoints.businessReview.DELETE_BUSINESS_REVIEW, authenticate, deleteBusinessReviewRules, validate, handleErrorAsync(async (req, res) => {
-    const {businessId} = req.body;
+    const { businessId } = req.body;
     const sessionId = req.userId;
     const userId = req.params.userId;
     const deleted = await deleteReviewBusiness(businessId, userId, sessionId);
-    res.json({deleted});
+    res.json({ deleted });
 }));
 
 /**
  * Get Businesses
  */
 router.get(endpoints.GET_NEARBY_BUSINESSES, getNearbyBusinessesRules, validate, handleErrorAsync(async (req, res) => {
-    const {longitude, latitude, radius} = req.query;
+    const { longitude, latitude, radius } = req.query;
     let results;
-    if(req.query?.category){
+    if (req.query?.category) {
         results = await getBusinessByCategory(req.query.category, latitude, longitude, radius);
     }
-    else if(req.query?.query){
+    else if (req.query?.query) {
         results = await getBusinessesBySearch(latitude, longitude, radius, req.query.query);
     }
-    else{
-        res.status(httpCodes.UNPROCESSABLE_ENTITY).json({errors: [{"Error":"missing query or category"}]});
+    else {
+        res.status(httpCodes.UNPROCESSABLE_ENTITY).json({ errors: [{ "Error": "missing query or category" }] });
     }
     res.json(results);
 }))

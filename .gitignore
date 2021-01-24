@@ -4,3 +4,4 @@ BizNearbyDB.txt
 dist/
 .env
 .env.test
+documentation

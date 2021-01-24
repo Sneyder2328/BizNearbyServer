@@ -7,20 +7,24 @@ import { User } from '../../database/models/User';
 import { raw } from 'objection';
 import { Session } from '../../database/models/Session';
 import { Business } from '../../database/models/Business';
+import { findUser } from '../user/userService';
+import { ForbiddenError } from '../../utils/errors/ForbiddenError';
 
-export const changeModerator =async (email: string, typeUser: 'normal'|'moderator', ban: boolean) => {
-    const user = await User.query().findOne({email}).where(raw('deletedAt is null'));
-    if(!user) throw new UserNotFoundError();
-    if(user.typeUser == 'admin') throw new AppError(httpCodes.FORBIDDEN, errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
+const banUser = async (userId: string) => {
+    await User.query().update({ 'deletedAt': new Date() }).where('id', userId);
+    await Session.query().delete().where("userId", userId);
+    await Business.query().patch({ 'deletedAt': new Date() })
+        .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = "' + userId + '")'))
+        .andWhere(raw('deletedAt IS NULL'));
+}
 
-    const updatedRows = await User.query().update({typeUser}).where('id', user.id);
-    if(ban){
-        await User.query().update({'deletedAt': new Date()}).where('id',user.id);
-        await Session.query().delete().where("userId", user.id);
-        await Business.query().patch({'deletedAt': new Date()})
-            .where(raw('id IN (SELECT businessId FROM UserBusiness WHERE userId = "'+ user.id +'")'))
-            .andWhere(raw('deletedAt IS NULL'));
-    }
+export const changeModerator = async (email: string, typeUser: 'normal' | 'moderator', ban: boolean) => {
+    const user = await findUser("email", email);
+    if (!user) throw new UserNotFoundError();
+    if (user.typeUser == 'admin') throw new ForbiddenError();
+
+    const updatedRows = await User.query().update({ typeUser }).where('id', user.id);
+    if (ban) banUser(user.id);
     return updatedRows != 0;
 }
 
