@@ -300,7 +300,7 @@ export const deleteCategory = async (code) => {
 
 export const getBusinessesBySearch = async (latitude: string, longitude: string, radius: string, pattern: string) => {
     const search = await Business.query().alias('b')
-        .select(raw("DISTINCT b.id, b.name, b.description, b.bannerUrl, ba.latitude, ba.longitude, ba.cityCode, ba.id as addressId, ba.address, ba.cityCode"))
+        .select(raw("DISTINCT Distance(" + latitude + ", " + longitude + ", ba.latitude, ba.longitude) AS distance,b.id, b.name, b.description, b.bannerUrl, ba.latitude, ba.longitude, ba.cityCode, ba.id as addressId, ba.address, ba.cityCode"))
         .join(raw('BusinessAddress AS ba ON b.id = ba.businessId'))
         .join(raw('BusinessCategory AS bizcat ON b.id = bizcat.businessId'))
         .join(raw('Category AS c ON bizcat.categoryCode = c.code'))
@@ -319,9 +319,10 @@ export const getBusinessesBySearch = async (latitude: string, longitude: string,
                 address: business['address'],
                 latitude: business['latitude'],
                 longitude: business['longitude'],
-                cityCode: business['cityCode']
+                cityCode: business['cityCode'],
             },
             name: business.name,
+            distance: business['distance'],
             description: business.description,
             bannerUrl: business.bannerUrl
         }
@@ -332,7 +333,7 @@ export const getBusinessesBySearch = async (latitude: string, longitude: string,
 export const getBusinessByCategory = async (category: string, latitude: number, longitude: number, radius: number) => {
 
     const businesses = await Business.query()
-        .select(raw("Business.id, Business.name, Business.description, Business.bannerUrl, BusinessAddress.id as addressId, BusinessAddress.address, BusinessAddress.latitude, BusinessAddress.longitude, BusinessAddress.cityCode"))
+        .select(raw("DISTINCT DISTINCT Distance(" + latitude + ", " + longitude + ", ba.latitude, ba.longitude) AS distance, Business.id, Business.name, Business.description, Business.bannerUrl, BusinessAddress.id as addressId, BusinessAddress.address, BusinessAddress.latitude, BusinessAddress.longitude, BusinessAddress.cityCode"))
         .join(raw("BusinessAddress ON Business.id = BusinessAddress.businessId"))
         .join(raw("BusinessCategory ON Business.id = BusinessCategory.businessId"))
         .join(raw("Category ON BusinessCategory.categoryCode = Category.code"))
@@ -344,6 +345,7 @@ export const getBusinessByCategory = async (category: string, latitude: number, 
         return {
             id: business.id,
             name: business.name,
+            distance: business['distance'],
             description: business.description,
             bannerUrl: business.bannerUrl,
             address: {
