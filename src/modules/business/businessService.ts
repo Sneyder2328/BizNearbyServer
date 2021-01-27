@@ -224,7 +224,7 @@ export const businessById = async (businessId) => {
         hours: businessArrays[0],
         categories: businessArrays[1].map(category => category.categoryCode),
         phoneNumbers: businessArrays[2].map(phone => phone.phoneNumber),
-        images: businessArrays[3]
+        images: businessArrays[3].map(image => image.imageUrl),
     };
 
     return result;
