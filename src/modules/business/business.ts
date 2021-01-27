@@ -106,7 +106,7 @@ router.get(endpoints.users.owner.GET_ALL_BUSINESSES, authenticate, validate, han
 /**
  * Get business
  */
-router.get(endpoints.GET_BUSINESS, authenticate, paramBusinessIdValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.get(endpoints.GET_BUSINESS, paramBusinessIdValidationRules, validate, handleErrorAsync(async (req, res) => {
     const business = await businessById(req.params.businessId);
     res.json(business);
 }));

@@ -554,7 +554,6 @@ describe('GET' + endpoints.GET_BUSINESS, () => {
     it('should return a business', (done) => {
         request(app)
             .get(endpoints.GET_BUSINESS.replace(':businessId', businessId))
-            .set('authorization', token)
             .expect(httpCodes.OK)
             .expect(res => {
                 expect(res.body)
@@ -565,7 +564,6 @@ describe('GET' + endpoints.GET_BUSINESS, () => {
     it('should not return a business that does not exist', (done) => {
         request(app)
             .get(endpoints.GET_BUSINESS.replace(':businessId', 'b337e27e-bcf0-4154-8a77-96daa873c9e5'))
-            .set('authorization', token)
             .expect(httpCodes.NOT_FOUND)
             .expect(res => {
                 expect(res.body['errors'])
