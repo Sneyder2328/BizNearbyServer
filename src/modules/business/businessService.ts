@@ -197,9 +197,9 @@ export const businessesByUser = async (userId: string, reqUserId: string) => {
             ..._.pick((await Business.query().where({ id: businessId }))?.[0], ['id', 'name', 'description', 'bannerUrl']),
             address: (await BusinessAddress.query().where({ businessId: businessId }))?.[0],
             hours: await BusinessHours.query().where({ businessId: businessId }),
-            categories: await BusinessCategory.query().where({ businessId: businessId }),
-            phoneNumbers: await BusinessPhoneNumber.query().where({ businessId: businessId }),
-            images: await BusinessImage.query().where({ businessId: businessId })
+            categories: (await BusinessCategory.query().where({ businessId: businessId })).map(category => category.categoryCode),
+            phoneNumbers: (await BusinessPhoneNumber.query().where({ businessId: businessId })).map(phone => phone.phoneNumber),
+            images: (await BusinessImage.query().where({ businessId: businessId })).map(image => image.imageUrl)
         };
     }));
     return result;
