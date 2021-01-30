@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from '../../middlewares/validate';
 import { deleteReportRules, getReportRules, reportRules, reviewReportRules } from './reportRules';
 import { handleErrorAsync } from '../../middlewares/handleErrorAsync';
-import { deleteReport, getReport, newReport, reviewReport } from './reportService';
+import { deleteReport, getReports, newReport, reviewReport } from './reportService';
 import { authenticate } from '../../middlewares/authenticate';
 import { endpoints } from '../../utils/constants/endpoints';
 const router = Router();
@@ -21,7 +21,7 @@ router.post('/reports', authenticate, reportRules, validate, handleErrorAsync( a
  */
 router.get(endpoints.report.GET_REPORTS, authenticate, getReportRules, validate, handleErrorAsync( async (req, res)=>{
     const type = req.query.type;
-    const reports = await getReport(req.userId, type);
+    const reports = await getReports(req.userId, type);
     res.json(reports);
 }))
 

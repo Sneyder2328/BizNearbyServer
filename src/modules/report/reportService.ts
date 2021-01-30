@@ -39,7 +39,7 @@ export const newReport = async ({ id, userId, businessId, title, description }) 
     return report;
 };
 
-export const getReport = async (userId: string, type: 'Pending' | 'Reviewed' | 'All') => {
+export const getReports = async (userId: string, type: 'Pending' | 'Reviewed' | 'All') => {
     const sessionUser = await User.query().findById(userId).where(raw('deletedAt IS NULL'));
     if (!sessionUser) throw new AuthError();
     if (sessionUser.typeUser == 'normal') throw new AuthError(errors.FORBIDDEN, errors.message.PERMISSION_NOT_GRANTED);
@@ -52,7 +52,8 @@ export const getReport = async (userId: string, type: 'Pending' | 'Reviewed' | '
             businessId: report.businessId,
             title: report.title,
             description: report.description,
-            createdAt: report['createdAt']
+            createdAt: report.createdAt,
+            reviewedAt: report.reviewedAt
         }
     })
     return reports;
