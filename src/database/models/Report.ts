@@ -7,6 +7,7 @@ export class Report extends Model{
     title!: string|null;
     description!: string|null;
     reviewedAt!: Date;
+    createdAt!: Date;
 
     static tableName = 'Report';
     static idName = 'id'; 

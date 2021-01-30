@@ -76,7 +76,16 @@ export const reviewReport = async ({ id, analysis }, userId) => {
 
     const report = await Report.query().findById(id).where(raw('deletedAt IS NULL'));
     if (!report) throw new AuthError(errors.NOT_FOUND, errors.message.REPORT_NOT_FOUND);
-    const reportReviewed = await ReportReview.query().insert({ userId, reportId: id, analysis });
-    await Report.query().findById(id).update({ 'reviewedAt': new Date() });
-    return _.pick(reportReviewed, ['reportId', 'userId', 'analysis']);
+    await ReportReview.query().insert({ userId, reportId: id, analysis });
+    const reviewedAt = new Date();
+    await Report.query().findById(id).update({ 'reviewedAt': reviewedAt });
+    return {
+        id: report.id,
+        userId: userId,
+        businessId: report.businessId,
+        title: report.title,
+        description: report.description,
+        createdAt: report.createdAt,
+        reviewedAt: reviewedAt,
+    }
 }
