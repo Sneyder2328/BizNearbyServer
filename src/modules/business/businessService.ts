@@ -124,17 +124,17 @@ const addBusinessImage = async (images, businessId) => {
     return businessImagesAdded;
 }
 
-export const addNewBusiness = async ({ userId, businessId, name, description, address, bannerUrl, hours, phoneNumbers, categories, images }) => {
-    const { id, cityCode, latitude, longitude } = address
+export const addNewBusiness = async ({ userId, id, name, description, address, bannerUrl, hours, phoneNumbers, categories, images }) => {
+    const { cityCode, latitude, longitude } = address
     await verifyUser(userId);
 
-    const business = await Business.query().insert({ id: businessId, name, bannerUrl, description });
-    await UserBusiness.query().insert({ userId, businessId });
-    const businessAddress = await BusinessAddress.query().insert({ id, businessId, address: address.address, cityCode, latitude, longitude });
-    const categoriesAdded = await addBusinessCategory(categories, businessId);
-    const businessHoursAdded = await addBusinessHours(hours, businessId);
-    const phoneNumbersAdded = await addBusinessPhoneNumber(phoneNumbers, businessId);
-    let imagesAdded = await addBusinessImage(images, businessId);
+    const business = await Business.query().insert({ id, name, bannerUrl, description });
+    await UserBusiness.query().insert({ userId, businessId: id });
+    const businessAddress = await BusinessAddress.query().insert({ id: address.id, businessId: id, address: address.address, cityCode, latitude, longitude });
+    const categoriesAdded = await addBusinessCategory(categories, id);
+    const businessHoursAdded = await addBusinessHours(hours, id);
+    const phoneNumbersAdded = await addBusinessPhoneNumber(phoneNumbers, id);
+    let imagesAdded = await addBusinessImage(images, id);
 
     return {
         ...business,
